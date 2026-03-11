@@ -1,0 +1,6 @@
+{
+  "framework": "nuxt",
+  "installCommand": "npm install --no-package-lock",
+  "buildCommand": "nuxt build",
+  "outputDirectory": ".output/public"
+}

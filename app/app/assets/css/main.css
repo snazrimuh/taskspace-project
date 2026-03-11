@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+/* Class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Blue accent palette — matches TaskSpace logo */
+  --color-primary-50: #f0f6fa;
+  --color-primary-100: #d6e5f0;
+  --color-primary-200: #aecbe1;
+  --color-primary-300: #7eaed0;
+  --color-primary-400: #3D89BB;
+  --color-primary-500: #2E6894;
+  --color-primary-600: #20476B;
+  --color-primary-700: #1a3a57;
+  --color-primary-800: #142d44;
+  --color-primary-900: #0e2033;
+
+  /* Deep dark surface colors */
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-800: #0f172a;
+  --color-surface-850: #0c1322;
+  --color-surface-900: #080f1a;
+  --color-surface-950: #050a12;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth transitions for theme switching */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* Subtle glow for cards in dark mode */
+.dark .glow-card {
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.06), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.dark .glow-card:hover {
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.1), 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, #3D89BB, #20476B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
