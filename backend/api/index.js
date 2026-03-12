@@ -1,10 +1,11 @@
 'use strict';
 
+const { createApp } = require('../dist/serverless');
+
 let cachedHandler = null;
 
 module.exports = async (req, res) => {
   if (!cachedHandler) {
-    const { createApp } = require('../dist/serverless');
     const { server } = await createApp();
     cachedHandler = server;
   }
