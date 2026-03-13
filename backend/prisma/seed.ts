@@ -1,5 +1,6 @@
 import {
   PrismaClient,
+  ProjectStatus,
   TaskStatus,
   TaskPriority,
   EventType,
@@ -38,6 +39,7 @@ async function main() {
   await prisma.chatMessage.deleteMany()
   await prisma.event.deleteMany()
   await prisma.task.deleteMany()
+  await prisma.project.deleteMany()
   await prisma.announcementRead.deleteMany()
   await prisma.announcement.deleteMany()
   await prisma.teamInvite.deleteMany()
@@ -179,6 +181,53 @@ async function main() {
   console.log('🤝  Team members assigned')
 
   // ─────────────────────────────────────────────────────────────────
+  // PROJECTS
+  // ─────────────────────────────────────────────────────────────────
+  const [
+    platformCoreProject,
+    mobileReleaseProject,
+    productResearchProject,
+  ] = await Promise.all([
+    prisma.project.create({
+      data: {
+        name: 'Platform Reliability Initiative',
+        description: 'Improve reliability, security, and deployment maturity for platform services.',
+        status: ProjectStatus.IN_PROGRESS,
+        teamId: platformTeam.id,
+        picId: budi.id,
+        createdById: ahmad.id,
+        startDate: days(-10),
+        dueDate: days(20),
+      },
+    }),
+    prisma.project.create({
+      data: {
+        name: 'Mobile v3.3 Release',
+        description: 'Deliver v3.3.0 features and quality fixes before feature freeze.',
+        status: ProjectStatus.IN_PROGRESS,
+        teamId: mobileTeam.id,
+        picId: dewi.id,
+        createdById: siti.id,
+        startDate: days(-7),
+        dueDate: days(14),
+      },
+    }),
+    prisma.project.create({
+      data: {
+        name: 'Q2 Product Discovery',
+        description: 'Discovery, validation, and roadmap definition for Q2 priorities.',
+        status: ProjectStatus.IN_PROGRESS,
+        teamId: productTeam.id,
+        picId: nur.id,
+        createdById: maya.id,
+        startDate: days(-5),
+        dueDate: days(21),
+      },
+    }),
+  ])
+  console.log('📁  Projects created: 3')
+
+  // ─────────────────────────────────────────────────────────────────
   // ANNOUNCEMENTS
   // ─────────────────────────────────────────────────────────────────
 
@@ -301,6 +350,7 @@ async function main() {
         status: TaskStatus.DONE,
         priority: TaskPriority.HIGH,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: ahmad.id,
         assigneeId: budi.id,
         dueDate: days(-2),
@@ -311,6 +361,7 @@ async function main() {
         status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.HIGH,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: ahmad.id,
         assigneeId: rizky.id,
         dueDate: days(3),
@@ -321,6 +372,7 @@ async function main() {
         status: TaskStatus.TODO,
         priority: TaskPriority.MEDIUM,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: ahmad.id,
         assigneeId: budi.id,
         dueDate: days(7),
@@ -331,6 +383,7 @@ async function main() {
         status: TaskStatus.TODO,
         priority: TaskPriority.URGENT,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: budi.id,
         assigneeId: fajar.id,
         dueDate: days(5),
@@ -341,6 +394,7 @@ async function main() {
         status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: rizky.id,
         assigneeId: rizky.id,
         dueDate: days(10),
@@ -351,6 +405,7 @@ async function main() {
         status: TaskStatus.REVIEW,
         priority: TaskPriority.HIGH,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: ahmad.id,
         assigneeId: rizky.id,
         dueDate: days(2),
@@ -361,6 +416,7 @@ async function main() {
         status: TaskStatus.DONE,
         priority: TaskPriority.LOW,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: ahmad.id,
         assigneeId: dewi.id,
         dueDate: days(-5),
@@ -371,6 +427,7 @@ async function main() {
         status: TaskStatus.TODO,
         priority: TaskPriority.HIGH,
         teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
         createdById: budi.id,
         assigneeId: budi.id,
         dueDate: days(4),
@@ -387,6 +444,7 @@ async function main() {
         status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.HIGH,
         teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
         createdById: siti.id,
         assigneeId: dewi.id,
         dueDate: days(5),
@@ -397,6 +455,7 @@ async function main() {
         status: TaskStatus.REVIEW,
         priority: TaskPriority.URGENT,
         teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
         createdById: nur.id,
         assigneeId: fajar.id,
         dueDate: days(1),
@@ -407,6 +466,7 @@ async function main() {
         status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
         createdById: siti.id,
         assigneeId: dewi.id,
         dueDate: days(14),
@@ -417,6 +477,7 @@ async function main() {
         status: TaskStatus.TODO,
         priority: TaskPriority.MEDIUM,
         teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
         createdById: siti.id,
         assigneeId: null,
         dueDate: days(21),
@@ -427,6 +488,7 @@ async function main() {
         status: TaskStatus.TODO,
         priority: TaskPriority.LOW,
         teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
         createdById: nur.id,
         assigneeId: fajar.id,
         dueDate: days(9),
@@ -437,6 +499,7 @@ async function main() {
         status: TaskStatus.DONE,
         priority: TaskPriority.LOW,
         teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
         createdById: siti.id,
         assigneeId: fajar.id,
         dueDate: days(-7),
@@ -454,6 +517,7 @@ async function main() {
         status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.HIGH,
         teamId: productTeam.id,
+        projectId: productResearchProject.id,
         createdById: maya.id,
         assigneeId: nur.id,
         dueDate: days(6),
@@ -465,6 +529,7 @@ async function main() {
         status: TaskStatus.REVIEW,
         priority: TaskPriority.URGENT,
         teamId: productTeam.id,
+        projectId: productResearchProject.id,
         createdById: maya.id,
         assigneeId: maya.id,
         dueDate: days(2),
@@ -476,6 +541,7 @@ async function main() {
         status: TaskStatus.DONE,
         priority: TaskPriority.MEDIUM,
         teamId: productTeam.id,
+        projectId: productResearchProject.id,
         createdById: nur.id,
         assigneeId: nur.id,
         dueDate: days(-3),
@@ -487,6 +553,7 @@ async function main() {
         status: TaskStatus.TODO,
         priority: TaskPriority.LOW,
         teamId: productTeam.id,
+        projectId: productResearchProject.id,
         createdById: maya.id,
         assigneeId: rizky.id,
         dueDate: days(12),
@@ -498,6 +565,7 @@ async function main() {
         status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         teamId: productTeam.id,
+        projectId: productResearchProject.id,
         createdById: nur.id,
         assigneeId: siti.id,
         dueDate: days(8),

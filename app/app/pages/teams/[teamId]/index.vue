@@ -49,9 +49,9 @@
     <!-- Active Tasks -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Active Tasks</h2>
-          <NuxtLink :to="`/teams/${teamId}/tasks`" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-          View board
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Active Tasks (Across Projects)</h2>
+          <NuxtLink :to="`/teams/${teamId}/projects`" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+          View projects
         </NuxtLink>
       </div>
       <UiCard>
@@ -108,6 +108,7 @@ const teamDescription = computed(() => (team.value as any)?.description ?? '')
 
 const quickStats = computed(() => [
   { label: 'Members', value: team.value?._count?.members ?? '-' },
+  { label: 'Projects', value: team.value?._count?.projects ?? '-' },
   { label: 'Active Tasks', value: activeTaskCount.value },
   { label: 'Announcements', value: team.value?._count?.announcements ?? '-' },
 ])

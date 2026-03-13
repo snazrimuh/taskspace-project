@@ -61,6 +61,7 @@ const isManager = computed(() => teamStore.isCurrentTeamManager)
 const pageTitle = computed(() => {
   const path = route.path
   if (path.includes('/announcements')) return 'Announcements'
+  if (path.includes('/projects')) return 'Projects'
   if (path.includes('/tasks')) return 'Tasks'
   if (path.includes('/calendar')) return 'Calendar'
   if (path.includes('/chat')) return 'Team Chat'

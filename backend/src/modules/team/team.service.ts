@@ -76,7 +76,9 @@ export class TeamService {
             },
           },
         },
-        _count: { select: { members: true, tasks: true, announcements: true } },
+        _count: {
+          select: { members: true, tasks: true, announcements: true, projects: true },
+        },
       },
     });
 

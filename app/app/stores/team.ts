@@ -6,7 +6,7 @@ export interface Team {
   description?: string
   avatar?: string
   role?: 'MANAGER' | 'MEMBER'
-  _count?: { members: number; tasks: number; announcements: number }
+  _count?: { members: number; tasks: number; announcements: number; projects: number }
   members?: TeamMember[]
 }
 

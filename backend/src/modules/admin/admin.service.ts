@@ -62,7 +62,7 @@ export class AdminService {
       this.prisma.team.findMany({
         include: {
           createdBy: { select: { id: true, name: true, email: true } },
-          _count: { select: { members: true, tasks: true } },
+          _count: { select: { members: true, tasks: true, projects: true } },
         },
         orderBy: { createdAt: 'desc' },
         skip,

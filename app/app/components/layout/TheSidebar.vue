@@ -180,7 +180,7 @@
 <script setup lang="ts">
 import {
   Megaphone,
-  CheckSquare,
+  FolderKanban,
   CalendarDays,
   MessageSquare,
   Users,
@@ -238,7 +238,7 @@ const selectedTeam = computed(() => {
 const navItems = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard, path: '' },
   { key: 'announcements', label: 'Announcements', icon: Megaphone, path: '/announcements' },
-  { key: 'tasks', label: 'Tasks', icon: CheckSquare, path: '/tasks' },
+  { key: 'projects', label: 'Projects', icon: FolderKanban, path: '/projects' },
   { key: 'calendar', label: 'Calendar', icon: CalendarDays, path: '/calendar' },
   { key: 'chat', label: 'Team Chat', icon: MessageSquare, path: '/chat' },
   { key: 'members', label: 'Members', icon: Users, path: '/members' },

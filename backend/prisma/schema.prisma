@@ -37,6 +37,13 @@ enum TaskStatus {
   DONE
 }
 
+enum ProjectStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+}
+
 enum EventType {
   MEETING
   TRAINING
@@ -50,6 +57,9 @@ enum NotificationType {
   INVITE_DECLINED
   MEMBER_JOINED
   ROLE_CHANGED
+  PROJECT_CREATED
+  PROJECT_PIC_ASSIGNED
+  PROJECT_PROGRESS_UPDATED
   TASK_ASSIGNED
   TASK_STATUS_UPDATED
   ANNOUNCEMENT_CREATED
@@ -77,6 +87,8 @@ model User {
   announcements   Announcement[]
   tasksCreated    Task[]         @relation("TaskCreator")
   tasksAssigned   Task[]         @relation("TaskAssignee")
+  projectsCreated Project[]      @relation("ProjectCreator")
+  projectsAsPic   Project[]      @relation("ProjectPIC")
   eventsCreated   Event[]
   chatMessages    ChatMessage[]
   notifications   Notification[]
@@ -96,10 +108,32 @@ model Team {
   createdBy     User           @relation("TeamCreator", fields: [createdById], references: [id])
   members       TeamMember[]
   announcements Announcement[]
+  projects      Project[]
   tasks         Task[]
   events        Event[]
   chatMessages  ChatMessage[]
   invites       TeamInvite[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(NOT_STARTED)
+  progress    Decimal       @default(0) @db.Decimal(5, 2)
+  startDate   DateTime?
+  dueDate     DateTime?
+  teamId      String
+  picId       String?
+  createdById String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
+  team      Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  pic       User?  @relation("ProjectPIC", fields: [picId], references: [id], onDelete: SetNull)
+  createdBy User   @relation("ProjectCreator", fields: [createdById], references: [id])
+  tasks     Task[]
 }
 
 model TeamMember {
@@ -167,6 +201,7 @@ model Task {
   priority    TaskPriority @default(MEDIUM)
   dueDate     DateTime?
   teamId      String
+  projectId   String
   createdById String
   assigneeId  String?
   createdAt   DateTime     @default(now())
@@ -174,6 +209,7 @@ model Task {
   deletedAt   DateTime?
 
   team      Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdBy User  @relation("TaskCreator", fields: [createdById], references: [id])
   assignee  User? @relation("TaskAssignee", fields: [assigneeId], references: [id])
 }

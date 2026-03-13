@@ -5,29 +5,25 @@ import {
   IsDateString,
   MaxLength,
 } from 'class-validator';
-import { TaskPriority, TaskStatus } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 
-export class UpdateTaskDto {
-  @IsOptional()
-  @IsString()
-  projectId?: string;
-
+export class UpdateProjectDto {
   @IsOptional()
   @IsString()
   @MaxLength(200)
-  title?: string;
+  name?: string;
 
   @IsOptional()
   @IsString()
   description?: string;
 
   @IsOptional()
-  @IsEnum(TaskStatus)
-  status?: TaskStatus;
+  @IsEnum(ProjectStatus)
+  status?: ProjectStatus;
 
   @IsOptional()
-  @IsEnum(TaskPriority)
-  priority?: TaskPriority;
+  @IsDateString()
+  startDate?: string;
 
   @IsOptional()
   @IsDateString()
@@ -35,5 +31,5 @@ export class UpdateTaskDto {
 
   @IsOptional()
   @IsString()
-  assigneeId?: string;
+  picId?: string;
 }

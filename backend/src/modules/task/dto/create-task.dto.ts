@@ -11,6 +11,10 @@ import { TaskPriority, TaskStatus } from '@prisma/client';
 export class CreateTaskDto {
   @IsString()
   @IsNotEmpty()
+  projectId: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MaxLength(200)
   title: string;
 

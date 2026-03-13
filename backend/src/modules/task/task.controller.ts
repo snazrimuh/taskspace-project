@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -28,8 +29,21 @@ export class TaskController {
   ) {}
 
   @Get()
-  getTasks(@Param('teamId') teamId: string) {
-    return this.taskService.getTasks(teamId);
+  getTasks(
+    @Param('teamId') teamId: string,
+    @CurrentUser('id') userId: string,
+    @Query('projectId') projectId?: string,
+  ) {
+    return this.taskService.getTasks(teamId, userId, projectId);
+  }
+
+  @Get('/projects/:projectId')
+  getTasksByProject(
+    @Param('teamId') teamId: string,
+    @Param('projectId') projectId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.taskService.getTasks(teamId, userId, projectId);
   }
 
   @Post()
@@ -44,8 +58,12 @@ export class TaskController {
   }
 
   @Get(':id')
-  getTask(@Param('teamId') teamId: string, @Param('id') id: string) {
-    return this.taskService.getTask(teamId, id);
+  getTask(
+    @Param('teamId') teamId: string,
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.taskService.getTask(teamId, id, userId);
   }
 
   @Patch(':id')
@@ -66,8 +84,12 @@ export class TaskController {
   @UseGuards(RolesGuard)
   @Roles(TeamRole.MANAGER)
   @HttpCode(HttpStatus.OK)
-  deleteTask(@Param('teamId') teamId: string, @Param('id') id: string) {
-    return this.taskService.deleteTask(teamId, id);
+  deleteTask(
+    @Param('teamId') teamId: string,
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.taskService.deleteTask(teamId, id, userId);
   }
 
   @Patch(':id/status')
