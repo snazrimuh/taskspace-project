@@ -94,7 +94,7 @@
         <!-- Task Deadlines -->
         <UiCard>
           <UiCardHeader>
-            <UiCardTitle class="text-base">Task Deadlines</UiCardTitle>
+            <UiCardTitle class="text-base">My Task Deadlines</UiCardTitle>
           </UiCardHeader>
           <UiCardContent class="space-y-2">
             <div
@@ -104,6 +104,29 @@
             >
               <span class="text-slate-700 dark:text-slate-300 truncate">{{ task.title }}</span>
               <span class="text-xs text-slate-400 dark:text-slate-600 shrink-0 ml-2">{{ formatDueDate(task.dueDate) }}</span>
+            </div>
+            <div v-if="taskDeadlines.length === 0" class="text-xs text-slate-400 dark:text-slate-500">
+              No personal task deadlines.
+            </div>
+          </UiCardContent>
+        </UiCard>
+
+        <!-- Project Deadlines -->
+        <UiCard>
+          <UiCardHeader>
+            <UiCardTitle class="text-base">Project Deadlines</UiCardTitle>
+          </UiCardHeader>
+          <UiCardContent class="space-y-2">
+            <div
+              v-for="(project, i) in projectDeadlines"
+              :key="project.id ?? i"
+              class="flex items-center justify-between text-sm"
+            >
+              <span class="text-slate-700 dark:text-slate-300 truncate">{{ project.name }}</span>
+              <span class="text-xs text-slate-400 dark:text-slate-600 shrink-0 ml-2">{{ formatDueDate(project.dueDate) }}</span>
+            </div>
+            <div v-if="projectDeadlines.length === 0" class="text-xs text-slate-400 dark:text-slate-500">
+              No project deadlines.
             </div>
           </UiCardContent>
         </UiCard>
@@ -155,7 +178,7 @@
         <div v-if="selectedEvent.description" class="text-sm text-slate-700 dark:text-slate-300">{{ selectedEvent.description }}</div>
         <div class="text-sm text-slate-500">{{ formatEventDate(selectedEvent.startDate, selectedEvent.endDate) }}</div>
         <div class="text-xs text-slate-400">Created by {{ selectedEvent.createdBy?.name }}</div>
-        <div v-if="isManager && !selectedEvent._isTaskDeadline" class="flex justify-end pt-2">
+        <div v-if="isManager && !selectedEvent._isTaskDeadline && !selectedEvent._isProjectDeadline" class="flex justify-end pt-2">
           <UiButton variant="danger" size="sm" @click="handleDelete(selectedEvent.id)">Delete Event</UiButton>
         </div>
       </div>
@@ -168,6 +191,7 @@ import { Plus, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const route = useRoute()
 const teamStore = useTeamStore()
+const authStore = useAuthStore()
 const api = useApi()
 
 const teamId = computed(() => route.params.teamId as string)
@@ -178,8 +202,10 @@ const showCreate = ref(false)
 const showDetail = ref(false)
 const selectedEvent = ref<any>(null)
 const events = ref<any[]>([])
+const projects = ref<any[]>([])
 const taskDeadlines = ref<any[]>([])
-const allTasks = ref<any[]>([])
+const myTasks = ref<any[]>([])
+const projectDeadlines = ref<any[]>([])
 const isLoading = ref(false)
 const isCreating = ref(false)
 const createError = ref('')
@@ -199,15 +225,24 @@ const newEvent = reactive({
 const fetchData = async () => {
   isLoading.value = true
   try {
-    const [evRes, taskRes] = await Promise.all([
+    const [evRes, taskRes, projectRes] = await Promise.all([
       api.get<{ success: boolean; data: any[] }>(`/teams/${teamId.value}/events`),
       api.get<{ success: boolean; data: Record<string, any[]> }>(`/teams/${teamId.value}/tasks`),
+      api.get<{ success: boolean; data: any[] }>(`/teams/${teamId.value}/projects`),
     ])
     events.value = evRes.data ?? []
+    projects.value = projectRes.data ?? []
 
-    allTasks.value = Object.values(taskRes.data ?? {}).flat()
-    taskDeadlines.value = allTasks.value
+    const allTasks = Object.values(taskRes.data ?? {}).flat() as any[]
+    myTasks.value = allTasks.filter((t) => t.assignee?.id === authStore.currentUser?.id)
+
+    taskDeadlines.value = myTasks.value
       .filter((t) => t.dueDate)
+      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+      .slice(0, 6)
+
+    projectDeadlines.value = projects.value
+      .filter((p) => p.dueDate)
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
       .slice(0, 6)
   } finally {
@@ -266,8 +301,8 @@ const calendarDays = computed(() => {
       const d = new Date(e.startDate)
       return d.getFullYear() === year && d.getMonth() === month && d.getDate() === i
     })
-    // Merge task deadlines as virtual DEADLINE events
-    const dayDeadlines = allTasks.value
+    // Merge personal task deadlines as virtual DEADLINE events
+    const dayTaskDeadlines = myTasks.value
       .filter((t) => {
         if (!t.dueDate) return false
         const d = new Date(t.dueDate)
@@ -282,7 +317,28 @@ const calendarDays = computed(() => {
         createdBy: t.createdBy,
         _isTaskDeadline: true,
       }))
-    days.push({ day: i, isCurrentMonth: true, isToday, events: [...dayEvents, ...dayDeadlines] })
+
+    const dayProjectDeadlines = projectDeadlines.value
+      .filter((p) => {
+        if (!p.dueDate) return false
+        const d = new Date(p.dueDate)
+        return d.getFullYear() === year && d.getMonth() === month && d.getDate() === i
+      })
+      .map((p) => ({
+        id: `project-${p.id}`,
+        title: `Project Deadline: ${p.name}`,
+        type: 'DEADLINE',
+        startDate: p.dueDate,
+        description: p.description,
+        _isProjectDeadline: true,
+      }))
+
+    days.push({
+      day: i,
+      isCurrentMonth: true,
+      isToday,
+      events: [...dayEvents, ...dayProjectDeadlines, ...dayTaskDeadlines],
+    })
   }
 
   // Next month filler
