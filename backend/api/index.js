@@ -1,6 +1,6 @@
 'use strict';
 
-const { createApp } = require('../dist/serverless');
+const { createApp } = require('../dist/src/serverless');
 
 let cachedHandler = null;
 
