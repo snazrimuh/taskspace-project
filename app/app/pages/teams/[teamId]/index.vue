@@ -46,25 +46,25 @@
               <span>Distribution</span>
               <span>{{ totalTaskCount }} total</span>
             </div>
-            <div class="h-3 rounded-full flex overflow-hidden gap-0.5 bg-slate-100 dark:bg-slate-800">
+            <div class="h-3 rounded-full flex overflow-hidden gap-0.5 bg-white/30 dark:bg-white/[0.08]">
               <div
                 v-if="taskDist.todo > 0"
-                class="h-full bg-slate-400 rounded-l-full transition-all duration-500"
+                class="h-full bg-slate-400/80 dark:bg-slate-500/70 rounded-l-full transition-all duration-500"
                 :style="{ width: `${taskDist.todoP}%` }"
               />
               <div
                 v-if="taskDist.inProgress > 0"
-                class="h-full bg-sky-500 transition-all duration-500"
+                class="h-full bg-sky-400/80 dark:bg-sky-500/70 transition-all duration-500"
                 :style="{ width: `${taskDist.inProgressP}%` }"
               />
               <div
                 v-if="taskDist.review > 0"
-                class="h-full bg-amber-500 transition-all duration-500"
+                class="h-full bg-amber-400/80 dark:bg-amber-500/70 transition-all duration-500"
                 :style="{ width: `${taskDist.reviewP}%` }"
               />
               <div
                 v-if="taskDist.done > 0"
-                class="h-full bg-emerald-500 rounded-r-full transition-all duration-500"
+                class="h-full bg-emerald-400/80 dark:bg-emerald-500/70 rounded-r-full transition-all duration-500"
                 :style="{ width: `${taskDist.doneP}%` }"
               />
             </div>
@@ -72,7 +72,7 @@
 
           <!-- Legend + Count Breakdown -->
           <div class="grid grid-cols-2 gap-3">
-            <div v-for="s in taskStatuses" :key="s.label" class="flex items-center gap-2.5 rounded-xl p-2.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+            <div v-for="s in taskStatuses" :key="s.label" class="flex items-center gap-2.5 rounded-xl p-2.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
               <div :class="['h-2.5 w-2.5 rounded-full shrink-0', s.dot]" />
               <div class="min-w-0">
                 <p class="text-xs text-slate-500">{{ s.label }}</p>
@@ -89,15 +89,15 @@
           <UiCardTitle class="text-base">My Assignment</UiCardTitle>
         </UiCardHeader>
         <UiCardContent class="pt-2 space-y-3">
-          <div class="rounded-xl p-4 border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-900/20">
-            <p class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Assigned To Me</p>
+          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-sky-400">
+            <p class="text-xs font-semibold uppercase tracking-wider text-sky-500 dark:text-sky-400">Assigned To Me</p>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myAssignedTaskCount }}</p>
-            <p class="text-xs text-slate-500 mt-1">active tasks</p>
+            <p class="text-xs text-slate-400 mt-1">active tasks</p>
           </div>
-          <div class="rounded-xl p-4 border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20">
-            <p class="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">Due In 7 Days</p>
+          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-amber-400">
+            <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Due In 7 Days</p>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myDueSoonCount }}</p>
-            <p class="text-xs text-slate-500 mt-1">tasks due soon</p>
+            <p class="text-xs text-slate-400 mt-1">tasks due soon</p>
           </div>
         </UiCardContent>
       </UiCard>
@@ -113,47 +113,47 @@
       </UiCardHeader>
       <UiCardContent class="pt-2 space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div class="rounded-xl p-4 border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-900/20">
+          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-emerald-400">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">On Track</p>
+              <p class="text-xs font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">On Track</p>
               <div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
             </div>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.onTrack }}</p>
-            <p class="text-xs text-slate-500 mt-1">Progress ≥ 60% or completed</p>
+            <p class="text-xs text-slate-400 mt-1">Progress ≥ 60% or completed</p>
           </div>
-          <div class="rounded-xl p-4 border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20">
+          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-amber-400">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Needs Attention</p>
+              <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Needs Attention</p>
               <div class="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
             </div>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.attention }}</p>
-            <p class="text-xs text-slate-500 mt-1">Progress &lt; 60% and active</p>
+            <p class="text-xs text-slate-400 mt-1">Progress &lt; 60% and active</p>
           </div>
-          <div class="rounded-xl p-4 border border-rose-200 dark:border-rose-800/50 bg-rose-50 dark:bg-rose-900/20">
+          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-rose-400">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-rose-700 dark:text-rose-400">Overdue</p>
+              <p class="text-xs font-semibold uppercase tracking-wider text-rose-500 dark:text-rose-400">Overdue</p>
               <div class="h-1.5 w-1.5 rounded-full bg-rose-500"></div>
             </div>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.overdue }}</p>
-            <p class="text-xs text-slate-500 mt-1">Due date passed, not done</p>
+            <p class="text-xs text-slate-400 mt-1">Due date passed, not done</p>
           </div>
         </div>
         <!-- Health Visual Bar -->
         <div v-if="projects.length > 0" class="space-y-1">
-          <div class="h-2 rounded-full flex overflow-hidden gap-0.5 bg-slate-100 dark:bg-slate-800">
+          <div class="h-2 rounded-full flex overflow-hidden gap-0.5 bg-white/30 dark:bg-white/[0.08]">
             <div
               v-if="projectHealth.onTrack > 0"
-              class="h-full bg-emerald-500 rounded-l-full transition-all duration-500"
+              class="h-full bg-emerald-400/80 dark:bg-emerald-500/70 rounded-l-full transition-all duration-500"
               :style="{ width: `${(projectHealth.onTrack / projects.length) * 100}%` }"
             />
             <div
               v-if="projectHealth.attention > 0"
-              class="h-full bg-amber-500 transition-all duration-500"
+              class="h-full bg-amber-400/80 dark:bg-amber-500/70 transition-all duration-500"
               :style="{ width: `${(projectHealth.attention / projects.length) * 100}%` }"
             />
             <div
               v-if="projectHealth.overdue > 0"
-              class="h-full bg-rose-500 rounded-r-full transition-all duration-500"
+              class="h-full bg-rose-400/80 dark:bg-rose-500/70 rounded-r-full transition-all duration-500"
               :style="{ width: `${(projectHealth.overdue / projects.length) * 100}%` }"
             />
           </div>
@@ -172,13 +172,13 @@
           </NuxtLink>
         </div>
         <div class="space-y-2">
-          <div v-if="recentAnnouncements.length === 0" class="rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-400 text-center">
+          <div v-if="recentAnnouncements.length === 0" class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] text-sm text-slate-400 text-center">
             No announcements yet.
           </div>
           <div
             v-for="(a, i) in recentAnnouncements"
             :key="a.id ?? i"
-            class="rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 flex items-start justify-between gap-3"
+            class="rounded-xl px-4 py-3 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-start justify-between gap-3"
           >
             <div class="min-w-0">
               <p class="font-medium text-slate-900 dark:text-slate-100 text-sm leading-snug truncate">{{ a.title }}</p>
@@ -198,13 +198,13 @@
           </NuxtLink>
         </div>
         <div class="space-y-2">
-          <div v-if="upcomingTimeline.length === 0" class="rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-400 text-center">
+          <div v-if="upcomingTimeline.length === 0" class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] text-sm text-slate-400 text-center">
             No upcoming items.
           </div>
           <div
             v-for="item in upcomingTimeline"
             :key="item.id"
-            class="rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 flex items-center justify-between gap-3"
+            class="rounded-xl px-4 py-3 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-center justify-between gap-3"
           >
             <div class="min-w-0 flex items-center gap-3">
               <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-sky-500' : 'bg-amber-500']" />
@@ -281,37 +281,37 @@ const quickStats = computed(() => [
     label: 'Members',
     value: team.value?._count?.members ?? '-',
     icon: Users,
-    iconBg: 'bg-sky-100 dark:bg-sky-900/40',
-    iconColor: 'text-sky-600 dark:text-sky-400',
-    labelColor: 'text-sky-600 dark:text-sky-400',
-    bar: 'bg-sky-400 dark:bg-sky-600',
+    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
+    iconColor: 'text-sky-500 dark:text-sky-400',
+    labelColor: 'text-slate-500 dark:text-slate-400',
+    bar: 'bg-sky-400/60 dark:bg-sky-500/50',
   },
   {
     label: 'Projects',
     value: team.value?._count?.projects ?? '-',
     icon: FolderKanban,
-    iconBg: 'bg-violet-100 dark:bg-violet-900/40',
-    iconColor: 'text-violet-600 dark:text-violet-400',
-    labelColor: 'text-violet-600 dark:text-violet-400',
-    bar: 'bg-violet-400 dark:bg-violet-600',
+    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
+    iconColor: 'text-violet-500 dark:text-violet-400',
+    labelColor: 'text-slate-500 dark:text-slate-400',
+    bar: 'bg-violet-400/60 dark:bg-violet-500/50',
   },
   {
     label: 'Active Tasks',
     value: activeTaskCount.value,
     icon: CheckSquare,
-    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-    iconColor: 'text-amber-600 dark:text-amber-400',
-    labelColor: 'text-amber-600 dark:text-amber-400',
-    bar: 'bg-amber-400 dark:bg-amber-600',
+    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
+    iconColor: 'text-amber-500 dark:text-amber-400',
+    labelColor: 'text-slate-500 dark:text-slate-400',
+    bar: 'bg-amber-400/60 dark:bg-amber-500/50',
   },
   {
     label: 'Announcements',
     value: team.value?._count?.announcements ?? '-',
     icon: Megaphone,
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
-    labelColor: 'text-emerald-600 dark:text-emerald-400',
-    bar: 'bg-emerald-400 dark:bg-emerald-600',
+    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
+    iconColor: 'text-emerald-500 dark:text-emerald-400',
+    labelColor: 'text-slate-500 dark:text-slate-400',
+    bar: 'bg-emerald-400/60 dark:bg-emerald-500/50',
   },
 ])
 

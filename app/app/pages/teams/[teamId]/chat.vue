@@ -1,23 +1,13 @@
 <template>
-  <div class="space-y-3 h-[calc(100vh-120px)] flex flex-col">
-    <div class="rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-4 md:p-5 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
-      <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Chat</h2>
-      <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Percakapan realtime untuk koordinasi cepat dan pengambilan keputusan harian.</p>
-      <div class="grid grid-cols-3 gap-2 mt-3">
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Messages</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ chatStore.messages.length }}</p>
-        </div>
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Members Online*</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ teamStore.currentTeamMembers.length }}</p>
-        </div>
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Typing</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ typingUsers.length }}</p>
-        </div>
+  <div class="h-[calc(100vh-120px)] flex flex-col gap-2">
+    <!-- Compact Header -->
+    <div class="glass-subtle rounded-2xl px-4 py-2.5 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
+        <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">Team Chat</span>
+        <span class="text-xs text-slate-400 dark:text-slate-500">· {{ teamStore.currentTeamMembers.length }} members</span>
       </div>
-      <p class="text-[11px] text-slate-500 mt-2">*Based on current team member list.</p>
+      <span class="text-[11px] text-slate-400 dark:text-slate-500">{{ chatStore.messages.length }} messages</span>
     </div>
 
     <UiCard class="flex-1 flex flex-col overflow-hidden">

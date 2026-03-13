@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-surface-950 text-slate-900 dark:text-slate-200 flex">
+  <div class="app-bg min-h-screen text-slate-900 dark:text-slate-200 flex">
     <!-- Sidebar (desktop) -->
     <div class="hidden md:block">
       <LayoutTheSidebar />

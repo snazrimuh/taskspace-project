@@ -1,7 +1,7 @@
 <template>
-  <aside class="w-64 border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-surface-900 h-screen flex flex-col fixed left-0 top-0 z-30">
+  <aside class="glass-panel w-64 h-screen flex flex-col fixed left-0 top-0 z-30">
     <!-- Brand -->
-    <div class="px-4 py-4 border-b border-slate-100 dark:border-slate-800/80">
+    <div class="px-4 py-4 border-b border-white/50 dark:border-white/[0.06]">
       <NuxtLink to="/dashboard" class="flex items-center gap-2.5 group">
         <img src="/logo.png" alt="TaskSpace" class="h-10 w-10 shrink-0" />
         <div class="flex flex-col leading-tight">
@@ -17,7 +17,7 @@
     <div class="px-3 pt-3 pb-2 relative" data-team-dropdown>
       <button
         v-if="selectedTeam"
-        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all group relative"
+        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-white/40 dark:hover:bg-white/[0.06] transition-all group relative"
         @click="showTeamDropdown = !showTeamDropdown"
       >
         <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center text-[11px] font-bold text-slate-600 dark:text-slate-300 shrink-0">
@@ -51,7 +51,7 @@
       >
         <div
           v-if="showTeamDropdown"
-          class="absolute top-full left-3 right-3 mt-1 z-50 origin-top bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl shadow-xl overflow-hidden"
+          class="absolute top-full left-3 right-3 mt-1 z-50 origin-top bg-white/90 dark:bg-surface-900/90 backdrop-blur-xl border border-white/70 dark:border-white/[0.10] rounded-xl shadow-xl overflow-hidden"
         >
           <div class="p-1.5">
             <button
@@ -60,8 +60,8 @@
               :class="[
                 'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all',
                 currentTeamId === normalizeTeamId(team.id)
-                  ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-medium'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700',
+                  ? 'bg-white/60 dark:bg-white/[0.10] text-slate-900 dark:text-white font-medium'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.07]',
               ]"
               @click="selectTeam(team.id)"
             >
@@ -72,9 +72,9 @@
               <Check v-if="currentTeamId === normalizeTeamId(team.id)" class="h-3.5 w-3.5 text-primary-500 shrink-0" />
             </button>
           </div>
-          <div class="border-t border-slate-100 dark:border-slate-700/40 p-1.5">
+          <div class="border-t border-white/60 dark:border-white/[0.07] p-1.5">
             <button
-              class="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:text-slate-700 dark:hover:text-slate-200 transition-all"
+              class="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.06] hover:text-slate-700 dark:hover:text-slate-200 transition-all"
               @click="showTeamDropdown = false; showCreateTeam = true"
             >
               <Plus class="h-4 w-4" />
@@ -96,7 +96,7 @@
             'w-full flex items-center gap-2.5 rounded-xl pl-5 pr-3 py-2 text-[13px] transition-all',
             isActive(item.key)
               ? 'bg-slate-100 dark:bg-slate-800/70 text-slate-900 dark:text-white font-medium'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200',
+              : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
           ]"
         >
           <component :is="item.icon" class="h-4 w-4 shrink-0" />
@@ -108,7 +108,7 @@
       </div>
 
       <!-- Teams Section -->
-      <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/60">
+      <div class="mt-4 pt-4 border-t border-white/50 dark:border-white/[0.06]">
         <div class="flex items-center justify-between px-2 mb-2">
           <span class="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-600 font-semibold">Teams</span>
           <button
@@ -126,7 +126,7 @@
               'w-full text-left rounded-xl px-3 py-2 text-[13px] transition-all flex items-center gap-2.5',
               currentTeamId === normalizeTeamId(team.id)
                 ? 'bg-slate-100 dark:bg-slate-800/70 text-slate-900 dark:text-white font-medium'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200',
+                : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
             ]"
             @click="selectTeam(team.id)"
           >
@@ -140,11 +140,11 @@
     </div>
 
     <!-- User Section -->
-    <div class="p-3 border-t border-slate-100 dark:border-slate-800/80">
+    <div class="p-3 border-t border-white/50 dark:border-white/[0.06]">
       <ClientOnly>
         <NuxtLink
           to="/profile"
-          class="flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all group"
+          class="flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-white/40 dark:hover:bg-white/[0.06] transition-all group"
         >
           <UiAvatar :name="currentUser.name" :src="currentUser.avatar" size="sm" />
           <div class="flex-1 min-w-0">
@@ -237,11 +237,11 @@ const selectedTeam = computed(() => {
 
 const navItems = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard, path: '' },
-  { key: 'announcements', label: 'Announcements', icon: Megaphone, path: '/announcements' },
+  { key: 'chat', label: 'Team Chat', icon: MessageSquare, path: '/chat' },
   { key: 'projects', label: 'Projects', icon: FolderKanban, path: '/projects' },
   { key: 'calendar', label: 'Calendar', icon: CalendarDays, path: '/calendar' },
-  { key: 'chat', label: 'Team Chat', icon: MessageSquare, path: '/chat' },
   { key: 'members', label: 'Members', icon: Users, path: '/members' },
+  { key: 'announcements', label: 'Announcements', icon: Megaphone, path: '/announcements' },
 ] as const
 
 const isActive = (key: string) => {

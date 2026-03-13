@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-5">
-    <div class="flex items-center justify-between rounded-3xl border border-slate-300 dark:border-slate-700 p-5 md:p-6 bg-slate-100 dark:bg-slate-900">
+    <div class="flex items-center justify-between rounded-3xl border border-slate-300 dark:border-slate-700 p-5 md:p-6 bg-white/35 dark:bg-white/[0.04]">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Projects</h2>
         <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola project tim, PIC, progress, dan risiko deadline dari satu tampilan.</p>

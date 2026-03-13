@@ -1,7 +1,7 @@
 <template>
   <div
     draggable="true"
-    class="rounded-xl p-3.5 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md border border-slate-200/70 dark:border-slate-700/40 transition-all duration-150 cursor-grab active:cursor-grabbing"
+    class="glass rounded-xl p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.35)] transition-all duration-150 cursor-grab active:cursor-grabbing"
     :class="{ 'opacity-40 scale-95': isDragging }"
     @click="$emit('click')"
     @dragstart="onDragStart"
@@ -58,16 +58,11 @@ const onDragStart = (e: DragEvent) => {
   e.dataTransfer!.setData('text/plain', props.task.id)
 }
 
-const onDragEnd = () => {
-  isDragging.value = false
-}
+const onDragEnd = () => { isDragging.value = false }
 
 const priorityDot = computed(() => {
   const map: Record<string, string> = {
-    LOW: 'bg-slate-400',
-    MEDIUM: 'bg-sky-500',
-    HIGH: 'bg-amber-500',
-    URGENT: 'bg-rose-500',
+    LOW: 'bg-slate-400', MEDIUM: 'bg-sky-500', HIGH: 'bg-amber-500', URGENT: 'bg-rose-500',
   }
   return map[props.task.priority] ?? 'bg-slate-400'
 })

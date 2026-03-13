@@ -231,7 +231,7 @@
           </div>
         </div>
 
-        <div v-if="isManager" class="flex justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+        <div v-if="isManager" class="flex justify-between gap-2 pt-2 border-t border-white/60 dark:border-white/[0.08]">
           <UiButton variant="danger" type="button" @click="handleDeleteTask(selectedTask!.id)">Delete Task</UiButton>
           <div class="flex gap-2">
             <p v-if="editError" class="text-sm text-red-600 dark:text-red-400 self-center">{{ editError }}</p>

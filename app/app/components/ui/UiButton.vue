@@ -1,19 +1,14 @@
 <template>
   <button
     :class="[
-      'inline-flex items-center justify-center gap-2 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
+      'inline-flex items-center justify-center gap-2 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none',
       sizeClasses,
       variantClasses,
     ]"
     :disabled="disabled || loading"
     v-bind="$attrs"
   >
-    <svg
-      v-if="loading"
-      class="animate-spin -ml-1 h-4 w-4"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
+    <svg v-if="loading" class="animate-spin -ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
@@ -38,11 +33,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const variantClasses = computed(() => {
   const variants: Record<string, string> = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-400 dark:hover:bg-primary-300 rounded-xl shadow-sm font-semibold',
-    secondary: 'bg-slate-300 dark:bg-slate-700 text-slate-900 dark:text-slate-100 hover:bg-slate-400 dark:hover:bg-slate-600 rounded-xl',
-    outline: 'border border-slate-400 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl',
-    ghost: 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl',
-    danger: 'bg-slate-700 text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl shadow-sm',
+    primary:   'bg-primary-500/90 backdrop-blur-sm text-white border border-primary-400/40 hover:bg-primary-600/90 shadow-[0_2px_8px_rgba(46,104,148,0.30)] hover:shadow-[0_4px_12px_rgba(46,104,148,0.40)] rounded-xl font-semibold',
+    secondary: 'bg-white/50 dark:bg-white/[0.07] backdrop-blur-sm border border-white/60 dark:border-white/[0.10] text-slate-700 dark:text-slate-200 hover:bg-white/70 dark:hover:bg-white/[0.11] rounded-xl',
+    outline:   'bg-transparent border border-slate-300/80 dark:border-white/[0.12] text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/[0.06] rounded-xl',
+    ghost:     'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-slate-100 rounded-xl',
+    danger:    'bg-rose-500/85 backdrop-blur-sm text-white border border-rose-400/30 hover:bg-rose-600/90 shadow-[0_2px_8px_rgba(244,63,94,0.25)] rounded-xl font-semibold',
   }
   return variants[props.variant]
 })

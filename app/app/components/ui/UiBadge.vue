@@ -1,7 +1,7 @@
 <template>
   <span
     :class="[
-      'inline-flex items-center font-medium rounded-xl',
+      'inline-flex items-center font-medium rounded-xl backdrop-blur-sm',
       sizeClasses,
       variantClasses,
     ]"
@@ -23,12 +23,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const variantClasses = computed(() => {
   const variants: Record<string, string> = {
-    default: 'bg-slate-900 dark:bg-slate-700 text-white dark:text-slate-100 dark:border dark:border-slate-600',
-    secondary: 'bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-200 dark:border dark:border-slate-500',
-    success: 'bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200 dark:border dark:border-slate-600',
-    warning: 'bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200 dark:border dark:border-slate-600',
-    danger: 'bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200 dark:border dark:border-slate-600',
-    info: 'bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200 dark:border dark:border-slate-600',
+    default:   'bg-slate-800/80 dark:bg-white/[0.09] text-white dark:text-slate-100 border border-white/10 dark:border-white/[0.12]',
+    secondary: 'bg-white/50 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-white/60 dark:border-white/[0.09]',
+    success:   'bg-emerald-50/80 dark:bg-emerald-500/[0.15] text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/[0.25]',
+    warning:   'bg-amber-50/80 dark:bg-amber-500/[0.15] text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/[0.25]',
+    danger:    'bg-rose-50/80 dark:bg-rose-500/[0.15] text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-500/[0.25]',
+    info:      'bg-sky-50/80 dark:bg-sky-500/[0.15] text-sky-700 dark:text-sky-400 border border-sky-200/60 dark:border-sky-500/[0.25]',
   }
   return variants[props.variant]
 })

@@ -10,16 +10,16 @@
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-        <div class="rounded-2xl px-4 py-3 bg-white/80 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600">
-          <p class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Managed Teams</p>
+        <div class="rounded-2xl px-4 py-3 bg-white/60 dark:bg-white/[0.07] border border-white/70 dark:border-white/[0.09]">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Managed Teams</p>
           <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ managedTeams }}</p>
         </div>
-        <div class="rounded-2xl px-4 py-3 bg-white/80 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600">
-          <p class="text-xs font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">Total Projects</p>
+        <div class="rounded-2xl px-4 py-3 bg-white/60 dark:bg-white/[0.07] border border-white/70 dark:border-white/[0.09]">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Projects</p>
           <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ totalProjects }}</p>
         </div>
-        <div class="rounded-2xl px-4 py-3 bg-white/80 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600">
-          <p class="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">Avg Tasks / Team</p>
+        <div class="rounded-2xl px-4 py-3 bg-white/60 dark:bg-white/[0.07] border border-white/70 dark:border-white/[0.09]">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Avg Tasks / Team</p>
           <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ avgTasksPerTeam }}</p>
         </div>
       </div>
@@ -74,9 +74,9 @@
                 </UiBadge>
               </div>
             </div>
-            <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div class="h-2 rounded-full bg-white/30 dark:bg-white/[0.08] overflow-hidden">
               <div
-                class="h-full rounded-full bg-sky-500 dark:bg-sky-500 transition-all duration-700"
+                class="h-full rounded-full bg-sky-400/80 dark:bg-sky-500/60 transition-all duration-700"
                 :style="{ width: `${maxTaskLoad > 0 ? Math.max(4, ((team._count?.tasks ?? 0) / maxTaskLoad) * 100) : 4}%` }"
               />
             </div>
@@ -90,20 +90,20 @@
           <UiCardTitle class="text-base">Focus Today</UiCardTitle>
         </UiCardHeader>
         <UiCardContent class="pt-2 space-y-3">
-          <div class="rounded-xl p-3.5 bg-slate-50 dark:bg-slate-800/50 border-l-2 border-amber-400 border border-slate-200 dark:border-slate-700">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">Top Priority</p>
+          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-amber-400 border border-white/60 dark:border-white/[0.08]">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Top Priority</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
               Review teams with task load above {{ highLoadThreshold }}
             </p>
           </div>
-          <div class="rounded-xl p-3.5 bg-slate-50 dark:bg-slate-800/50 border-l-2 border-sky-400 border border-slate-200 dark:border-slate-700">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Collaboration</p>
+          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-sky-400 border border-white/60 dark:border-white/[0.08]">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-sky-500 dark:text-sky-400">Collaboration</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
               {{ pendingInvites.length }} pending invite{{ pendingInvites.length === 1 ? '' : 's' }} waiting response
             </p>
           </div>
-          <div class="rounded-xl p-3.5 bg-slate-50 dark:bg-slate-800/50 border-l-2 border-emerald-400 border border-slate-200 dark:border-slate-700">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Coverage</p>
+          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-emerald-400 border border-white/60 dark:border-white/[0.08]">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">Coverage</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
               {{ teams.length - managedTeams }} team{{ teams.length - managedTeams === 1 ? '' : 's' }} where you contribute as member
             </p>
@@ -258,10 +258,10 @@ const workloadTeams = computed(() =>
 )
 
 const stats = computed(() => [
-  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-sky-100 dark:bg-sky-900/40', iconColor: 'text-sky-600 dark:text-sky-400', labelColor: 'text-sky-600 dark:text-sky-400', barColor: 'bg-sky-400 dark:bg-sky-600' },
-  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-amber-100 dark:bg-amber-900/40', iconColor: 'text-amber-600 dark:text-amber-400', labelColor: 'text-amber-600 dark:text-amber-400', barColor: 'bg-amber-400 dark:bg-amber-600' },
-  { label: 'Announcements', value: String(teams.value.reduce((a, t) => a + (t._count?.announcements ?? 0), 0)), icon: Megaphone, iconBg: 'bg-emerald-100 dark:bg-emerald-900/40', iconColor: 'text-emerald-600 dark:text-emerald-400', labelColor: 'text-emerald-600 dark:text-emerald-400', barColor: 'bg-emerald-400 dark:bg-emerald-600' },
-  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-violet-100 dark:bg-violet-900/40', iconColor: 'text-violet-600 dark:text-violet-400', labelColor: 'text-violet-600 dark:text-violet-400', barColor: 'bg-violet-400 dark:bg-violet-600' },
+  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-sky-500 dark:text-sky-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-sky-400/60 dark:bg-sky-500/50' },
+  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-amber-500 dark:text-amber-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-amber-400/60 dark:bg-amber-500/50' },
+  { label: 'Announcements', value: String(teams.value.reduce((a, t) => a + (t._count?.announcements ?? 0), 0)), icon: Megaphone, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-emerald-500 dark:text-emerald-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-emerald-400/60 dark:bg-emerald-500/50' },
+  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-violet-500 dark:text-violet-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-violet-400/60 dark:bg-violet-500/50' },
 ])
 
 onMounted(async () => {
