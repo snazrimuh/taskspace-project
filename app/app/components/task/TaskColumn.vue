@@ -1,19 +1,24 @@
 <template>
-  <UiCard
-    class="rounded-2xl shadow-sm transition-all duration-200"
-    :class="{ 'ring-2 ring-primary-500 bg-primary-100 dark:bg-primary-900': isDragOver }"
+  <div
+    class="flex flex-col rounded-2xl p-3 transition-all duration-200 bg-slate-100 dark:bg-slate-800/40"
+    :class="{ 'ring-2 ring-primary-400/60': isDragOver }"
     @dragover.prevent="onDragOver"
     @dragleave="onDragLeave"
     @drop.prevent="onDrop"
   >
-    <UiCardHeader>
+    <!-- Column Header -->
+    <div class="flex items-center justify-between px-1 mb-3">
       <div class="flex items-center gap-2">
-        <div :class="['h-2.5 w-2.5 rounded-full', color]" />
-        <UiCardTitle class="text-sm">{{ title }}</UiCardTitle>
-        <span class="text-xs text-slate-400 ml-auto">{{ tasks.length }}</span>
+        <div :class="['h-2 w-2 rounded-full', color]" />
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{{ title }}</span>
       </div>
-    </UiCardHeader>
-    <UiCardContent class="space-y-2 min-h-[120px]">
+      <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full px-2 py-0.5 min-w-[22px] text-center">
+        {{ tasks.length }}
+      </span>
+    </div>
+
+    <!-- Task Cards -->
+    <div class="space-y-2 min-h-[120px]">
       <TaskCard
         v-for="task in tasks"
         :key="task.id"
@@ -22,13 +27,13 @@
       />
       <div
         v-if="tasks.length === 0"
-        class="text-center py-6 text-sm text-slate-400"
-        :class="{ '!py-8 border-2 border-dashed border-primary-300/50 rounded-xl': isDragOver }"
+        class="flex items-center justify-center py-7 text-xs text-slate-400 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 transition-colors"
+        :class="{ '!border-primary-400/50 !text-primary-400 bg-primary-50 dark:bg-primary-900/10': isDragOver }"
       >
         {{ isDragOver ? 'Drop here' : 'No tasks' }}
       </div>
-    </UiCardContent>
-  </UiCard>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -61,7 +66,6 @@ const onDrop = (e: DragEvent) => {
   isDragOver.value = false
   const taskId = e.dataTransfer?.getData('text/plain')
   if (!taskId) return
-  // Only emit if dropping into a different column
   const alreadyHere = props.tasks.some(t => t.id === taskId)
   if (!alreadyHere) {
     emit('statusChange', taskId, props.status)

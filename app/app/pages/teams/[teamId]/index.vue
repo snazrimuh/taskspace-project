@@ -9,7 +9,7 @@
         <div>
           <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ teamName }}</h1>
           <p class="text-sm text-slate-600 dark:text-slate-300">{{ teamDescription }}</p>
-          <p class="text-xs text-slate-500 mt-1">{{ activeTaskCount }} active tasks · {{ completedTaskCount }} completed tasks · {{ upcomingTimeline.length }} upcoming items</p>
+          <p class="text-xs text-slate-500 mt-1">{{ activeTaskCount }} active · {{ completedTaskCount }} completed · {{ upcomingTimeline.length }} upcoming</p>
         </div>
       </div>
     </div>
@@ -20,10 +20,10 @@
         <UiCardContent class="pt-4">
           <div class="flex items-start justify-between gap-2">
             <div>
-              <p class="text-sm text-slate-500">{{ stat.label }}</p>
-              <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ stat.value }}</p>
+              <p class="text-xs font-semibold uppercase tracking-wider" :class="stat.labelColor">{{ stat.label }}</p>
+              <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ stat.value }}</p>
             </div>
-            <div :class="['h-9 w-9 rounded-lg flex items-center justify-center', stat.iconBg]">
+            <div :class="['h-9 w-9 rounded-xl flex items-center justify-center shrink-0', stat.iconBg]">
               <component :is="stat.icon" :class="['h-4 w-4', stat.iconColor]" />
             </div>
           </div>
@@ -32,119 +32,217 @@
       </UiCard>
     </div>
 
+    <!-- Task Overview + My Assignment -->
     <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
+      <!-- Task Distribution Chart -->
       <UiCard class="xl:col-span-3">
         <UiCardHeader>
-          <UiCardTitle class="text-base">Project Health</UiCardTitle>
+          <UiCardTitle class="text-base">Task Overview</UiCardTitle>
         </UiCardHeader>
-        <UiCardContent class="pt-2 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div class="rounded-xl p-3 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
-            <p class="text-xs uppercase tracking-wider text-emerald-700 dark:text-emerald-300">On Track</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ projectHealth.onTrack }}</p>
-            <p class="text-xs text-slate-500 mt-1">Progress >= 60% or completed</p>
+        <UiCardContent class="pt-2 space-y-4">
+          <!-- Stacked bar -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+              <span>Distribution</span>
+              <span>{{ totalTaskCount }} total</span>
+            </div>
+            <div class="h-3 rounded-full flex overflow-hidden gap-0.5 bg-slate-100 dark:bg-slate-800">
+              <div
+                v-if="taskDist.todo > 0"
+                class="h-full bg-slate-400 rounded-l-full transition-all duration-500"
+                :style="{ width: `${taskDist.todoP}%` }"
+              />
+              <div
+                v-if="taskDist.inProgress > 0"
+                class="h-full bg-sky-500 transition-all duration-500"
+                :style="{ width: `${taskDist.inProgressP}%` }"
+              />
+              <div
+                v-if="taskDist.review > 0"
+                class="h-full bg-amber-500 transition-all duration-500"
+                :style="{ width: `${taskDist.reviewP}%` }"
+              />
+              <div
+                v-if="taskDist.done > 0"
+                class="h-full bg-emerald-500 rounded-r-full transition-all duration-500"
+                :style="{ width: `${taskDist.doneP}%` }"
+              />
+            </div>
           </div>
-          <div class="rounded-xl p-3 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
-            <p class="text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300">Needs Attention</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ projectHealth.attention }}</p>
-            <p class="text-xs text-slate-500 mt-1">Progress &lt; 60% and active</p>
-          </div>
-          <div class="rounded-xl p-3 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
-            <p class="text-xs uppercase tracking-wider text-rose-700 dark:text-rose-300">Overdue</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ projectHealth.overdue }}</p>
-            <p class="text-xs text-slate-500 mt-1">Due date passed, not completed</p>
+
+          <!-- Legend + Count Breakdown -->
+          <div class="grid grid-cols-2 gap-3">
+            <div v-for="s in taskStatuses" :key="s.label" class="flex items-center gap-2.5 rounded-xl p-2.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+              <div :class="['h-2.5 w-2.5 rounded-full shrink-0', s.dot]" />
+              <div class="min-w-0">
+                <p class="text-xs text-slate-500">{{ s.label }}</p>
+                <p class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">{{ s.count }}</p>
+              </div>
+            </div>
           </div>
         </UiCardContent>
       </UiCard>
 
+      <!-- My Assignment -->
       <UiCard class="xl:col-span-2">
         <UiCardHeader>
           <UiCardTitle class="text-base">My Assignment</UiCardTitle>
         </UiCardHeader>
         <UiCardContent class="pt-2 space-y-3">
-          <div class="rounded-xl p-3 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
-            <p class="text-xs uppercase tracking-wider text-primary-700 dark:text-primary-300">Assigned To Me</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ myAssignedTaskCount }}</p>
+          <div class="rounded-xl p-4 border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-900/20">
+            <p class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Assigned To Me</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myAssignedTaskCount }}</p>
+            <p class="text-xs text-slate-500 mt-1">active tasks</p>
           </div>
-          <div class="rounded-xl p-3 border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900">
-            <p class="text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400">Due In 7 Days</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ myDueSoonCount }}</p>
+          <div class="rounded-xl p-4 border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20">
+            <p class="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">Due In 7 Days</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myDueSoonCount }}</p>
+            <p class="text-xs text-slate-500 mt-1">tasks due soon</p>
           </div>
         </UiCardContent>
       </UiCard>
     </div>
 
-    <!-- Recent Announcements -->
-    <div>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Announcements</h2>
-          <NuxtLink :to="`/teams/${teamId}/announcements`" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-          View all
-        </NuxtLink>
-      </div>
-      <div class="space-y-3">
-        <UiCard v-for="(a, i) in recentAnnouncements" :key="a.id ?? i">
-          <UiCardContent class="pt-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="font-medium text-slate-900 dark:text-slate-200">{{ a.title }}</h3>
-                <p class="text-sm text-slate-500 mt-0.5">by {{ a.author?.name }} · {{ formatTime(a.createdAt) }}</p>
-              </div>
-              <UiBadge v-if="a.pinned" variant="warning">Pinned</UiBadge>
+    <!-- Project Health -->
+    <UiCard>
+      <UiCardHeader>
+        <div class="flex items-center justify-between">
+          <UiCardTitle class="text-base">Project Health</UiCardTitle>
+          <span class="text-xs text-slate-400">{{ projects.length }} projects total</span>
+        </div>
+      </UiCardHeader>
+      <UiCardContent class="pt-2 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="rounded-xl p-4 border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-900/20">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">On Track</p>
+              <div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
             </div>
-          </UiCardContent>
-        </UiCard>
+            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.onTrack }}</p>
+            <p class="text-xs text-slate-500 mt-1">Progress ≥ 60% or completed</p>
+          </div>
+          <div class="rounded-xl p-4 border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Needs Attention</p>
+              <div class="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
+            </div>
+            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.attention }}</p>
+            <p class="text-xs text-slate-500 mt-1">Progress &lt; 60% and active</p>
+          </div>
+          <div class="rounded-xl p-4 border border-rose-200 dark:border-rose-800/50 bg-rose-50 dark:bg-rose-900/20">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-semibold uppercase tracking-wider text-rose-700 dark:text-rose-400">Overdue</p>
+              <div class="h-1.5 w-1.5 rounded-full bg-rose-500"></div>
+            </div>
+            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.overdue }}</p>
+            <p class="text-xs text-slate-500 mt-1">Due date passed, not done</p>
+          </div>
+        </div>
+        <!-- Health Visual Bar -->
+        <div v-if="projects.length > 0" class="space-y-1">
+          <div class="h-2 rounded-full flex overflow-hidden gap-0.5 bg-slate-100 dark:bg-slate-800">
+            <div
+              v-if="projectHealth.onTrack > 0"
+              class="h-full bg-emerald-500 rounded-l-full transition-all duration-500"
+              :style="{ width: `${(projectHealth.onTrack / projects.length) * 100}%` }"
+            />
+            <div
+              v-if="projectHealth.attention > 0"
+              class="h-full bg-amber-500 transition-all duration-500"
+              :style="{ width: `${(projectHealth.attention / projects.length) * 100}%` }"
+            />
+            <div
+              v-if="projectHealth.overdue > 0"
+              class="h-full bg-rose-500 rounded-r-full transition-all duration-500"
+              :style="{ width: `${(projectHealth.overdue / projects.length) * 100}%` }"
+            />
+          </div>
+        </div>
+      </UiCardContent>
+    </UiCard>
+
+    <!-- Recent Announcements + Upcoming Timeline -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <!-- Recent Announcements -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Recent Announcements</h2>
+          <NuxtLink :to="`/teams/${teamId}/announcements`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
+            View all
+          </NuxtLink>
+        </div>
+        <div class="space-y-2">
+          <div v-if="recentAnnouncements.length === 0" class="rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-400 text-center">
+            No announcements yet.
+          </div>
+          <div
+            v-for="(a, i) in recentAnnouncements"
+            :key="a.id ?? i"
+            class="rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 flex items-start justify-between gap-3"
+          >
+            <div class="min-w-0">
+              <p class="font-medium text-slate-900 dark:text-slate-100 text-sm leading-snug truncate">{{ a.title }}</p>
+              <p class="text-xs text-slate-400 mt-0.5">by {{ a.author?.name }} · {{ formatTime(a.createdAt) }}</p>
+            </div>
+            <UiBadge v-if="a.pinned" variant="warning" class="shrink-0">Pinned</UiBadge>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Timeline -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Upcoming Timeline</h2>
+          <NuxtLink :to="`/teams/${teamId}/calendar`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
+            View calendar
+          </NuxtLink>
+        </div>
+        <div class="space-y-2">
+          <div v-if="upcomingTimeline.length === 0" class="rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-400 text-center">
+            No upcoming items.
+          </div>
+          <div
+            v-for="item in upcomingTimeline"
+            :key="item.id"
+            class="rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 flex items-center justify-between gap-3"
+          >
+            <div class="min-w-0 flex items-center gap-3">
+              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-sky-500' : 'bg-amber-500']" />
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ item.title }}</p>
+                <p class="text-xs text-slate-500">{{ item.subtitle }}</p>
+              </div>
+            </div>
+            <UiBadge :variant="item.variant as any" class="shrink-0">{{ item.badge }}</UiBadge>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Active Tasks -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Active Tasks (Across Projects)</h2>
-          <NuxtLink :to="`/teams/${teamId}/projects`" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+        <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Active Tasks</h2>
+        <NuxtLink :to="`/teams/${teamId}/projects`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
           View projects
         </NuxtLink>
       </div>
       <UiCard>
-        <UiCardContent class="pt-4 divide-y divide-slate-100 dark:divide-slate-700/20">
+        <UiCardContent class="pt-4">
+          <div v-if="activeTasks.length === 0" class="text-sm text-slate-400 text-center py-4">No active tasks.</div>
           <div
             v-for="(task, i) in activeTasks"
             :key="task.id ?? i"
-            class="flex items-center justify-between py-2.5 first:pt-0 last:pb-0"
+            class="flex items-center justify-between py-2.5 border-b border-slate-100 dark:border-slate-700/20 last:border-b-0"
           >
-            <div class="flex items-center gap-3">
-              <div :class="['h-2 w-2 rounded-full', statusColor(task.status)]" />
-              <span class="text-sm text-slate-700 dark:text-slate-300">{{ task.title }}</span>
+            <div class="flex items-center gap-3 min-w-0">
+              <div :class="['h-2 w-2 rounded-full shrink-0', statusColor(task.status)]" />
+              <span class="text-sm text-slate-700 dark:text-slate-300 truncate">{{ task.title }}</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 shrink-0">
               <UiBadge :variant="priorityVariant(task.priority)" size="sm">{{ task.priority }}</UiBadge>
               <UiAvatar v-if="task.assignee" :name="task.assignee.name" :src="task.assignee.avatar || ''" size="sm" />
             </div>
-          </div>
-        </UiCardContent>
-      </UiCard>
-    </div>
-
-    <!-- Upcoming Events -->
-    <div>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Upcoming Timeline</h2>
-          <NuxtLink :to="`/teams/${teamId}/calendar`" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-          View calendar
-        </NuxtLink>
-      </div>
-      <UiCard>
-        <UiCardContent class="pt-4 space-y-2">
-          <div v-if="upcomingTimeline.length === 0" class="text-sm text-slate-400">No upcoming items.</div>
-          <div
-            v-for="item in upcomingTimeline"
-            :key="item.id"
-            class="rounded-xl px-3 py-2.5 border border-slate-200 dark:border-slate-700/40 flex items-center justify-between gap-3"
-          >
-            <div class="min-w-0">
-              <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ item.title }}</p>
-              <p class="text-xs text-slate-500">{{ item.subtitle }}</p>
-            </div>
-            <UiBadge :variant="item.variant as any">{{ item.badge }}</UiBadge>
           </div>
         </UiCardContent>
       </UiCard>
@@ -168,6 +266,9 @@ const recentAnnouncements = ref<any[]>([])
 const activeTasks = ref<any[]>([])
 const activeTaskCount = ref(0)
 const completedTaskCount = ref(0)
+const todoCount = ref(0)
+const inProgressCount = ref(0)
+const reviewCount = ref(0)
 const upcomingEvents = ref<any[]>([])
 const projects = ref<any[]>([])
 
@@ -180,34 +281,61 @@ const quickStats = computed(() => [
     label: 'Members',
     value: team.value?._count?.members ?? '-',
     icon: Users,
-    iconBg: 'bg-slate-200 dark:bg-slate-700',
-    iconColor: 'text-slate-600 dark:text-slate-300',
-    bar: 'bg-slate-400 dark:bg-slate-600',
+    iconBg: 'bg-sky-100 dark:bg-sky-900/40',
+    iconColor: 'text-sky-600 dark:text-sky-400',
+    labelColor: 'text-sky-600 dark:text-sky-400',
+    bar: 'bg-sky-400 dark:bg-sky-600',
   },
   {
     label: 'Projects',
     value: team.value?._count?.projects ?? '-',
     icon: FolderKanban,
-    iconBg: 'bg-slate-200 dark:bg-slate-700',
-    iconColor: 'text-slate-600 dark:text-slate-300',
-    bar: 'bg-slate-400 dark:bg-slate-600',
+    iconBg: 'bg-violet-100 dark:bg-violet-900/40',
+    iconColor: 'text-violet-600 dark:text-violet-400',
+    labelColor: 'text-violet-600 dark:text-violet-400',
+    bar: 'bg-violet-400 dark:bg-violet-600',
   },
   {
     label: 'Active Tasks',
     value: activeTaskCount.value,
     icon: CheckSquare,
-    iconBg: 'bg-slate-200 dark:bg-slate-700',
-    iconColor: 'text-slate-600 dark:text-slate-300',
-    bar: 'bg-slate-400 dark:bg-slate-600',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
+    iconColor: 'text-amber-600 dark:text-amber-400',
+    labelColor: 'text-amber-600 dark:text-amber-400',
+    bar: 'bg-amber-400 dark:bg-amber-600',
   },
   {
     label: 'Announcements',
     value: team.value?._count?.announcements ?? '-',
     icon: Megaphone,
-    iconBg: 'bg-slate-200 dark:bg-slate-700',
-    iconColor: 'text-slate-600 dark:text-slate-300',
-    bar: 'bg-slate-400 dark:bg-slate-600',
+    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    labelColor: 'text-emerald-600 dark:text-emerald-400',
+    bar: 'bg-emerald-400 dark:bg-emerald-600',
   },
+])
+
+const totalTaskCount = computed(() => todoCount.value + inProgressCount.value + reviewCount.value + completedTaskCount.value)
+
+const taskDist = computed(() => {
+  const total = totalTaskCount.value || 1
+  return {
+    todo: todoCount.value,
+    inProgress: inProgressCount.value,
+    review: reviewCount.value,
+    done: completedTaskCount.value,
+    todoP: (todoCount.value / total) * 100,
+    inProgressP: (inProgressCount.value / total) * 100,
+    reviewP: (reviewCount.value / total) * 100,
+    doneP: (completedTaskCount.value / total) * 100,
+  }
+})
+
+const taskStatuses = computed(() => [
+  { label: 'Todo', count: todoCount.value, dot: 'bg-slate-400' },
+  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-sky-500' },
+  { label: 'Review', count: reviewCount.value, dot: 'bg-amber-500' },
+  { label: 'Done', count: completedTaskCount.value, dot: 'bg-emerald-500' },
 ])
 
 const myAssignedTaskCount = computed(() =>
@@ -236,11 +364,7 @@ const projectHealth = computed(() => {
     const isCompleted = p.status === 'COMPLETED'
     const isOverdue = !!p.dueDate && new Date(p.dueDate) < now && !isCompleted
 
-    if (isOverdue) {
-      overdue += 1
-      continue
-    }
-
+    if (isOverdue) { overdue += 1; continue }
     if (isCompleted || progress >= 60) onTrack += 1
     else attention += 1
   }
@@ -275,7 +399,7 @@ const upcomingTimeline = computed(() => {
 
   return [...eventItems, ...deadlineItems]
     .sort((a, b) => a.time - b.time)
-    .slice(0, 6)
+    .slice(0, 5)
 })
 
 // ── Fetch ──────────────────────────────────────────────────────────────
@@ -291,9 +415,11 @@ const fetchData = async () => {
     recentAnnouncements.value = (annRes.data ?? []).slice(0, 3)
     upcomingEvents.value = eventRes.data ?? []
     projects.value = projectRes.data ?? []
-    const { TODO = [], IN_PROGRESS = [], REVIEW = [] } = taskRes.data ?? {}
-    const { DONE = [] } = taskRes.data ?? {}
+    const { TODO = [], IN_PROGRESS = [], REVIEW = [], DONE = [] } = taskRes.data ?? {}
     const allActive = [...TODO, ...IN_PROGRESS, ...REVIEW]
+    todoCount.value = TODO.length
+    inProgressCount.value = IN_PROGRESS.length
+    reviewCount.value = REVIEW.length
     activeTaskCount.value = allActive.length
     completedTaskCount.value = DONE.length
     activeTasks.value = allActive.slice(0, 5)
@@ -325,7 +451,7 @@ const formatTime = (date: string) => {
 const statusColor = (status: string) => {
   const colors: Record<string, string> = {
     TODO: 'bg-slate-400',
-    IN_PROGRESS: 'bg-primary-500',
+    IN_PROGRESS: 'bg-sky-500',
     REVIEW: 'bg-amber-500',
     DONE: 'bg-emerald-500',
   }

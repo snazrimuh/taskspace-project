@@ -1,19 +1,29 @@
 <template>
   <div
     draggable="true"
-    class="rounded-xl border border-slate-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-800 hover:shadow-sm dark:hover:border-slate-500 transition-all cursor-grab active:cursor-grabbing group"
+    class="rounded-xl p-3.5 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md border border-slate-200/70 dark:border-slate-700/40 transition-all duration-150 cursor-grab active:cursor-grabbing"
     :class="{ 'opacity-40 scale-95': isDragging }"
     @click="$emit('click')"
     @dragstart="onDragStart"
     @dragend="onDragEnd"
   >
-    <div class="flex items-start justify-between gap-2">
-      <h4 class="text-sm font-medium text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100">{{ task.title }}</h4>
-      <UiBadge :variant="priorityVariant" size="sm">{{ task.priority }}</UiBadge>
+    <!-- Priority label -->
+    <div class="flex items-center gap-1.5 mb-2.5">
+      <div :class="['h-1.5 w-1.5 rounded-full shrink-0', priorityDot]" />
+      <span :class="['text-[10px] font-bold uppercase tracking-wider', priorityText]">{{ task.priority }}</span>
     </div>
 
-    <div class="flex items-center justify-between mt-2.5">
-      <div v-if="task.dueDate" class="flex items-center gap-1 text-xs text-slate-400">
+    <!-- Title -->
+    <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2">{{ task.title }}</h4>
+
+    <!-- Description snippet -->
+    <p v-if="task.description" class="text-xs text-slate-400 dark:text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
+      {{ task.description }}
+    </p>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between mt-3">
+      <div v-if="task.dueDate" class="flex items-center gap-1 text-[10px] font-medium text-slate-400 dark:text-slate-500">
         <CalendarDays class="h-3 w-3" />
         <span>{{ formatDate(task.dueDate) }}</span>
       </div>
@@ -31,6 +41,7 @@ interface Props {
     id: string
     title: string
     priority: string
+    description?: string
     assignee?: string
     dueDate?: string
   }
@@ -51,13 +62,26 @@ const onDragEnd = () => {
   isDragging.value = false
 }
 
-const priorityVariant = computed(() => {
-  const map: Record<string, any> = { LOW: 'secondary', MEDIUM: 'info', HIGH: 'warning', URGENT: 'danger' }
-  return map[props.task.priority] || 'secondary'
+const priorityDot = computed(() => {
+  const map: Record<string, string> = {
+    LOW: 'bg-slate-400',
+    MEDIUM: 'bg-sky-500',
+    HIGH: 'bg-amber-500',
+    URGENT: 'bg-rose-500',
+  }
+  return map[props.task.priority] ?? 'bg-slate-400'
 })
 
-const formatDate = (date: string) => {
-  const d = new Date(date)
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
+const priorityText = computed(() => {
+  const map: Record<string, string> = {
+    LOW: 'text-slate-400',
+    MEDIUM: 'text-sky-600 dark:text-sky-400',
+    HIGH: 'text-amber-600 dark:text-amber-400',
+    URGENT: 'text-rose-600 dark:text-rose-400',
+  }
+  return map[props.task.priority] ?? 'text-slate-400'
+})
+
+const formatDate = (date: string) =>
+  new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 </script>
