@@ -32,10 +32,10 @@
       </UiCard>
     </div>
 
-    <!-- Task Overview + My Assignment -->
-    <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
+    <!-- Task Overview + My Assignment + Upcoming Timeline -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Task Distribution Chart -->
-      <UiCard class="xl:col-span-3">
+      <UiCard>
         <UiCardHeader>
           <UiCardTitle class="text-base">Task Overview</UiCardTitle>
         </UiCardHeader>
@@ -84,7 +84,7 @@
       </UiCard>
 
       <!-- My Assignment -->
-      <UiCard class="xl:col-span-2">
+      <UiCard>
         <UiCardHeader>
           <UiCardTitle class="text-base">My Assignment</UiCardTitle>
         </UiCardHeader>
@@ -98,6 +98,37 @@
             <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Due In 7 Days</p>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myDueSoonCount }}</p>
             <p class="text-xs text-slate-400 mt-1">tasks due soon</p>
+          </div>
+        </UiCardContent>
+      </UiCard>
+
+      <!-- Upcoming Timeline -->
+      <UiCard>
+        <UiCardHeader>
+          <div class="flex items-center justify-between">
+            <UiCardTitle class="text-base">Upcoming Timeline</UiCardTitle>
+            <NuxtLink :to="`/teams/${teamId}/calendar`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
+              View
+            </NuxtLink>
+          </div>
+        </UiCardHeader>
+        <UiCardContent class="pt-2 space-y-2">
+          <div v-if="upcomingTimeline.length === 0" class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] text-sm text-slate-400 text-center">
+            No upcoming items.
+          </div>
+          <div
+            v-for="item in upcomingTimeline"
+            :key="item.id"
+            class="rounded-xl px-3 py-2.5 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-center justify-between gap-2"
+          >
+            <div class="min-w-0 flex items-center gap-2.5">
+              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-sky-500' : 'bg-amber-500']" />
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ item.title }}</p>
+                <p class="text-xs text-slate-500">{{ item.subtitle }}</p>
+              </div>
+            </div>
+            <UiBadge :variant="item.variant as any" size="sm" class="shrink-0">{{ item.badge }}</UiBadge>
           </div>
         </UiCardContent>
       </UiCard>
@@ -161,92 +192,7 @@
       </UiCardContent>
     </UiCard>
 
-    <!-- Recent Announcements + Upcoming Timeline -->
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-      <!-- Recent Announcements -->
-      <div>
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Recent Announcements</h2>
-          <NuxtLink :to="`/teams/${teamId}/announcements`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
-            View all
-          </NuxtLink>
-        </div>
-        <div class="space-y-2">
-          <div v-if="recentAnnouncements.length === 0" class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] text-sm text-slate-400 text-center">
-            No announcements yet.
-          </div>
-          <div
-            v-for="(a, i) in recentAnnouncements"
-            :key="a.id ?? i"
-            class="rounded-xl px-4 py-3 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-start justify-between gap-3"
-          >
-            <div class="min-w-0">
-              <p class="font-medium text-slate-900 dark:text-slate-100 text-sm leading-snug truncate">{{ a.title }}</p>
-              <p class="text-xs text-slate-400 mt-0.5">by {{ a.author?.name }} · {{ formatTime(a.createdAt) }}</p>
-            </div>
-            <UiBadge v-if="a.pinned" variant="warning" class="shrink-0">Pinned</UiBadge>
-          </div>
-        </div>
-      </div>
 
-      <!-- Upcoming Timeline -->
-      <div>
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Upcoming Timeline</h2>
-          <NuxtLink :to="`/teams/${teamId}/calendar`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
-            View calendar
-          </NuxtLink>
-        </div>
-        <div class="space-y-2">
-          <div v-if="upcomingTimeline.length === 0" class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] text-sm text-slate-400 text-center">
-            No upcoming items.
-          </div>
-          <div
-            v-for="item in upcomingTimeline"
-            :key="item.id"
-            class="rounded-xl px-4 py-3 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-center justify-between gap-3"
-          >
-            <div class="min-w-0 flex items-center gap-3">
-              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-sky-500' : 'bg-amber-500']" />
-              <div class="min-w-0">
-                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ item.title }}</p>
-                <p class="text-xs text-slate-500">{{ item.subtitle }}</p>
-              </div>
-            </div>
-            <UiBadge :variant="item.variant as any" class="shrink-0">{{ item.badge }}</UiBadge>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active Tasks -->
-    <div>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Active Tasks</h2>
-        <NuxtLink :to="`/teams/${teamId}/projects`" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">
-          View projects
-        </NuxtLink>
-      </div>
-      <UiCard>
-        <UiCardContent class="pt-4">
-          <div v-if="activeTasks.length === 0" class="text-sm text-slate-400 text-center py-4">No active tasks.</div>
-          <div
-            v-for="(task, i) in activeTasks"
-            :key="task.id ?? i"
-            class="flex items-center justify-between py-2.5 border-b border-slate-100 dark:border-slate-700/20 last:border-b-0"
-          >
-            <div class="flex items-center gap-3 min-w-0">
-              <div :class="['h-2 w-2 rounded-full shrink-0', statusColor(task.status)]" />
-              <span class="text-sm text-slate-700 dark:text-slate-300 truncate">{{ task.title }}</span>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <UiBadge :variant="priorityVariant(task.priority)" size="sm">{{ task.priority }}</UiBadge>
-              <UiAvatar v-if="task.assignee" :name="task.assignee.name" :src="task.assignee.avatar || ''" size="sm" />
-            </div>
-          </div>
-        </UiCardContent>
-      </UiCard>
-    </div>
   </div>
 </template>
 

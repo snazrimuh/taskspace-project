@@ -95,7 +95,7 @@
           :class="[
             'w-full flex items-center gap-2.5 rounded-xl pl-5 pr-3 py-2 text-[13px] transition-all',
             isActive(item.key)
-              ? 'bg-slate-100 dark:bg-slate-800/70 text-slate-900 dark:text-white font-medium'
+              ? 'bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-200 font-medium'
               : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
           ]"
         >
@@ -125,7 +125,7 @@
             :class="[
               'w-full text-left rounded-xl px-3 py-2 text-[13px] transition-all flex items-center gap-2.5',
               currentTeamId === normalizeTeamId(team.id)
-                ? 'bg-slate-100 dark:bg-slate-800/70 text-slate-900 dark:text-white font-medium'
+                ? 'bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-200 font-medium'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
             ]"
             @click="selectTeam(team.id)"

@@ -9,38 +9,18 @@
         Pantau beban kerja tim, health project, dan prioritas harian dari satu tempat.
       </p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-        <div class="rounded-2xl px-4 py-3 bg-white/60 dark:bg-white/[0.07] border border-white/70 dark:border-white/[0.09]">
-          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Managed Teams</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ managedTeams }}</p>
-        </div>
-        <div class="rounded-2xl px-4 py-3 bg-white/60 dark:bg-white/[0.07] border border-white/70 dark:border-white/[0.09]">
-          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Projects</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ totalProjects }}</p>
-        </div>
-        <div class="rounded-2xl px-4 py-3 bg-white/60 dark:bg-white/[0.07] border border-white/70 dark:border-white/[0.09]">
-          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Avg Tasks / Team</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ avgTasksPerTeam }}</p>
+      <div class="rounded-2xl mt-5 backdrop-blur-md bg-white/40 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.1] overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-x divide-white/40 dark:divide-white/[0.08]">
+          <div
+            v-for="(stat, idx) in stats"
+            :key="`header-${stat.label}`"
+            class="px-6 py-5"
+          >
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ stat.label }}</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">{{ stat.value }}</p>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <UiCard v-for="stat in stats" :key="stat.label" class="overflow-hidden">
-        <UiCardContent class="pt-5">
-          <div class="flex items-center justify-between">
-            <div>
-              <p :class="['text-[11px] font-semibold uppercase tracking-wider', stat.labelColor]">{{ stat.label }}</p>
-              <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ stat.value }}</p>
-            </div>
-            <div :class="['h-11 w-11 rounded-xl flex items-center justify-center', stat.iconBg]">
-              <component :is="stat.icon" :class="['h-5 w-5', stat.iconColor]" />
-            </div>
-          </div>
-          <div :class="['h-0.5 rounded-full mt-4', stat.barColor]"></div>
-        </UiCardContent>
-      </UiCard>
     </div>
 
     <!-- Workload Chart + Focus Today -->
@@ -258,9 +238,9 @@ const workloadTeams = computed(() =>
 )
 
 const stats = computed(() => [
-  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-sky-500 dark:text-sky-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-sky-400/60 dark:bg-sky-500/50' },
-  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-amber-500 dark:text-amber-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-amber-400/60 dark:bg-amber-500/50' },
-  { label: 'Announcements', value: String(teams.value.reduce((a, t) => a + (t._count?.announcements ?? 0), 0)), icon: Megaphone, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-emerald-500 dark:text-emerald-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-emerald-400/60 dark:bg-emerald-500/50' },
+  { label: 'My Team', value: String(teams.value.length), icon: Users, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-sky-500 dark:text-sky-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-sky-400/60 dark:bg-sky-500/50' },
+  { label: 'My Project', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-emerald-500 dark:text-emerald-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-emerald-400/60 dark:bg-emerald-500/50' },
+  { label: 'Active Task', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-amber-500 dark:text-amber-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-amber-400/60 dark:bg-amber-500/50' },
   { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-violet-500 dark:text-violet-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-violet-400/60 dark:bg-violet-500/50' },
 ])
 
