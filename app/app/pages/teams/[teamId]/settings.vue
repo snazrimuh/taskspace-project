@@ -1,8 +1,26 @@
 <template>
   <div class="space-y-6">
-    <div>
-      <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Team Settings</h2>
-      <p class="text-sm text-slate-500 mt-1">Manage your team configuration.</p>
+    <div class="rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+      <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Settings</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage struktur tim, akses anggota, dan konfigurasi penting workspace.</p>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Members</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ memberCount }}</p>
+        </div>
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Managers</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ managerCount }}</p>
+        </div>
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Role</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ isManager ? 'Manager' : 'Member' }}</p>
+        </div>
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Active Tab</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ activeTabLabel }}</p>
+        </div>
+      </div>
     </div>
 
     <!-- Tabs -->
@@ -49,26 +67,26 @@
       </UiCard>
 
       <!-- Danger Zone -->
-      <UiCard class="border-red-200">
+      <UiCard class="border-red-200 dark:border-red-500/30">
         <UiCardHeader>
           <UiCardTitle class="text-red-600">Danger Zone</UiCardTitle>
         </UiCardHeader>
         <UiCardContent class="space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between rounded-xl p-3 border border-slate-200/70 dark:border-slate-700/40">
             <div>
               <p class="text-sm font-medium text-slate-900 dark:text-slate-200">Transfer Ownership</p>
               <p class="text-sm text-slate-500">Transfer team ownership to another manager.</p>
             </div>
             <UiButton variant="outline" size="sm">Transfer</UiButton>
           </div>
-          <div class="border-t dark:border-slate-700/30 pt-4 flex items-center justify-between">
+          <div class="rounded-xl p-3 border border-slate-200/70 dark:border-slate-700/40 flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-slate-900 dark:text-slate-200">Leave Team</p>
               <p class="text-sm text-slate-500">You will lose access to this team's workspace.</p>
             </div>
             <UiButton variant="outline" size="sm" @click="handleLeave">Leave</UiButton>
           </div>
-          <div class="border-t dark:border-slate-700/30 pt-4 flex items-center justify-between">
+          <div class="rounded-xl p-3 border border-red-200 dark:border-red-500/30 flex items-center justify-between bg-red-50/50 dark:bg-red-500/5">
             <div>
               <p class="text-sm font-medium text-red-600">Delete Team</p>
               <p class="text-sm text-slate-500">Permanently delete this team and all its data.</p>
@@ -96,7 +114,7 @@
             class="flex items-center justify-between py-3 first:pt-0 last:pb-0"
           >
             <div class="flex items-center gap-3">
-              <UiAvatar :name="member.user.name" />
+              <UiAvatar :name="member.user.name" :src="member.user.avatar || ''" />
               <div>
                 <div class="text-sm font-medium text-slate-900 dark:text-slate-200">{{ member.user.name }}</div>
                 <div class="text-xs text-slate-500">{{ member.user.email }}</div>
@@ -136,6 +154,8 @@ const isDangerous = ref(false)
 // ── Members ────────────────────────────────────────────────────────────
 const membersList = computed(() => teamStore.currentTeamMembers)
 const memberCount = computed(() => membersList.value.length)
+const managerCount = computed(() => membersList.value.filter((m) => m.role === 'MANAGER').length)
+const activeTabLabel = computed(() => (activeTab.value === 'general' ? 'General' : 'Members'))
 
 // ── Init ───────────────────────────────────────────────────────────────
 const initForm = () => {

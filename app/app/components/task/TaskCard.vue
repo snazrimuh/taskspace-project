@@ -1,7 +1,7 @@
 <template>
   <div
     draggable="true"
-    class="rounded-xl border border-slate-200 dark:border-slate-700/30 p-3 bg-white dark:bg-slate-800/40 hover:shadow-sm dark:hover:border-slate-600/50 transition-all cursor-grab active:cursor-grabbing group"
+    class="rounded-xl border border-slate-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-800 hover:shadow-sm dark:hover:border-slate-500 transition-all cursor-grab active:cursor-grabbing group"
     :class="{ 'opacity-40 scale-95': isDragging }"
     @click="$emit('click')"
     @dragstart="onDragStart"

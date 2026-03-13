@@ -1,6 +1,24 @@
 <template>
   <div class="space-y-3 h-[calc(100vh-120px)] flex flex-col">
-    <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Team Chat</h2>
+    <div class="rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-4 md:p-5 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+      <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Chat</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Percakapan realtime untuk koordinasi cepat dan pengambilan keputusan harian.</p>
+      <div class="grid grid-cols-3 gap-2 mt-3">
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Messages</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ chatStore.messages.length }}</p>
+        </div>
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Members Online*</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ teamStore.currentTeamMembers.length }}</p>
+        </div>
+        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Typing</p>
+          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ typingUsers.length }}</p>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 mt-2">*Based on current team member list.</p>
+    </div>
 
     <UiCard class="flex-1 flex flex-col overflow-hidden">
       <!-- Loading -->
@@ -35,6 +53,7 @@
             <UiAvatar
               v-if="!isMe(msg)"
               :name="msg.sender.name"
+              :src="msg.sender.avatar || ''"
               size="sm"
               class="shrink-0 mt-1"
             />
@@ -47,7 +66,7 @@
                   'rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
                   isMe(msg)
                     ? 'bg-primary-600 dark:bg-primary-600 text-white rounded-br-sm'
-                    : 'bg-slate-100 dark:bg-slate-800/60 text-slate-800 dark:text-slate-200 rounded-bl-sm border border-transparent dark:border-slate-700/30',
+                    : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-sm border border-transparent dark:border-slate-600',
                 ]"
               >
                 {{ msg.message }}
@@ -60,14 +79,14 @@
         </div>
 
         <!-- Typing indicator -->
-        <div v-if="typingNames.length" class="flex justify-start">
+        <div v-if="typingUsers.length" class="flex justify-start">
           <div class="flex gap-2">
-            <UiAvatar :name="typingNames[0]" size="sm" class="shrink-0 mt-1" />
+            <UiAvatar :name="typingUsers[0].name" :src="typingUsers[0].avatar" size="sm" class="shrink-0 mt-1" />
             <div>
               <div class="text-xs text-slate-500 dark:text-slate-500 mb-1 ml-1">
-                {{ typingNames.join(', ') }}
+                {{ typingUsers.map((u) => u.name).join(', ') }}
               </div>
-              <div class="bg-slate-100 dark:bg-slate-800/60 rounded-2xl rounded-bl-sm px-4 py-2 border border-transparent dark:border-slate-700/30">
+              <div class="bg-slate-200 dark:bg-slate-700 rounded-2xl rounded-bl-sm px-4 py-2 border border-transparent dark:border-slate-600">
                 <div class="flex items-center gap-1">
                   <span class="h-1.5 w-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style="animation-delay: 0ms" />
                   <span class="h-1.5 w-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style="animation-delay: 150ms" />
@@ -121,12 +140,15 @@ const formatTime = (dateStr: string) => {
 }
 
 /** Resolve typing user IDs to names */
-const typingNames = computed(() => {
+const typingUsers = computed(() => {
   return chatStore.typingUsers
     .filter((id) => id !== authStore.user?.id)
     .map((id) => {
       const member = teamStore.currentTeamMembers.find((m) => m.userId === id)
-      return member?.user.name ?? 'Someone'
+      return {
+        name: member?.user.name ?? 'Someone',
+        avatar: member?.user.avatar ?? '',
+      }
     })
 })
 

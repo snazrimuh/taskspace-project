@@ -1,5 +1,5 @@
 <template>
-  <header class="h-14 border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-surface-900/80 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-20">
+  <header class="h-14 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between px-6 sticky top-0 z-20">
     <!-- Left: Mobile menu + breadcrumb -->
     <div class="flex items-center gap-3">
       <button

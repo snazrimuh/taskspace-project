@@ -1,9 +1,10 @@
 <template>
   <div class="space-y-5">
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between rounded-3xl border border-slate-300 dark:border-slate-700 p-5 md:p-6 bg-slate-100 dark:bg-slate-900">
       <div>
-        <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Projects</h2>
-        <p class="text-sm text-slate-500 mt-1">Kelola project tim, PIC, dan progress task.</p>
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Projects</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola project tim, PIC, progress, dan risiko deadline dari satu tampilan.</p>
+        <p class="text-xs text-slate-500 mt-1.5">{{ inProgressCount }} ongoing · {{ dueSoonCount }} due soon · {{ atRiskCount }} at risk</p>
       </div>
       <UiButton v-if="isManager" @click="showCreate = true">
         <Plus class="h-4 w-4 mr-2" />
@@ -14,26 +15,82 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <UiCard>
         <UiCardContent class="pt-4">
-          <p class="text-sm text-slate-500">Total Projects</p>
-          <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ projects.length }}</p>
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <p class="text-sm text-slate-500">Total Projects</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ projects.length }}</p>
+            </div>
+            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+              <FolderKanban class="h-4 w-4" />
+            </div>
+          </div>
+          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
         </UiCardContent>
       </UiCard>
       <UiCard>
         <UiCardContent class="pt-4">
-          <p class="text-sm text-slate-500">In Progress</p>
-          <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ inProgressCount }}</p>
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <p class="text-sm text-slate-500">In Progress</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ inProgressCount }}</p>
+            </div>
+            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+              <Activity class="h-4 w-4" />
+            </div>
+          </div>
+          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
         </UiCardContent>
       </UiCard>
       <UiCard>
         <UiCardContent class="pt-4">
-          <p class="text-sm text-slate-500">Completed</p>
-          <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ completedCount }}</p>
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <p class="text-sm text-slate-500">Completed</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ completedCount }}</p>
+            </div>
+            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+              <CheckCircle2 class="h-4 w-4" />
+            </div>
+          </div>
+          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
         </UiCardContent>
       </UiCard>
       <UiCard>
         <UiCardContent class="pt-4">
-          <p class="text-sm text-slate-500">Average Progress</p>
-          <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ avgProgress }}%</p>
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <p class="text-sm text-slate-500">Average Progress</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ avgProgress }}%</p>
+            </div>
+            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+              <Gauge class="h-4 w-4" />
+            </div>
+          </div>
+          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
+        </UiCardContent>
+      </UiCard>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <UiCard class="border-amber-200/60 dark:border-amber-500/20">
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300">Due Soon</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ dueSoonCount }}</p>
+          <p class="text-xs text-slate-500 mt-1">Projects with due date in next 7 days</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard class="border-rose-200/60 dark:border-rose-500/20">
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-rose-700 dark:text-rose-300">At Risk</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ atRiskCount }}</p>
+          <p class="text-xs text-slate-500 mt-1">Deadline near with progress under 50%</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard class="border-teal-200/60 dark:border-teal-500/20">
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-teal-700 dark:text-teal-300">Unassigned PIC</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ unassignedPicCount }}</p>
+          <p class="text-xs text-slate-500 mt-1">Projects that need ownership assignment</p>
         </UiCardContent>
       </UiCard>
     </div>
@@ -80,7 +137,7 @@
 
             <div class="flex items-center justify-between text-xs text-slate-500">
               <div class="flex items-center gap-2">
-                <UiAvatar :name="project.pic?.name || 'U'" size="sm" />
+                <UiAvatar :name="project.pic?.name || 'U'" :src="project.pic?.avatar || ''" size="sm" />
                 <span class="truncate max-w-[120px]">PIC: {{ project.pic?.name || 'Unassigned' }}</span>
               </div>
               <span>{{ project._count?.tasks ?? 0 }} tasks</span>
@@ -132,7 +189,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus } from 'lucide-vue-next'
+import { Plus, FolderKanban, Activity, CheckCircle2, Gauge } from 'lucide-vue-next'
 
 interface TeamMember {
   userId: string
@@ -145,6 +202,7 @@ interface Project {
   description?: string
   status: string
   progress: number | string
+  dueDate?: string
   pic?: { id: string; name: string; avatar?: string }
   _count?: { tasks: number }
 }
@@ -265,6 +323,31 @@ const inProgressCount = computed(() =>
 )
 
 const completedCount = computed(() => projects.value.filter((p) => p.status === 'COMPLETED').length)
+
+const dueSoonCount = computed(() => {
+  const now = new Date()
+  const limit = new Date(now)
+  limit.setDate(now.getDate() + 7)
+  return projects.value.filter((p) => {
+    if (!p.dueDate || p.status === 'COMPLETED') return false
+    const due = new Date(p.dueDate)
+    return due >= now && due <= limit
+  }).length
+})
+
+const atRiskCount = computed(() => {
+  const now = new Date()
+  const limit = new Date(now)
+  limit.setDate(now.getDate() + 7)
+  return projects.value.filter((p) => {
+    if (!p.dueDate || p.status === 'COMPLETED') return false
+    const progress = Number(p.progress || 0)
+    const due = new Date(p.dueDate)
+    return due >= now && due <= limit && progress < 50
+  }).length
+})
+
+const unassignedPicCount = computed(() => projects.value.filter((p) => !p.pic?.id).length)
 
 const avgProgress = computed(() => {
   if (!projects.value.length) return 0

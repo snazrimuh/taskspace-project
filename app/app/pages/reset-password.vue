@@ -32,7 +32,7 @@
 
         <!-- Reset form -->
         <form v-else class="space-y-4" @submit.prevent="handleReset">
-          <div v-if="error" class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          <div v-if="error" class="rounded-md bg-red-100 border border-red-300 px-4 py-3 text-sm text-red-700">
             {{ error }}
           </div>
           <div>

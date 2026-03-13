@@ -17,7 +17,7 @@
     <div class="px-3 pt-3 pb-2 relative" data-team-dropdown>
       <button
         v-if="selectedTeam"
-        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all group relative"
+        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all group relative"
         @click="showTeamDropdown = !showTeamDropdown"
       >
         <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center text-[11px] font-bold text-slate-600 dark:text-slate-300 shrink-0">
@@ -32,7 +32,7 @@
       <NuxtLink
         v-else
         to="/dashboard"
-        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all"
+        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
       >
         <img src="/logo.png" alt="TaskSpace" class="h-8 w-8 shrink-0" />
         <div class="text-sm leading-tight">
@@ -51,7 +51,7 @@
       >
         <div
           v-if="showTeamDropdown"
-          class="absolute top-full left-3 right-3 mt-1 z-50 origin-top bg-white dark:bg-surface-850 border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-xl overflow-hidden"
+          class="absolute top-full left-3 right-3 mt-1 z-50 origin-top bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl shadow-xl overflow-hidden"
         >
           <div class="p-1.5">
             <button
@@ -60,8 +60,8 @@
               :class="[
                 'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all',
                 currentTeamId === normalizeTeamId(team.id)
-                  ? 'bg-slate-100 dark:bg-slate-800/70 text-slate-900 dark:text-white font-medium'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40',
+                  ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-medium'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700',
               ]"
               @click="selectTeam(team.id)"
             >
@@ -146,7 +146,7 @@
           to="/profile"
           class="flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all group"
         >
-          <UiAvatar :name="currentUser.name" size="sm" />
+          <UiAvatar :name="currentUser.name" :src="currentUser.avatar" size="sm" />
           <div class="flex-1 min-w-0">
             <div class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ currentUser.name }}</div>
             <div class="text-[11px] text-slate-400 dark:text-slate-500 truncate">{{ currentUser.email }}</div>
@@ -196,7 +196,7 @@ const authStore = useAuthStore()
 const teamStore = useTeamStore()
 
 const teams = computed(() => teamStore.teams)
-const currentUser = computed(() => authStore.user ?? { name: '', email: '' })
+const currentUser = computed(() => authStore.user ?? { name: '', email: '', avatar: '' })
 const normalizeTeamId = (value: string) => value.split('/').filter(Boolean).pop() ?? value
 
 const showTeamDropdown = ref(false)

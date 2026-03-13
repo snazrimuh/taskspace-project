@@ -18,7 +18,7 @@
               placeholder="you@company.com"
             />
           </div>
-          <div v-if="error" class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          <div v-if="error" class="rounded-md bg-red-100 border border-red-300 px-4 py-3 text-sm text-red-700">
             {{ error }}
           </div>
           <UiButton class="w-full" size="lg" :loading="authStore.isLoading">
@@ -39,7 +39,7 @@
         </div>
 
         <div class="mt-6 text-center text-sm text-slate-500">
-          <NuxtLink to="/login" class="text-primary-600 hover:text-primary-700 font-medium">
+          <NuxtLink to="/login" class="text-slate-600 hover:text-slate-700 font-medium">
             Back to Sign in
           </NuxtLink>
         </div>

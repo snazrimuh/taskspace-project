@@ -9,7 +9,12 @@
       <!-- Profile Card -->
       <UiCard class="lg:col-span-1">
         <UiCardContent class="pt-6 text-center">
-          <UiAvatar :name="profile?.name || authStore.user?.name || 'U'" size="lg" class="mx-auto" />
+          <UiAvatar
+            :name="profile?.name || authStore.user?.name || 'U'"
+            :src="profile?.avatar || authStore.user?.avatar || ''"
+            size="lg"
+            class="mx-auto"
+          />
           <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mt-3">{{ profile?.name || authStore.user?.name }}</h3>
           <p class="text-sm text-slate-500">{{ profile?.email || authStore.user?.email }}</p>
           <p class="text-sm text-slate-500 mt-2">{{ profile?.bio }}</p>
@@ -26,6 +31,29 @@
         </UiCardHeader>
         <UiCardContent>
           <form class="space-y-4" @submit.prevent="handleUpdate">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Avatar Style</label>
+              <div class="mb-3">
+                <div class="grid grid-cols-4 gap-2">
+                  <button
+                    v-for="style in avatarStyles"
+                    :key="style"
+                    type="button"
+                    class="flex flex-col items-center gap-1 p-2 rounded-lg border transition-all hover:shadow-sm"
+                    :class="form.avatarStyle === style ? 'border-slate-400 bg-slate-200 dark:bg-slate-700' : 'border-slate-300 dark:border-slate-600 hover:border-slate-400'"
+                    @click="form.avatarStyle = style; updateAvatarPreview()"
+                  >
+                    <img :src="getAvatarUrl(profile?.name || 'User', style)" :alt="style" class="h-8 w-8 rounded-full" />
+                    <span class="text-xs text-slate-600 dark:text-slate-400 capitalize">{{ style }}</span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <UiInput v-model="form.avatarUrl" placeholder="Or paste custom avatar URL" type="url" />
+                <UiButton type="button" variant="outline" @click="form.avatarUrl = ''">Clear</UiButton>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Choose a style or paste a custom image URL. Avatar is auto-generated from your name.</p>
+            </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
               <UiInput v-model="form.name" />
@@ -95,10 +123,26 @@ const api = useApi()
 const profile = ref<any>(null)
 const isLoadingProfile = ref(false)
 
-const form = reactive({ name: '', bio: '' })
+const form = reactive({ name: '', bio: '', avatar: '', avatarStyle: 'avataaars', avatarUrl: '' })
 const isSaving = ref(false)
 const saveSuccess = ref(false)
 const saveError = ref('')
+const avatarStyles = [
+  'avataaars', 'bottts', 'personas', 'lorelei', 'pixel-art', 'thumbs',
+  'adventurer', 'bigears', 'croodles', 'fun-emoji', 'identicon', 'jdenticon',
+  'micah', 'miniavs', 'notionists', 'pixelartxy', 'rings', 'shapes'
+]
+
+const getAvatarUrl = (name: string, style: string) => {
+  const seed = name.replace(/\s+/g, '').toLowerCase()
+  return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}&scale=80`
+}
+
+const updateAvatarPreview = () => {
+  if (!form.avatarUrl) {
+    form.avatar = getAvatarUrl(profile.value?.name || 'User', form.avatarStyle)
+  }
+}
 
 // ── Password state ─────────────────────────────────────────────────────
 const pwForm = reactive({ currentPassword: '', newPassword: '', confirmPassword: '' })
@@ -114,6 +158,15 @@ const fetchProfile = async () => {
     profile.value = res.data
     form.name = res.data.name ?? ''
     form.bio = res.data.bio ?? ''
+    form.avatar = res.data.avatar ?? ''
+    // Parse avatar URL to detect style if DiceBear URL
+    if (form.avatar?.includes('api.dicebear.com')) {
+      const match = form.avatar.match(/\/(avataaars|bottts|personas|lorelei|pixel-art|thumbs|adventurer|bigears|croodles|fun-emoji|identicon|jdenticon|micah|miniavs|notionists|pixelartxy|rings|shapes)\//)
+      if (match) form.avatarStyle = match[1]
+    } else if (form.avatar && !form.avatar.startsWith('http')) {
+      form.avatarUrl = form.avatar
+      form.avatar = ''
+    }
   } finally {
     isLoadingProfile.value = false
   }
@@ -132,15 +185,18 @@ const handleUpdate = async () => {
   saveSuccess.value = false
   isSaving.value = true
   try {
+    const finalAvatar = form.avatarUrl?.trim() || getAvatarUrl(form.name.trim(), form.avatarStyle)
     const res = await api.patch<{ success: boolean; data: any }>('/users/me', {
       name: form.name.trim(),
       bio: form.bio.trim() || undefined,
+      avatar: finalAvatar || undefined,
     })
     profile.value = { ...profile.value, ...res.data }
-    // Sync auth store
-    if (authStore.user) {
-      authStore.user.name = res.data.name
-    }
+    authStore.updateProfile({
+      name: res.data.name,
+      bio: res.data.bio,
+      avatar: res.data.avatar,
+    })
     saveSuccess.value = true
     setTimeout(() => { saveSuccess.value = false }, 3000)
   } catch (err: any) {

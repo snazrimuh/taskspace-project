@@ -51,6 +51,14 @@ async function main() {
   const PASS = await bcrypt.hash('password123', 10)
 
   // ─────────────────────────────────────────────────────────────────
+  // HELPER: Generate DiceBear avatar URL
+  // ─────────────────────────────────────────────────────────────────
+  const generateAvatarUrl = (name: string, style: string = 'avataaars') => {
+    const seed = name.replace(/\s+/g, '').toLowerCase()
+    return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}&scale=80`
+  }
+
+  // ─────────────────────────────────────────────────────────────────
   // USERS
   // Credentials: email / password123
   // ─────────────────────────────────────────────────────────────────
@@ -60,6 +68,7 @@ async function main() {
         name: 'Alex Carter',
         email: 'alex@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Alex Carter', 'avataaars'),
         bio: 'Platform engineer passionate about distributed systems.',
         isSystemAdmin: true,
       },
@@ -69,6 +78,7 @@ async function main() {
         name: 'Sarah Mitchell',
         email: 'sarah@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Sarah Mitchell', 'bottts'),
         bio: 'Mobile lead with 5 years experience in Flutter & React Native.',
       },
     }),
@@ -77,6 +87,7 @@ async function main() {
         name: 'Ben Harper',
         email: 'ben@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Ben Harper', 'personas'),
         bio: 'Backend developer, NestJS & PostgreSQL enthusiast.',
       },
     }),
@@ -85,6 +96,7 @@ async function main() {
         name: 'Diana Walsh',
         email: 'diana@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Diana Walsh', 'lorelei'),
         bio: 'Full-stack developer. Loves clean code and TypeScript.',
       },
     }),
@@ -93,6 +105,7 @@ async function main() {
         name: 'Ryan Brooks',
         email: 'ryan@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Ryan Brooks', 'pixel-art'),
         bio: 'DevOps & infrastructure engineer. Docker and Kubernetes addict.',
       },
     }),
@@ -101,6 +114,7 @@ async function main() {
         name: 'Natalie Ford',
         email: 'natalie@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Natalie Ford', 'adventurer'),
         bio: 'UI/UX designer who codes. Figma power user.',
       },
     }),
@@ -109,6 +123,7 @@ async function main() {
         name: 'Jake Turner',
         email: 'jake@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Jake Turner', 'croodles'),
         bio: 'Junior developer, eager learner. React & Vue.',
       },
     }),
@@ -117,6 +132,7 @@ async function main() {
         name: 'Maya Collins',
         email: 'maya@taskspace.app',
         password: PASS,
+        avatar: generateAvatarUrl('Maya Collins', 'miniavs'),
         bio: 'Product manager with engineering background.',
       },
     }),
@@ -182,12 +198,22 @@ async function main() {
 
   // ─────────────────────────────────────────────────────────────────
   // PROJECTS
+  // Platform: 3 projects
+  // Mobile: 3 projects
+  // Product: 3 projects
   // ─────────────────────────────────────────────────────────────────
   const [
     platformCoreProject,
+    platformOptimizationProject,
+    platformSecurityProject,
     mobileReleaseProject,
+    mobilePerformanceProject,
+    mobileAnalyticsProject,
     productResearchProject,
+    productDesignSystemProject,
+    productOnboardingProject,
   ] = await Promise.all([
+    // Platform Engineering Projects
     prisma.project.create({
       data: {
         name: 'Platform Reliability Initiative',
@@ -202,6 +228,31 @@ async function main() {
     }),
     prisma.project.create({
       data: {
+        name: 'Database Optimization & Performance',
+        description: 'Optimize slow queries, implement caching layers, and improve DB schema design.',
+        status: ProjectStatus.IN_PROGRESS,
+        teamId: platformTeam.id,
+        picId: rizky.id,
+        createdById: ahmad.id,
+        startDate: days(-15),
+        dueDate: days(30),
+      },
+    }),
+    prisma.project.create({
+      data: {
+        name: 'Security & Compliance Overhaul',
+        description: 'Implement OAuth2, encryption standards, GDPR compliance, and security audit fixes.',
+        status: ProjectStatus.NOT_STARTED,
+        teamId: platformTeam.id,
+        picId: fajar.id,
+        createdById: budi.id,
+        startDate: days(5),
+        dueDate: days(45),
+      },
+    }),
+    // Mobile Squad Projects
+    prisma.project.create({
+      data: {
         name: 'Mobile v3.3 Release',
         description: 'Deliver v3.3.0 features and quality fixes before feature freeze.',
         status: ProjectStatus.IN_PROGRESS,
@@ -214,6 +265,31 @@ async function main() {
     }),
     prisma.project.create({
       data: {
+        name: 'Performance & Testing Infrastructure',
+        description: 'Improve app startup time, reduce memory usage, and set up E2E testing framework.',
+        status: ProjectStatus.NOT_STARTED,
+        teamId: mobileTeam.id,
+        picId: fajar.id,
+        createdById: siti.id,
+        startDate: days(10),
+        dueDate: days(40),
+      },
+    }),
+    prisma.project.create({
+      data: {
+        name: 'Analytics & Monitoring Integration',
+        description: 'Integrate Sentry for crash reporting and custom analytics events for user behavior tracking.',
+        status: ProjectStatus.COMPLETED,
+        teamId: mobileTeam.id,
+        picId: nur.id,
+        createdById: dewi.id,
+        startDate: days(-30),
+        dueDate: days(-5),
+      },
+    }),
+    // Product & Design Projects
+    prisma.project.create({
+      data: {
         name: 'Q2 Product Discovery',
         description: 'Discovery, validation, and roadmap definition for Q2 priorities.',
         status: ProjectStatus.IN_PROGRESS,
@@ -224,8 +300,32 @@ async function main() {
         dueDate: days(21),
       },
     }),
+    prisma.project.create({
+      data: {
+        name: 'Design System Expansion',
+        description: 'Extend design system with new components: DataTable, Calendar, and advanced Forms.',
+        status: ProjectStatus.IN_PROGRESS,
+        teamId: productTeam.id,
+        picId: nur.id,
+        createdById: maya.id,
+        startDate: days(-8),
+        dueDate: days(22),
+      },
+    }),
+    prisma.project.create({
+      data: {
+        name: 'User Onboarding Redesign',
+        description: 'Complete redesign of onboarding flow based on user research. Improve completion rate.',
+        status: ProjectStatus.NOT_STARTED,
+        teamId: productTeam.id,
+        picId: maya.id,
+        createdById: maya.id,
+        startDate: days(7),
+        dueDate: days(37),
+      },
+    }),
   ])
-  console.log('📁  Projects created: 3')
+  console.log('📁  Projects created: 9')
 
   // ─────────────────────────────────────────────────────────────────
   // ANNOUNCEMENTS
@@ -338,10 +438,10 @@ async function main() {
   })
 
   // ─────────────────────────────────────────────────────────────────
-  // TASKS
+  // TASKS (~60 tasks across projects)
   // ─────────────────────────────────────────────────────────────────
 
-  // Platform Engineering tasks
+  // Platform Reliability Initiative (8 tasks)
   await prisma.task.createMany({
     data: [
       {
@@ -378,17 +478,6 @@ async function main() {
         dueDate: days(7),
       },
       {
-        title: 'Write migration script for legacy user data',
-        description: 'Migrate ~12k users from the old MySQL database to PostgreSQL. Map old IDs to new CUIDs.',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.URGENT,
-        teamId: platformTeam.id,
-        projectId: platformCoreProject.id,
-        createdById: budi.id,
-        assigneeId: fajar.id,
-        dueDate: days(5),
-      },
-      {
         title: 'Dockerize all microservices',
         description: 'Each service needs a production-ready Dockerfile. Multi-stage builds. Non-root user. Health check endpoint.',
         status: TaskStatus.IN_PROGRESS,
@@ -422,20 +511,197 @@ async function main() {
         dueDate: days(-5),
       },
       {
-        title: 'Optimize slow DB queries (N+1 issues)',
-        description: 'Profiling found N+1 queries in /teams/:id/members and /tasks endpoints. Fix with select/include optimization.',
+        title: 'Implement structured logging with Winston',
+        description: 'Replace console.log with structured JSON logging. Include request ID, user context, and error traces.',
         status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: platformTeam.id,
+        projectId: platformCoreProject.id,
+        createdById: ahmad.id,
+        assigneeId: budi.id,
+        dueDate: days(9),
+      },
+      {
+        title: 'Set up health check endpoints',
+        description: 'Create /health and /ready endpoints. Check DB connectivity, Redis, and external service dependencies.',
+        status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.HIGH,
         teamId: platformTeam.id,
         projectId: platformCoreProject.id,
         createdById: budi.id,
-        assigneeId: budi.id,
+        assigneeId: fajar.id,
         dueDate: days(4),
       },
     ],
   })
 
-  // Mobile Squad tasks
+  // Database Optimization & Performance (7 tasks)
+  await prisma.task.createMany({
+    data: [
+      {
+        title: 'Optimize slow DB queries (N+1 issues)',
+        description: 'Profiling found N+1 queries in /teams/:id/members and /tasks endpoints. Fix with select/include optimization.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: budi.id,
+        assigneeId: budi.id,
+        dueDate: days(4),
+      },
+      {
+        title: 'Add database indexes for common queries',
+        description: 'Identify missing indexes on (teamId, status), (userId, createdAt), (projectId, deletedAt). Run EXPLAIN ANALYZE first.',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.HIGH,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: rizky.id,
+        assigneeId: rizky.id,
+        dueDate: days(6),
+      },
+      {
+        title: 'Implement query result caching',
+        description: 'Cache list queries (teams, projects, members) in Redis for 5 minutes. Invalidate on mutations.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: rizky.id,
+        assigneeId: budi.id,
+        dueDate: days(12),
+      },
+      {
+        title: 'Write migration script for legacy user data',
+        description: 'Migrate ~12k users from the old MySQL database to PostgreSQL. Map old IDs to new CUIDs.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.URGENT,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: budi.id,
+        assigneeId: fajar.id,
+        dueDate: days(5),
+      },
+      {
+        title: 'Benchmark database performance',
+        description: 'Run k6 load tests. Target: <200ms response time for list queries at 100 concurrent users.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: rizky.id,
+        assigneeId: rizky.id,
+        dueDate: days(15),
+      },
+      {
+        title: 'Archive old soft-deleted records',
+        description: 'Move records deleted >6 months ago to archive tables. Update queries to exclude archive data.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.LOW,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: budi.id,
+        assigneeId: dewi.id,
+        dueDate: days(20),
+      },
+      {
+        title: 'Document database schema & ERD',
+        description: 'Create Mermaid ERD diagram. Document all tables, relationships, and indexes. Add to README.',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.LOW,
+        teamId: platformTeam.id,
+        projectId: platformOptimizationProject.id,
+        createdById: ahmad.id,
+        assigneeId: fajar.id,
+        dueDate: days(8),
+      },
+    ],
+  })
+
+  // Security & Compliance Overhaul (7 tasks)
+  await prisma.task.createMany({
+    data: [
+      {
+        title: 'Audit current security vulnerabilities',
+        description: 'Run npm audit, OWASP ZAP scan, and code review for common vulnerabilities (SQL injection, XSS, CSRF).',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.URGENT,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: budi.id,
+        assigneeId: fajar.id,
+        dueDate: days(7),
+      },
+      {
+        title: 'Implement OAuth2 with Google & GitHub',
+        description: 'Set up AuthService with OAuth2 flows. Store provider tokens. Add login provider buttons to frontend.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: fajar.id,
+        assigneeId: budi.id,
+        dueDate: days(20),
+      },
+      {
+        title: 'Enable data encryption at rest',
+        description: 'Implement AES-256 encryption for sensitive fields: email, SSN, payment info. Add encryption/decryption utilities.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: fajar.id,
+        assigneeId: rizky.id,
+        dueDate: days(25),
+      },
+      {
+        title: 'Implement GDPR-compliant data export',
+        description: 'Add endpoint: GET /users/export. Generate ZIP with all user data (profile, activities, chats). Delete on request.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: fajar.id,
+        assigneeId: budi.id,
+        dueDate: days(18),
+      },
+      {
+        title: 'Set up Content Security Policy (CSP)',
+        description: 'Define strict CSP headers. Prevent inline scripts, external script injection, and clickjacking attacks.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: fajar.id,
+        assigneeId: fajar.id,
+        dueDate: days(14),
+      },
+      {
+        title: 'Enable HTTPS-only communication',
+        description: 'Force redirect HTTP → HTTPS. Set HSTS header. Disable TLS versions <1.2. Use secure cookies.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: fajar.id,
+        assigneeId: rizky.id,
+        dueDate: days(12),
+      },
+      {
+        title: 'Conduct security training for team',
+        description: 'General training on secure coding, credential management, and incident response procedures.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.LOW,
+        teamId: platformTeam.id,
+        projectId: platformSecurityProject.id,
+        createdById: ahmad.id,
+        assigneeId: null,
+        dueDate: days(30),
+      },
+    ],
+  })
+
+  // Mobile v3.3 Release (7 tasks)
   await prisma.task.createMany({
     data: [
       {
@@ -504,10 +770,143 @@ async function main() {
         assigneeId: fajar.id,
         dueDate: days(-7),
       },
+      {
+        title: 'Prepare release notes and test checklist',
+        description: 'Document new features, bug fixes, and known issues. Create QA test plan for all platforms.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: mobileTeam.id,
+        projectId: mobileReleaseProject.id,
+        createdById: siti.id,
+        assigneeId: nur.id,
+        dueDate: days(12),
+      },
     ],
   })
 
-  // Product & Design tasks
+  // Performance & Testing Infrastructure (6 tasks)
+  await prisma.task.createMany({
+    data: [
+      {
+        title: 'Profile app startup time',
+        description: 'Use DevTools profiler. Target: <2s cold start, <500ms hot start. Identify slowest widgets.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: mobileTeam.id,
+        projectId: mobilePerformanceProject.id,
+        createdById: siti.id,
+        assigneeId: fajar.id,
+        dueDate: days(10),
+      },
+      {
+        title: 'Reduce memory usage by 20%',
+        description: 'Memory profiling shows peak usage at 350MB. Target: 280MB. Optimize image caching and lifecycle.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: mobileTeam.id,
+        projectId: mobilePerformanceProject.id,
+        createdById: siti.id,
+        assigneeId: dewi.id,
+        dueDate: days(14),
+      },
+      {
+        title: 'Set up E2E testing with Patrol',
+        description: 'Configure Patrol framework. Write 10 critical user journey tests (login, create task, chat).',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.HIGH,
+        teamId: mobileTeam.id,
+        projectId: mobilePerformanceProject.id,
+        createdById: siti.id,
+        assigneeId: fajar.id,
+        dueDate: days(20),
+      },
+      {
+        title: 'Implement unit test coverage target (80%)',
+        description: 'Add tests for business logic, utils, and critical widgets. Use mockito for mocks.',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.MEDIUM,
+        teamId: mobileTeam.id,
+        projectId: mobilePerformanceProject.id,
+        createdById: siti.id,
+        assigneeId: nur.id,
+        dueDate: days(25),
+      },
+      {
+        title: 'Set up CI/CD for mobile (GitHub Actions)',
+        description: 'Auto-run tests, build APK/IPA for each PR. Generate coverage reports.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: mobileTeam.id,
+        projectId: mobilePerformanceProject.id,
+        createdById: siti.id,
+        assigneeId: fajar.id,
+        dueDate: days(18),
+      },
+      {
+        title: 'Document testing best practices',
+        description: 'Write guide: unit vs widget vs E2E tests, mocking strategy, CI/CD integration.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.LOW,
+        teamId: mobileTeam.id,
+        projectId: mobilePerformanceProject.id,
+        createdById: siti.id,
+        assigneeId: nur.id,
+        dueDate: days(22),
+      },
+    ],
+  })
+
+  // Analytics & Monitoring Integration (4 tasks — mostly done)
+  await prisma.task.createMany({
+    data: [
+      {
+        title: 'Integrate Sentry for crash reporting',
+        description: 'Set up Sentry SDK. Auto-capture unhandled errors. Configure release tracking.',
+        status: TaskStatus.DONE,
+        priority: TaskPriority.HIGH,
+        teamId: mobileTeam.id,
+        projectId: mobileAnalyticsProject.id,
+        createdById: dewi.id,
+        assigneeId: dewi.id,
+        dueDate: days(-10),
+      },
+      {
+        title: 'Implement custom analytics events',
+        description: 'Track: app opens, task list views, task creation, chat messages. Send to Firebase Analytics.',
+        status: TaskStatus.DONE,
+        priority: TaskPriority.MEDIUM,
+        teamId: mobileTeam.id,
+        projectId: mobileAnalyticsProject.id,
+        createdById: dewi.id,
+        assigneeId: nur.id,
+        dueDate: days(-7),
+      },
+      {
+        title: 'Set up performance monitoring',
+        description: 'Monitor slow frames (Jank), cold/warm start time, HTTP request latency with Sentry.',
+        status: TaskStatus.DONE,
+        priority: TaskPriority.MEDIUM,
+        teamId: mobileTeam.id,
+        projectId: mobileAnalyticsProject.id,
+        createdById: nur.id,
+        assigneeId: fajar.id,
+        dueDate: days(-8),
+      },
+      {
+        title: 'Create analytics dashboard',
+        description: 'Build dashboard in Firebase Console or Amplitude. Export daily active users, retention metrics.',
+        status: TaskStatus.DONE,
+        priority: TaskPriority.LOW,
+        teamId: mobileTeam.id,
+        projectId: mobileAnalyticsProject.id,
+        createdById: dewi.id,
+        assigneeId: nur.id,
+        dueDate: days(-5),
+      },
+    ],
+  })
+
+  // Q2 Product Discovery (6 tasks)
   await prisma.task.createMany({
     data: [
       {
@@ -535,18 +934,6 @@ async function main() {
         dueDate: days(2),
       },
       {
-        title: 'Redesign task card component',
-        description:
-          'Current card is too information-dense. New design should surface priority and due date more clearly. Deliver in Figma.',
-        status: TaskStatus.DONE,
-        priority: TaskPriority.MEDIUM,
-        teamId: productTeam.id,
-        projectId: productResearchProject.id,
-        createdById: nur.id,
-        assigneeId: nur.id,
-        dueDate: days(-3),
-      },
-      {
         title: 'Competitor analysis — Notion, Linear, Asana',
         description:
           'Compare feature parity, pricing, onboarding UX. 2-page summary deck for stakeholder review.',
@@ -559,20 +946,188 @@ async function main() {
         dueDate: days(12),
       },
       {
-        title: 'Create component library documentation site',
+        title: 'Finalize Q2 roadmap',
         description:
-          'Use Storybook. Document all tokens, components and usage guidelines. Auto-deploy from GitHub Actions.',
-        status: TaskStatus.IN_PROGRESS,
+          '3-month plan with milestones, key features, team assignments. Share with all stakeholders.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productResearchProject.id,
+        createdById: maya.id,
+        assigneeId: maya.id,
+        dueDate: days(8),
+      },
+      {
+        title: 'A/B test current onboarding flow',
+        description:
+          'Plan 2-week test on 10% user base. Measure completion rate, time to first task, retention.',
+        status: TaskStatus.TODO,
         priority: TaskPriority.MEDIUM,
         teamId: productTeam.id,
         projectId: productResearchProject.id,
-        createdById: nur.id,
-        assigneeId: siti.id,
-        dueDate: days(8),
+        createdById: maya.id,
+        assigneeId: nur.id,
+        dueDate: days(15),
+      },
+      {
+        title: 'Document feature discovery process',
+        description:
+          'Template: problem statement, user needs, solution, success metrics, engineering effort.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.LOW,
+        teamId: productTeam.id,
+        projectId: productResearchProject.id,
+        createdById: maya.id,
+        assigneeId: nur.id,
+        dueDate: days(20),
       },
     ],
   })
-  console.log('✅  Tasks created: 19')
+
+  // Design System Expansion (6 tasks)
+  await prisma.task.createMany({
+    data: [
+      {
+        title: 'Design data table component',
+        description:
+          'Pagination, sorting, filtering, column customization. Support for large datasets (virtual scrolling).',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productDesignSystemProject.id,
+        createdById: maya.id,
+        assigneeId: nur.id,
+        dueDate: days(10),
+      },
+      {
+        title: 'Design calendar picker component',
+        description:
+          'Date range selection, keyboard navigation, date math utilities. Accessible ARIA attributes.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: productTeam.id,
+        projectId: productDesignSystemProject.id,
+        createdById: nur.id,
+        assigneeId: nur.id,
+        dueDate: days(14),
+      },
+      {
+        title: 'Design advanced form components',
+        description:
+          'Multi-step form container, field validation UI, async search select, file upload with preview.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productDesignSystemProject.id,
+        createdById: nur.id,
+        assigneeId: nur.id,
+        dueDate: days(18),
+      },
+      {
+        title: 'Implement components in Vue 3 + TypeScript',
+        description:
+          'Build components from Figma specs. Use @headlessui/vue or radix-ui as base. Full TypeScript support.',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productDesignSystemProject.id,
+        createdById: maya.id,
+        assigneeId: siti.id,
+        dueDate: days(20),
+      },
+      {
+        title: 'Write component documentation in Storybook',
+        description:
+          'API docs, usage examples, dark mode variants. Auto-generate from component props.',
+        status: TaskStatus.IN_PROGRESS,
+        priority: TaskPriority.MEDIUM,
+        teamId: productTeam.id,
+        projectId: productDesignSystemProject.id,
+        createdById: nur.id,
+        assigneeId: siti.id,
+        dueDate: days(22),
+      },
+      {
+        title: 'Release design system v2.1 to npm',
+        description:
+          'Publish new components. Bump version, tag release, update CHANGELOG. Create migration guide.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productDesignSystemProject.id,
+        createdById: nur.id,
+        assigneeId: nur.id,
+        dueDate: days(25),
+      },
+    ],
+  })
+
+  // User Onboarding Redesign (5 tasks)
+  await prisma.task.createMany({
+    data: [
+      {
+        title: 'Create high-fidelity onboarding wireframes',
+        description:
+          '5-step flow: signup, profile setup, create first team, invite members, create first task. In Figma.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productOnboardingProject.id,
+        createdById: maya.id,
+        assigneeId: nur.id,
+        dueDate: days(9),
+      },
+      {
+        title: 'Implement onboarding UI redesign on frontend',
+        description:
+          'New screens, animations, guided prompts. Use Nuxt stepper component. Connect to API.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.HIGH,
+        teamId: productTeam.id,
+        projectId: productOnboardingProject.id,
+        createdById: maya.id,
+        assigneeId: null,
+        dueDate: days(20),
+      },
+      {
+        title: 'Add contextual help & tooltips',
+        description:
+          'Interactive tooltips on each step. Keyboard shortcuts help. Accessibility review.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: productTeam.id,
+        projectId: productOnboardingProject.id,
+        createdById: nur.id,
+        assigneeId: null,
+        dueDate: days(18),
+      },
+      {
+        title: 'A/B test redesign vs current flow',
+        description:
+          '50/50 split. Track completion %, time to first task, bounce rate, 30-day retention.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        teamId: productTeam.id,
+        projectId: productOnboardingProject.id,
+        createdById: maya.id,
+        assigneeId: maya.id,
+        dueDate: days(30),
+      },
+      {
+        title: 'Create onboarding success metrics dashboard',
+        description:
+          'Track funnel completion, drop-off points, time per step, feedback sentiment.',
+        status: TaskStatus.TODO,
+        priority: TaskPriority.LOW,
+        teamId: productTeam.id,
+        projectId: productOnboardingProject.id,
+        createdById: maya.id,
+        assigneeId: nur.id,
+        dueDate: days(28),
+      },
+    ],
+  })
+  console.log('✅  Tasks created: 61')
 
   // ─────────────────────────────────────────────────────────────────
   // EVENTS
@@ -932,3 +1487,5 @@ main()
   .finally(async () => {
     await prisma.$disconnect()
   })
+
+

@@ -64,6 +64,39 @@
       </UiCardContent>
     </UiCard>
 
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Total Tasks</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ totalTaskCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Todo</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ todoCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">In Progress</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ progressCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Done</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ doneCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Days Left</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ daysLeft }}</p>
+        </UiCardContent>
+      </UiCard>
+    </div>
+
     <div v-if="isLoading" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <div v-for="i in 4" :key="i" class="rounded-xl bg-slate-100 dark:bg-slate-800 h-64 animate-pulse" />
     </div>
@@ -164,7 +197,7 @@
                 <option v-for="m in members" :key="m.userId" :value="m.userId">{{ m.user.name }}</option>
               </UiSelect>
               <div v-else class="flex items-center gap-2">
-                <UiAvatar :name="selectedTask.assignee?.name || 'U'" size="sm" />
+                <UiAvatar :name="selectedTask.assignee?.name || 'U'" :src="selectedTask.assignee?.avatar || ''" size="sm" />
                 <span class="font-medium text-slate-900 dark:text-slate-200">{{ selectedTask.assignee?.name || 'Unassigned' }}</span>
               </div>
             </div>
@@ -348,6 +381,20 @@ watch([teamId, projectId], async () => {
 })
 
 const getTasksByStatus = (status: string) => board.value[status] ?? []
+
+const todoCount = computed(() => board.value.TODO?.length ?? 0)
+const progressCount = computed(() => (board.value.IN_PROGRESS?.length ?? 0) + (board.value.REVIEW?.length ?? 0))
+const doneCount = computed(() => board.value.DONE?.length ?? 0)
+const totalTaskCount = computed(() => todoCount.value + progressCount.value + doneCount.value)
+
+const daysLeft = computed(() => {
+  if (!project.value?.dueDate) return '-'
+  const now = new Date()
+  const due = new Date(project.value.dueDate)
+  const diff = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  if (diff < 0) return 'Overdue'
+  return String(diff)
+})
 
 const flatTask = (t: Task) => ({
   ...t,

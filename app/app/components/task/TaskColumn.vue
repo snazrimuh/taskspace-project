@@ -1,7 +1,7 @@
 <template>
   <UiCard
     class="rounded-2xl shadow-sm transition-all duration-200"
-    :class="{ 'ring-2 ring-primary-400/50 bg-primary-50/30 dark:bg-primary-900/10': isDragOver }"
+    :class="{ 'ring-2 ring-primary-500 bg-primary-100 dark:bg-primary-900': isDragOver }"
     @dragover.prevent="onDragOver"
     @dragleave="onDragLeave"
     @drop.prevent="onDrop"

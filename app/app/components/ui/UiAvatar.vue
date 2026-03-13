@@ -6,14 +6,20 @@
     ]"
   >
     <img
-      v-if="src"
-      :src="src"
+      v-if="showImage"
+      :src="normalizedSrc"
       :alt="alt"
       class="h-full w-full object-cover"
     />
     <span
+      v-else-if="characterAvatar"
+      :class="['font-medium text-slate-700 dark:text-slate-100 leading-none', textSizeClasses]"
+    >
+      {{ characterAvatar }}
+    </span>
+    <span
       v-else
-      :class="['font-semibold text-slate-600 dark:text-slate-200 uppercase', textSizeClasses]"
+      :class="['font-semibold text-slate-600 dark:text-slate-200 uppercase leading-none', textSizeClasses]"
     >
       {{ initials }}
     </span>
@@ -33,6 +39,17 @@ const props = withDefaults(defineProps<Props>(), {
   alt: '',
   name: '',
   size: 'md',
+})
+
+const normalizedSrc = computed(() => props.src.trim())
+
+const isImageSrc = computed(() => /^(https?:\/\/|\/|data:image\/|blob:)/i.test(normalizedSrc.value))
+
+const showImage = computed(() => !!normalizedSrc.value && isImageSrc.value)
+
+const characterAvatar = computed(() => {
+  if (!normalizedSrc.value || isImageSrc.value) return ''
+  return Array.from(normalizedSrc.value)[0] ?? ''
 })
 
 const initials = computed(() => {
@@ -56,9 +73,9 @@ const sizeClasses = computed(() => {
 
 const textSizeClasses = computed(() => {
   const sizes: Record<string, string> = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
+    sm: characterAvatar.value ? 'text-sm' : 'text-xs',
+    md: characterAvatar.value ? 'text-base' : 'text-sm',
+    lg: characterAvatar.value ? 'text-xl' : 'text-base',
   }
   return sizes[props.size]
 })

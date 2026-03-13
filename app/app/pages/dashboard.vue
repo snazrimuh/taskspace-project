@@ -1,9 +1,23 @@
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <div>
-      <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Dashboard</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-500 mt-1">Welcome back, <ClientOnly><span class="font-semibold text-gradient">{{ authStore.user?.name ?? 'there' }}</span></ClientOnly>. Here's what's happening.</p>
+    <div class="rounded-3xl p-6 md:p-7 border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+      <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Workspace Command Center</h1>
+      <p class="text-sm md:text-base text-slate-600 dark:text-slate-300 mt-1.5">Welcome back, <ClientOnly><span class="font-semibold text-gradient">{{ authStore.user?.name ?? 'there' }}</span></ClientOnly>. Pantau beban kerja tim, health project, dan prioritas harian dari satu tempat.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+        <div class="rounded-2xl px-4 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Managed Teams</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ managedTeams }}</p>
+        </div>
+        <div class="rounded-2xl px-4 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Total Projects</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ totalProjects }}</p>
+        </div>
+        <div class="rounded-2xl px-4 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Avg Tasks / Team</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ avgTasksPerTeam }}</p>
+        </div>
+      </div>
     </div>
 
     <!-- Stats Cards -->
@@ -24,6 +38,61 @@
       </UiCard>
     </div>
 
+    <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
+      <UiCard class="xl:col-span-3 overflow-hidden">
+        <UiCardHeader>
+          <UiCardTitle class="text-base">Team Workload Snapshot</UiCardTitle>
+        </UiCardHeader>
+        <UiCardContent class="pt-2 space-y-3">
+          <div
+            v-for="team in workloadTeams"
+            :key="team.id"
+            class="rounded-xl px-3 py-3 border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="font-semibold text-slate-900 dark:text-slate-100 truncate">{{ team.name }}</p>
+                <p class="text-xs text-slate-500">{{ team._count?.projects ?? 0 }} projects · {{ team._count?.announcements ?? 0 }} announcements</p>
+              </div>
+              <UiBadge :variant="team.role === 'MANAGER' ? 'info' : 'secondary'">{{ team.role === 'MANAGER' ? 'Lead' : 'Member' }}</UiBadge>
+            </div>
+            <div class="mt-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+                <span>Task Load</span>
+                <span>{{ team._count?.tasks ?? 0 }}</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-700">
+                <div
+                  class="h-full rounded-full bg-slate-500 dark:bg-slate-500"
+                  :style="{ width: `${Math.min(100, ((team._count?.tasks ?? 0) / maxTaskLoad) * 100)}%` }"
+                />
+              </div>
+            </div>
+          </div>
+        </UiCardContent>
+      </UiCard>
+
+      <UiCard class="xl:col-span-2">
+        <UiCardHeader>
+          <UiCardTitle class="text-base">Focus Today</UiCardTitle>
+        </UiCardHeader>
+        <UiCardContent class="pt-2 space-y-3">
+          <div class="rounded-xl p-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400">Top Priority</p>
+            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">Review teams with task load above {{ highLoadThreshold }}</p>
+          </div>
+          <div class="rounded-xl p-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400">Collaboration</p>
+            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">{{ pendingInvites.length }} pending invite{{ pendingInvites.length === 1 ? '' : 's' }} waiting response</p>
+          </div>
+          <div class="rounded-xl p-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400">Coverage</p>
+            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">{{ teams.length - managedTeams }} team{{ teams.length - managedTeams === 1 ? '' : 's' }} where you contribute as member</p>
+          </div>
+        </UiCardContent>
+      </UiCard>
+    </div>
+
     <!-- My Teams -->
     <div>
       <div class="flex items-center justify-between mb-4">
@@ -36,7 +105,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Loading skeleton -->
-        <div v-if="teamStore.isLoading" v-for="n in 3" :key="n" class="rounded-2xl border border-slate-200 dark:border-slate-700/40 animate-pulse h-28" />
+        <UiCard v-if="teamStore.isLoading" v-for="n in 3" :key="n" class="rounded-2xl border border-slate-300 dark:border-slate-600 animate-pulse h-28" />
 
         <!-- Empty state -->
         <div v-else-if="teams.length === 0" class="col-span-3 text-center py-12 text-slate-400">
@@ -57,7 +126,7 @@
                   {{ team.name.slice(0, 2).toUpperCase() }}
                 </div>
                 <div class="min-w-0 flex-1">
-                  <h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm">{{ team.name }}</h3>
+                  <h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors text-sm">{{ team.name }}</h3>
                   <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ team._count?.members ?? 0 }} members</p>
                 </div>
                 <UiBadge :variant="team.role === 'MANAGER' ? 'default' : 'secondary'">
@@ -73,6 +142,10 @@
                   <Megaphone class="h-3 w-3" />
                   {{ team._count?.announcements ?? 0 }} announcements
                 </span>
+                <span class="flex items-center gap-1">
+                  <Target class="h-3 w-3" />
+                  {{ team._count?.projects ?? 0 }} projects
+                </span>
               </div>
             </UiCardContent>
           </UiCard>
@@ -84,11 +157,11 @@
     <div v-if="pendingInvites.length > 0">
       <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-4">Pending Invitations</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <UiCard v-for="invite in pendingInvites" :key="invite.id" class="border-primary-200/60 dark:border-primary-500/15">
+        <UiCard v-for="invite in pendingInvites" :key="invite.id" class="border-slate-200 dark:border-slate-700">
           <UiCardContent class="pt-4">
             <div class="flex flex-col gap-3">
               <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-500/10 dark:to-primary-500/5 flex items-center justify-center text-sm font-bold text-primary-600 dark:text-primary-400 border border-primary-200/50 dark:border-primary-500/20">
+                <div class="h-10 w-10 rounded-xl bg-slate-300 dark:bg-slate-600 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-400 dark:border-slate-500">
                   {{ invite.team.name.slice(0, 2).toUpperCase() }}
                 </div>
                 <div>
@@ -109,7 +182,7 @@
     <!-- Create Team Modal -->
     <UiModal v-model="showCreateTeam" title="Create New Team">
       <form class="space-y-4" @submit.prevent="handleCreateTeam">
-        <div v-if="createError" class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{{ createError }}</div>
+        <div v-if="createError" class="rounded-md bg-red-100 border border-red-300 px-4 py-3 text-sm text-red-700">{{ createError }}</div>
         <div class="space-y-1.5">
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Team Name</label>
           <UiInput v-model="newTeamName" placeholder="e.g. Engineering Team" required />
@@ -128,7 +201,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Users, CheckSquare, Megaphone, CalendarDays } from 'lucide-vue-next'
+import { Plus, Users, CheckSquare, Megaphone, CalendarDays, Target } from 'lucide-vue-next'
 
 const authStore = useAuthStore()
 const teamStore = useTeamStore()
@@ -154,11 +227,27 @@ const decliningId = ref<string | null>(null)
 // Derived team list enhanced with member count
 const teams = computed(() => teamStore.teams)
 
+const totalProjects = computed(() => teams.value.reduce((a, t) => a + (t._count?.projects ?? 0), 0))
+const managedTeams = computed(() => teams.value.filter((t) => t.role === 'MANAGER').length)
+const avgTasksPerTeam = computed(() => {
+  if (!teams.value.length) return 0
+  const totalTasks = teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)
+  return Math.round((totalTasks / teams.value.length) * 10) / 10
+})
+
+const maxTaskLoad = computed(() => Math.max(...teams.value.map((t) => t._count?.tasks ?? 0), 1))
+const highLoadThreshold = computed(() => Math.max(8, Math.ceil(maxTaskLoad.value * 0.7)))
+const workloadTeams = computed(() =>
+  [...teams.value]
+    .sort((a, b) => (b._count?.tasks ?? 0) - (a._count?.tasks ?? 0))
+    .slice(0, 4),
+)
+
 const stats = computed(() => [
-  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50 dark:bg-primary-500/10', iconColor: 'text-primary-600 dark:text-primary-400', barColor: 'bg-primary-500/20 dark:bg-primary-400/15' },
-  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-emerald-50 dark:bg-emerald-500/10', iconColor: 'text-emerald-600 dark:text-emerald-400', barColor: 'bg-emerald-500/20 dark:bg-emerald-400/15' },
-  { label: 'Announcements', value: String(teams.value.reduce((a, t) => a + (t._count?.announcements ?? 0), 0)), icon: Megaphone, iconBg: 'bg-amber-50 dark:bg-amber-500/10', iconColor: 'text-amber-600 dark:text-amber-400', barColor: 'bg-amber-500/20 dark:bg-amber-400/15' },
-  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: CalendarDays, iconBg: 'bg-violet-50 dark:bg-violet-500/10', iconColor: 'text-violet-600 dark:text-violet-400', barColor: 'bg-violet-500/20 dark:bg-violet-400/15' },
+  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-slate-200 dark:bg-slate-700', iconColor: 'text-slate-700 dark:text-slate-300', barColor: 'bg-slate-400 dark:bg-slate-600' },
+  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-200 dark:bg-slate-700', iconColor: 'text-slate-700 dark:text-slate-300', barColor: 'bg-slate-400 dark:bg-slate-600' },
+  { label: 'Announcements', value: String(teams.value.reduce((a, t) => a + (t._count?.announcements ?? 0), 0)), icon: Megaphone, iconBg: 'bg-slate-200 dark:bg-slate-700', iconColor: 'text-slate-700 dark:text-slate-300', barColor: 'bg-slate-400 dark:bg-slate-600' },
+  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: CalendarDays, iconBg: 'bg-slate-200 dark:bg-slate-700', iconColor: 'text-slate-700 dark:text-slate-300', barColor: 'bg-slate-400 dark:bg-slate-600' },
 ])
 
 // Fetch teams + invites on mount

@@ -39,10 +39,10 @@ const props = withDefaults(defineProps<Props>(), {
 const variantClasses = computed(() => {
   const variants: Record<string, string> = {
     primary: 'bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-400 dark:hover:bg-primary-300 rounded-xl shadow-sm font-semibold',
-    secondary: 'bg-slate-100 dark:bg-slate-800/70 text-slate-900 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700/70 rounded-xl',
-    outline: 'border border-slate-300 dark:border-slate-600/60 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl',
-    ghost: 'text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200 rounded-xl',
-    danger: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500/90 dark:hover:bg-red-400 rounded-xl shadow-sm',
+    secondary: 'bg-slate-300 dark:bg-slate-700 text-slate-900 dark:text-slate-100 hover:bg-slate-400 dark:hover:bg-slate-600 rounded-xl',
+    outline: 'border border-slate-400 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl',
+    ghost: 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl',
+    danger: 'bg-slate-700 text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl shadow-sm',
   }
   return variants[props.variant]
 })

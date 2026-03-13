@@ -1,11 +1,41 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Team Calendar</h2>
+    <div class="flex items-center justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Calendar</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Pantau event, deadline project, dan deadline tugas personal dalam satu timeline.</p>
+      </div>
       <UiButton v-if="isManager" @click="showCreate = true">
         <Plus class="h-4 w-4 mr-2" />
         Add Event
       </UiButton>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">This Month Events</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ monthEventCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Project Deadlines</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ monthProjectDeadlineCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">My Task Deadlines</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ monthMyTaskDeadlineCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Upcoming Items</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ upcomingEvents.length + taskDeadlines.length + projectDeadlines.length }}</p>
+        </UiCardContent>
+      </UiCard>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -14,13 +44,13 @@
         <UiCardContent class="pt-4">
           <!-- Calendar Header -->
           <div class="flex items-center justify-between mb-4">
-            <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700/40 rounded-lg" @click="prevMonth">
+            <button class="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg" @click="prevMonth">
               <ChevronLeft class="h-5 w-5 text-slate-600 dark:text-slate-400" />
             </button>
             <h3 class="font-semibold text-slate-900 dark:text-slate-100">
               {{ monthYear }}
             </h3>
-            <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700/40 rounded-lg" @click="nextMonth">
+            <button class="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg" @click="nextMonth">
               <ChevronRight class="h-5 w-5 text-slate-600 dark:text-slate-400" />
             </button>
           </div>
@@ -43,8 +73,8 @@
               :key="i"
               :class="[
                 'min-h-[80px] p-1.5 rounded-lg text-sm transition-colors',
-                day.isCurrentMonth ? 'bg-white dark:bg-slate-800/20' : 'bg-slate-50 dark:bg-slate-900/40 text-slate-300 dark:text-slate-700',
-                day.isToday ? 'ring-2 ring-primary-500' : '',
+                day.isCurrentMonth ? 'bg-white dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-600',
+                day.isToday ? 'ring-2 ring-slate-400' : '',
               ]"
             >
               <div :class="['text-xs mb-1', day.isToday ? 'font-bold text-primary-600' : 'text-slate-500']">
@@ -78,7 +108,7 @@
             <div
               v-for="(event, i) in upcomingEvents"
               :key="i"
-              class="flex items-start gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-xl p-2 -mx-2 transition-colors"
+              class="flex items-start gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl p-2 -mx-2 transition-colors"
               @click="selectedEvent = event; showDetail = true"
             >
               <div :class="['h-2 w-2 rounded-full mt-1.5 shrink-0', eventDotColor(event.type)]" />
@@ -356,6 +386,33 @@ const upcomingEvents = computed(() => {
     .filter((e) => new Date(e.startDate) >= now)
     .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
     .slice(0, 8)
+})
+
+const monthEventCount = computed(() => {
+  const y = currentDate.value.getFullYear()
+  const m = currentDate.value.getMonth()
+  return events.value.filter((e) => {
+    const d = new Date(e.startDate)
+    return d.getFullYear() === y && d.getMonth() === m
+  }).length
+})
+
+const monthProjectDeadlineCount = computed(() => {
+  const y = currentDate.value.getFullYear()
+  const m = currentDate.value.getMonth()
+  return projectDeadlines.value.filter((p) => {
+    const d = new Date(p.dueDate)
+    return d.getFullYear() === y && d.getMonth() === m
+  }).length
+})
+
+const monthMyTaskDeadlineCount = computed(() => {
+  const y = currentDate.value.getFullYear()
+  const m = currentDate.value.getMonth()
+  return taskDeadlines.value.filter((t) => {
+    const d = new Date(t.dueDate)
+    return d.getFullYear() === y && d.getMonth() === m
+  }).length
 })
 
 // ── Date helpers ───────────────────────────────────────────────────────

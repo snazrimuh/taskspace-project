@@ -13,7 +13,7 @@
           <p class="text-sm text-slate-500 mt-1 line-clamp-2">{{ announcement.content }}</p>
           <div class="flex items-center gap-3 mt-2 text-xs text-slate-400">
             <span class="flex items-center gap-1">
-              <UiAvatar :name="authorName" size="sm" class="!h-4 !w-4 !text-[8px]" />
+              <UiAvatar :name="authorName" :src="authorAvatar" size="sm" class="!h-4 !w-4 !text-[8px]" />
               {{ authorName }}
             </span>
             <span>{{ timeStr }}</span>
@@ -48,6 +48,12 @@ const authorName = computed(() =>
   typeof props.announcement.author === 'string'
     ? props.announcement.author
     : props.announcement.author?.name ?? 'Unknown'
+)
+
+const authorAvatar = computed(() =>
+  typeof props.announcement.author === 'string'
+    ? ''
+    : props.announcement.author?.avatar ?? ''
 )
 
 const timeStr = computed(() => {

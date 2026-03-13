@@ -1,11 +1,41 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Team Members</h2>
+    <div class="flex items-center justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Members</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola anggota tim, role, dan undangan aktif secara terpusat.</p>
+      </div>
       <UiButton v-if="isManager" @click="showInvite = true">
         <UserPlus class="h-4 w-4 mr-2" />
         Invite
       </UiButton>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Total Members</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ members.length }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Managers</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ managerCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Members</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ contributorCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Pending Invites</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ pendingInvites.length }}</p>
+        </UiCardContent>
+      </UiCard>
     </div>
 
     <!-- Members List -->
@@ -17,9 +47,17 @@
           class="flex items-center justify-between py-3 first:pt-0 last:pb-0"
         >
           <div class="flex items-center gap-3">
-            <UiAvatar :name="member.user.name" size="md" />
+            <UiAvatar :name="member.user.name" :src="member.user.avatar || ''" size="md" />
             <div>
-              <div class="text-sm font-medium text-slate-900 dark:text-slate-200">{{ member.user.name }}</div>
+              <div class="text-sm font-medium text-slate-900 dark:text-slate-200 flex items-center gap-2">
+                <span>{{ member.user.name }}</span>
+                <span
+                  v-if="member.userId === currentUserId"
+                  class="text-[10px] px-2 py-0.5 rounded-full bg-primary-100 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300"
+                >
+                  You
+                </span>
+              </div>
               <div class="text-xs text-slate-500">{{ member.user.email }}</div>
             </div>
           </div>
@@ -29,7 +67,7 @@
             </UiBadge>
             <div v-if="isManager && member.userId !== currentUserId" class="relative">
               <button
-                class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
+                class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30"
                 @click="toggleMenu(member.id)"
               >
                 <MoreVertical class="h-4 w-4" />
@@ -68,7 +106,7 @@
             class="flex items-center justify-between py-3 first:pt-0 last:pb-0"
           >
             <div class="flex items-center gap-3">
-              <UiAvatar :name="invite.receiver?.name || invite.email" size="md" />
+                <UiAvatar :name="invite.receiver?.name || invite.email" :src="invite.receiver?.avatar || ''" size="md" />
               <div>
                 <div class="text-sm font-medium text-slate-900 dark:text-slate-200">{{ invite.receiver?.name || invite.email }}</div>
                 <div class="text-xs text-slate-500">Invited {{ invite.createdAt ? new Date(invite.createdAt).toLocaleDateString() : '' }}</div>
@@ -125,6 +163,8 @@ const isManager = computed(() => teamStore.isCurrentTeamManager)
 const currentUserId = computed(() => authStore.user?.id)
 
 const members = computed(() => teamStore.currentTeamMembers)
+const managerCount = computed(() => members.value.filter((m) => m.role === 'MANAGER').length)
+const contributorCount = computed(() => members.value.filter((m) => m.role !== 'MANAGER').length)
 
 // ── State ──────────────────────────────────────────────────────────────
 const showInvite = ref(false)

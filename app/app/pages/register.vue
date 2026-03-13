@@ -1,15 +1,15 @@
 <template>
-  <div class="bg-white dark:bg-[#161b22] rounded-2xl shadow-lg dark:shadow-2xl px-10 py-12 border border-slate-100 dark:border-slate-700/50">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-2xl px-10 py-12 border border-slate-200 dark:border-slate-700">
     <!-- Logo & brand -->
     <div class="flex flex-col items-center mb-8">
       <img src="/logo.png" alt="TaskSpace" class="h-16 w-16 rounded-full border-2 border-slate-100 dark:border-slate-700 shadow-sm mb-4" />
-      <p class="text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-1">TaskSpace</p>
+      <p class="text-xs font-semibold tracking-[0.2em] text-slate-700 dark:text-slate-300 uppercase mb-1">TaskSpace</p>
       <h1 class="text-xl font-bold text-slate-900 dark:text-white">Create Your Account</h1>
       <p class="text-sm text-slate-400 dark:text-slate-500 mt-1">Join your team on TaskSpace</p>
     </div>
 
     <form class="space-y-4" @submit.prevent="handleRegister">
-      <div v-if="error" class="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-700 dark:text-red-400">
+      <div v-if="error" class="rounded-lg bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 px-4 py-3 text-sm text-red-700 dark:text-red-300">
         {{ error }}
       </div>
 
@@ -73,7 +73,7 @@
       <button
         type="submit"
         :disabled="authStore.isLoading"
-        class="w-full py-3 rounded-lg text-white font-semibold text-sm bg-gradient-to-r from-primary-400 to-primary-600 hover:opacity-90 active:opacity-80 transition disabled:opacity-60"
+        class="w-full py-3 rounded-lg text-white font-semibold text-sm bg-slate-900 hover:bg-slate-800 active:bg-slate-950 transition disabled:opacity-60 dark:bg-slate-700 dark:hover:bg-slate-600"
       >
         {{ authStore.isLoading ? 'Creating account...' : 'Create Account' }}
       </button>

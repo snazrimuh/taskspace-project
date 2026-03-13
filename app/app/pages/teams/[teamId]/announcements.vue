@@ -1,12 +1,49 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Announcements</h2>
+    <div class="flex items-center justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Announcements</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Satu feed resmi untuk update tim, keputusan penting, dan broadcast prioritas.</p>
+      </div>
       <UiButton v-if="isManager" @click="showCreate = true">
         <Plus class="h-4 w-4 mr-2" />
         New
       </UiButton>
     </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Total Posts</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ announcements.length }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Pinned</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ pinnedAnnouncements.length }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Unread</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ unreadCount }}</p>
+        </UiCardContent>
+      </UiCard>
+      <UiCard>
+        <UiCardContent class="pt-4">
+          <p class="text-xs uppercase tracking-wider text-slate-500">Avg Read Rate</p>
+          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ averageReadRate }}%</p>
+        </UiCardContent>
+      </UiCard>
+    </div>
+
+    <UiCard v-if="!isLoading && announcements.length === 0">
+      <UiCardContent class="pt-8 pb-8 text-center">
+        <p class="font-semibold text-slate-700 dark:text-slate-200">No announcements yet</p>
+        <p class="text-sm text-slate-500 mt-1">Mulai dengan update penting tim agar semua anggota sinkron.</p>
+      </UiCardContent>
+    </UiCard>
 
     <!-- Pinned Announcements -->
     <div v-if="pinnedAnnouncements.length" class="space-y-3">
@@ -59,7 +96,7 @@
     <UiModal v-model="showDetail" :title="selectedAnnouncement?.title || ''" size="lg">
       <div v-if="selectedAnnouncement">
         <div class="flex items-center gap-2 mb-4">
-          <UiAvatar :name="selectedAnnouncement.author?.name || 'A'" size="sm" />
+          <UiAvatar :name="selectedAnnouncement.author?.name || 'A'" :src="selectedAnnouncement.author?.avatar || ''" size="sm" />
           <div>
             <span class="text-sm font-medium text-slate-900 dark:text-slate-200">{{ selectedAnnouncement.author?.name }}</span>
             <span class="text-sm text-slate-400 ml-2">{{ formatTime(selectedAnnouncement.createdAt) }}</span>
@@ -108,6 +145,18 @@ const createError = ref('')
 // ── Computed ───────────────────────────────────────────────────────────
 const pinnedAnnouncements = computed(() => announcements.value.filter((a) => a.pinned))
 const regularAnnouncements = computed(() => announcements.value.filter((a) => !a.pinned))
+const unreadCount = computed(() => announcements.value.filter((a) => !a.isRead).length)
+const averageReadRate = computed(() => {
+  if (!announcements.value.length) return 0
+  const rates = announcements.value.map((a) => {
+    const total = Number(a.totalMembers ?? 0)
+    const read = Number(a.readCount ?? 0)
+    if (total <= 0) return 0
+    return (read / total) * 100
+  })
+  const avg = rates.reduce((sum, value) => sum + value, 0) / rates.length
+  return Math.round(avg)
+})
 
 // ── Fetch ──────────────────────────────────────────────────────────────
 const fetchAnnouncements = async () => {
