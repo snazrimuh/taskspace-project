@@ -56,7 +56,7 @@
                   'rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
                   isMe(msg)
                     ? 'bg-primary-600 dark:bg-primary-600 text-white rounded-br-sm'
-                    : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-sm border border-transparent dark:border-slate-600',
+                    : 'bg-white/60 dark:bg-white/[0.07] text-slate-800 dark:text-slate-200 rounded-bl-sm border border-white/70 dark:border-white/[0.08]',
                 ]"
               >
                 {{ msg.message }}
@@ -76,7 +76,7 @@
               <div class="text-xs text-slate-500 dark:text-slate-500 mb-1 ml-1">
                 {{ typingUsers.map((u) => u.name).join(', ') }}
               </div>
-              <div class="bg-slate-200 dark:bg-slate-700 rounded-2xl rounded-bl-sm px-4 py-2 border border-transparent dark:border-slate-600">
+              <div class="bg-white/60 dark:bg-white/[0.07] rounded-2xl rounded-bl-sm px-4 py-2 border border-white/70 dark:border-white/[0.08]">
                 <div class="flex items-center gap-1">
                   <span class="h-1.5 w-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style="animation-delay: 0ms" />
                   <span class="h-1.5 w-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style="animation-delay: 150ms" />
@@ -89,7 +89,7 @@
       </div>
 
       <!-- Input -->
-      <div class="p-3 border-t border-slate-200 dark:border-slate-700/30 flex items-center gap-2">
+      <div class="p-3 border-t border-white/60 dark:border-white/[0.07] flex items-center gap-2">
         <UiInput
           v-model="newMessage"
           placeholder="Type a message..."

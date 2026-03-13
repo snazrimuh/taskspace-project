@@ -1,53 +1,53 @@
 <template>
-  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-2xl px-10 py-12 border border-slate-200 dark:border-slate-700">
+  <div class="glass rounded-2xl shadow-[0_4px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_32px_rgba(0,0,0,0.30)] px-8 py-10">
     <!-- Logo & brand -->
-    <div class="flex flex-col items-center mb-8">
-      <img src="/logo.png" alt="TaskSpace" class="h-16 w-16 rounded-full border-2 border-slate-100 dark:border-slate-700 shadow-sm mb-4" />
-      <p class="text-xs font-semibold tracking-[0.2em] text-slate-700 dark:text-slate-300 uppercase mb-1">TaskSpace</p>
-      <h1 class="text-xl font-bold text-slate-900 dark:text-white">Create Your Account</h1>
-      <p class="text-sm text-slate-400 dark:text-slate-500 mt-1">Join your team on TaskSpace</p>
+    <div class="flex flex-col items-center mb-7">
+      <img src="/logo.png" alt="TaskSpace" class="h-14 w-14 rounded-2xl mb-4" />
+      <p class="text-[11px] font-semibold tracking-[0.18em] text-slate-400 dark:text-slate-500 uppercase mb-1">TaskSpace</p>
+      <h1 class="text-xl font-bold text-slate-900 dark:text-slate-100">Create Account</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Join your team on TaskSpace</p>
     </div>
 
-    <form class="space-y-4" @submit.prevent="handleRegister">
-      <div v-if="error" class="rounded-lg bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+    <form class="space-y-3.5" @submit.prevent="handleRegister">
+      <div v-if="error" class="rounded-xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 px-3.5 py-2.5 text-sm text-rose-700 dark:text-rose-400">
         {{ error }}
       </div>
 
       <!-- Name -->
       <div class="relative">
-        <UserRound class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <UserRound class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
           v-model="name"
           type="text"
-          placeholder="Your full name"
+          placeholder="Full name"
           required
-          class="w-full pl-9 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
         />
       </div>
 
       <!-- Email -->
       <div class="relative">
-        <Mail class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Mail class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
           v-model="email"
           type="email"
-          placeholder="Enter your email"
+          placeholder="Email address"
           required
-          class="w-full pl-9 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
         />
       </div>
 
       <!-- Password -->
       <div class="relative">
-        <Lock class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
           v-model="password"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Min. 8 characters"
+          placeholder="Password (min. 8 characters)"
           required
-          class="w-full pl-9 pr-10 py-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+          class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
         />
-        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" @click="showPassword = !showPassword">
+        <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" @click="showPassword = !showPassword">
           <EyeOff v-if="showPassword" class="h-4 w-4" />
           <Eye v-else class="h-4 w-4" />
         </button>
@@ -55,15 +55,15 @@
 
       <!-- Confirm Password -->
       <div class="relative">
-        <Lock class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
           v-model="confirmPassword"
           :type="showConfirm ? 'text' : 'password'"
-          placeholder="Confirm your password"
+          placeholder="Confirm password"
           required
-          class="w-full pl-9 pr-10 py-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+          class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
         />
-        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" @click="showConfirm = !showConfirm">
+        <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" @click="showConfirm = !showConfirm">
           <EyeOff v-if="showConfirm" class="h-4 w-4" />
           <Eye v-else class="h-4 w-4" />
         </button>
@@ -73,7 +73,7 @@
       <button
         type="submit"
         :disabled="authStore.isLoading"
-        class="w-full py-3 rounded-lg text-white font-semibold text-sm bg-slate-900 hover:bg-slate-800 active:bg-slate-950 transition disabled:opacity-60 dark:bg-slate-700 dark:hover:bg-slate-600"
+        class="w-full py-2.5 rounded-xl text-white font-semibold text-sm bg-primary-500/90 hover:bg-primary-600/90 border border-primary-400/40 shadow-[0_2px_8px_rgba(46,104,148,0.28)] hover:shadow-[0_4px_12px_rgba(46,104,148,0.38)] active:bg-primary-700/90 transition disabled:opacity-60 backdrop-blur-sm"
       >
         {{ authStore.isLoading ? 'Creating account...' : 'Create Account' }}
       </button>
@@ -81,7 +81,7 @@
 
     <p class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
       Already have an account?
-      <NuxtLink to="/login" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-medium">Sign in</NuxtLink>
+      <NuxtLink to="/login" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">Sign in</NuxtLink>
     </p>
   </div>
 </template>

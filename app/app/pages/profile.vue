@@ -18,7 +18,7 @@
           <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mt-3">{{ profile?.name || authStore.user?.name }}</h3>
           <p class="text-sm text-slate-500">{{ profile?.email || authStore.user?.email }}</p>
           <p class="text-sm text-slate-500 mt-2">{{ profile?.bio }}</p>
-          <div class="mt-4 pt-4 border-t text-sm text-slate-400">
+          <div class="mt-4 pt-4 border-t border-white/60 dark:border-white/[0.07] text-sm text-slate-400">
             Joined {{ joinedAt }}
           </div>
         </UiCardContent>
@@ -40,7 +40,7 @@
                     :key="style"
                     type="button"
                     class="flex flex-col items-center gap-1 p-2 rounded-lg border transition-all hover:shadow-sm"
-                    :class="form.avatarStyle === style ? 'border-slate-400 bg-slate-200 dark:bg-slate-700' : 'border-slate-300 dark:border-slate-600 hover:border-slate-400'"
+                    :class="form.avatarStyle === style ? 'border-primary-400 bg-primary-50/70 dark:bg-primary-500/[0.10] dark:border-primary-400/60' : 'border-white/70 dark:border-white/[0.09] hover:border-primary-300/60 dark:hover:border-primary-500/30'"
                     @click="form.avatarStyle = style; updateAvatarPreview()"
                   >
                     <img :src="getAvatarUrl(profile?.name || 'User', style)" :alt="style" class="h-8 w-8 rounded-full" />

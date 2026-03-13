@@ -32,7 +32,7 @@
       <NuxtLink
         v-else
         to="/dashboard"
-        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
+        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 hover:bg-white/40 dark:hover:bg-white/[0.06] transition-all"
       >
         <img src="/logo.png" alt="TaskSpace" class="h-8 w-8 shrink-0" />
         <div class="text-sm leading-tight">
@@ -60,7 +60,7 @@
               :class="[
                 'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all',
                 currentTeamId === normalizeTeamId(team.id)
-                  ? 'bg-white/60 dark:bg-white/[0.10] text-slate-900 dark:text-white font-medium'
+                  ? 'bg-primary-500/[0.10] dark:bg-primary-500/[0.14] text-primary-700 dark:text-primary-300 font-medium'
                   : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.07]',
               ]"
               @click="selectTeam(team.id)"
@@ -95,7 +95,7 @@
           :class="[
             'w-full flex items-center gap-2.5 rounded-xl pl-5 pr-3 py-2 text-[13px] transition-all',
             isActive(item.key)
-              ? 'bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-200 font-medium'
+              ? 'bg-primary-500/[0.12] dark:bg-primary-500/[0.16] text-primary-700 dark:text-primary-300 font-medium'
               : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
           ]"
         >
@@ -112,7 +112,7 @@
         <div class="flex items-center justify-between px-2 mb-2">
           <span class="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-600 font-semibold">Teams</span>
           <button
-            class="text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400 transition-colors p-0.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/60"
+            class="text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400 transition-colors p-0.5 rounded-md hover:bg-white/50 dark:hover:bg-white/[0.08]"
             @click="showCreateTeam = true"
           >
             <Plus class="h-3.5 w-3.5" />
@@ -125,7 +125,7 @@
             :class="[
               'w-full text-left rounded-xl px-3 py-2 text-[13px] transition-all flex items-center gap-2.5',
               currentTeamId === normalizeTeamId(team.id)
-                ? 'bg-blue-500/20 dark:bg-blue-500/30 text-blue-600 dark:text-blue-200 font-medium'
+                ? 'bg-primary-500/[0.12] dark:bg-primary-500/[0.16] text-primary-700 dark:text-primary-300 font-medium'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
             ]"
             @click="selectTeam(team.id)"
@@ -159,7 +159,7 @@
     <!-- Create Team Modal -->
     <UiModal v-model="showCreateTeam" title="Create New Team" size="sm">
       <form class="space-y-4" @submit.prevent="handleCreateTeam">
-        <div v-if="createError" class="rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-3 py-2 text-sm text-red-700 dark:text-red-400">{{ createError }}</div>
+        <div v-if="createError" class="rounded-xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 px-3 py-2 text-sm text-rose-700 dark:text-rose-400">{{ createError }}</div>
         <div class="space-y-1.5">
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Team Name</label>
           <UiInput v-model="newTeamName" placeholder="e.g. Engineering Team" required />

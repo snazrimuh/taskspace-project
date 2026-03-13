@@ -6,7 +6,8 @@
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  --color-primary-50: #f0f6fa;
+  /* Primary color scale (blue-steel) */
+  --color-primary-50:  #f0f6fa;
   --color-primary-100: #d6e5f0;
   --color-primary-200: #aecbe1;
   --color-primary-300: #7eaed0;
@@ -17,7 +18,8 @@
   --color-primary-800: #142d44;
   --color-primary-900: #0e2033;
 
-  --color-surface-50: #f8fafc;
+  /* Surface color scale */
+  --color-surface-50:  #f8fafc;
   --color-surface-100: #f1f5f9;
   --color-surface-200: #e2e8f0;
   --color-surface-800: #0f172a;
@@ -36,63 +38,61 @@ body {
 
 .app-bg {
   background:
-    radial-gradient(ellipse at 12% 20%, rgba(61,137,187,0.12) 0%, transparent 52%),
-    radial-gradient(ellipse at 88% 80%, rgba(110,70,190,0.07) 0%, transparent 48%),
-    #eef2f7;
+    radial-gradient(ellipse at 15% 25%, rgba(46,104,148,0.08) 0%, transparent 55%),
+    #f1f5f9;
   min-height: 100vh;
 }
 
 .dark .app-bg {
   background:
-    radial-gradient(ellipse at 12% 20%, rgba(61,137,187,0.11) 0%, transparent 50%),
-    radial-gradient(ellipse at 88% 78%, rgba(80,30,140,0.08) 0%, transparent 45%),
-    #050a12;
+    radial-gradient(ellipse at 15% 25%, rgba(46,104,148,0.09) 0%, transparent 55%),
+    #060c16;
 }
 
 /* ── Glass utilities ────────────────────────────────── */
 
 .glass {
-  background: rgba(255,255,255,0.58);
+  background: rgba(255,255,255,0.60);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.70);
+  border: 1px solid rgba(255,255,255,0.72);
 }
 .dark .glass {
-  background: rgba(255,255,255,0.042);
-  border: 1px solid rgba(255,255,255,0.078);
+  background: rgba(255,255,255,0.040);
+  border: 1px solid rgba(255,255,255,0.072);
 }
 
 .glass-subtle {
-  background: rgba(255,255,255,0.32);
+  background: rgba(255,255,255,0.34);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.46);
+  border: 1px solid rgba(255,255,255,0.48);
 }
 .dark .glass-subtle {
-  background: rgba(255,255,255,0.024);
-  border: 1px solid rgba(255,255,255,0.052);
+  background: rgba(255,255,255,0.022);
+  border: 1px solid rgba(255,255,255,0.048);
 }
 
 .glass-panel {
-  background: rgba(255,255,255,0.78);
+  background: rgba(255,255,255,0.80);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border-right: 1px solid rgba(255,255,255,0.82);
+  border-right: 1px solid rgba(255,255,255,0.84);
 }
 .dark .glass-panel {
-  background: rgba(255,255,255,0.036);
-  border-right: 1px solid rgba(255,255,255,0.068);
+  background: rgba(255,255,255,0.032);
+  border-right: 1px solid rgba(255,255,255,0.062);
 }
 
 .glass-bar {
-  background: rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.68);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(255,255,255,0.72);
+  border-bottom: 1px solid rgba(255,255,255,0.74);
 }
 .dark .glass-bar {
-  background: rgba(255,255,255,0.030);
-  border-bottom: 1px solid rgba(255,255,255,0.058);
+  background: rgba(255,255,255,0.028);
+  border-bottom: 1px solid rgba(255,255,255,0.054);
 }
 
 /* ── Transitions ────────────────────────────────────── */
@@ -107,7 +107,7 @@ body {
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.22); }
-.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.09); }
-.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.20); }
+.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); }
+.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }

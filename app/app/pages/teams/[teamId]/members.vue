@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+    <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Members</h2>
         <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola anggota tim, role, dan undangan aktif secara terpusat.</p>
@@ -40,7 +40,7 @@
 
     <!-- Members List -->
     <UiCard>
-      <UiCardContent class="pt-4 divide-y divide-slate-100">
+      <UiCardContent class="pt-4 divide-y divide-white/60 dark:divide-white/[0.06]">
         <div
           v-for="member in members"
           :key="member.id"
@@ -67,23 +67,23 @@
             </UiBadge>
             <div v-if="isManager && member.userId !== currentUserId" class="relative">
               <button
-                class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30"
+                class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-white/40 dark:hover:bg-white/[0.06] transition-colors"
                 @click="toggleMenu(member.id)"
               >
                 <MoreVertical class="h-4 w-4" />
               </button>
               <div
                 v-if="openMenuId === member.id"
-                class="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700/40 py-1 z-10"
+                class="absolute right-0 top-full mt-1 w-48 bg-white/90 dark:bg-surface-900/90 backdrop-blur-xl rounded-xl shadow-xl border border-white/70 dark:border-white/[0.10] py-1 z-10"
               >
                 <button
-                  class="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40"
+                  class="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.07] transition-colors"
                   @click="handleRoleChange(member)"
                 >
                   {{ member.role === 'MANAGER' ? 'Demote to Member' : 'Promote to Manager' }}
                 </button>
                 <button
-                  class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                  class="w-full text-left px-3 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-50/80 dark:hover:bg-rose-500/10 transition-colors"
                   @click="handleRemove(member)"
                 >
                   Remove from team

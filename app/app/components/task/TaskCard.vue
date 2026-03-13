@@ -62,7 +62,7 @@ const onDragEnd = () => { isDragging.value = false }
 
 const priorityDot = computed(() => {
   const map: Record<string, string> = {
-    LOW: 'bg-slate-400', MEDIUM: 'bg-sky-500', HIGH: 'bg-amber-500', URGENT: 'bg-rose-500',
+    LOW: 'bg-slate-400', MEDIUM: 'bg-primary-500', HIGH: 'bg-amber-500', URGENT: 'bg-rose-500',
   }
   return map[props.task.priority] ?? 'bg-slate-400'
 })
@@ -70,7 +70,7 @@ const priorityDot = computed(() => {
 const priorityText = computed(() => {
   const map: Record<string, string> = {
     LOW: 'text-slate-400',
-    MEDIUM: 'text-sky-600 dark:text-sky-400',
+    MEDIUM: 'text-primary-600 dark:text-primary-400',
     HIGH: 'text-amber-600 dark:text-amber-400',
     URGENT: 'text-rose-600 dark:text-rose-400',
   }

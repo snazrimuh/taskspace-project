@@ -15,13 +15,13 @@
             :class="[
               'w-full text-left rounded-2xl border-2 p-4 transition-colors',
               selected === 'create'
-                ? 'border-slate-900 bg-slate-50'
-                : 'border-slate-200 hover:border-slate-300',
+                ? 'border-primary-500 bg-primary-50/70 dark:border-primary-500/60 dark:bg-primary-500/[0.08]'
+                : 'border-white/60 dark:border-white/[0.09] hover:border-primary-300/60 dark:hover:border-primary-500/30',
             ]"
             @click="selected = 'create'"
           >
             <div class="flex items-start gap-3">
-              <div class="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+              <div class="h-10 w-10 rounded-xl bg-primary-500/90 text-white flex items-center justify-center shrink-0">
                 <Plus class="h-5 w-5" />
               </div>
               <div>
@@ -36,8 +36,8 @@
             :class="[
               'w-full text-left rounded-2xl border-2 p-4 transition-colors',
               selected === 'join'
-                ? 'border-slate-900 bg-slate-50'
-                : 'border-slate-200 hover:border-slate-300',
+                ? 'border-primary-500 bg-primary-50/70 dark:border-primary-500/60 dark:bg-primary-500/[0.08]'
+                : 'border-white/60 dark:border-white/[0.09] hover:border-primary-300/60 dark:hover:border-primary-500/30',
             ]"
             @click="selected = 'join'"
           >
@@ -57,7 +57,7 @@
         <Transition name="fade">
           <form
             v-if="selected === 'create'"
-            class="mt-4 space-y-3 border-t pt-4"
+            class="mt-4 space-y-3 border-t border-white/50 dark:border-white/[0.07] pt-4"
             @submit.prevent="handleCreateTeam"
           >
             <div>
@@ -76,7 +76,7 @@
 
         <!-- Join Team Info -->
         <Transition name="fade">
-          <div v-if="selected === 'join'" class="mt-4 border-t pt-4">
+          <div v-if="selected === 'join'" class="mt-4 border-t border-white/50 dark:border-white/[0.07] pt-4">
             <div class="text-center space-y-3">
               <div class="text-sm text-slate-600">
                 Check your notifications or email for a team invitation.

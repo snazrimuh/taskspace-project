@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+    <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Calendar</h2>
         <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Pantau event, deadline project, dan deadline tugas personal dalam satu timeline.</p>
@@ -44,13 +44,13 @@
         <UiCardContent class="pt-4">
           <!-- Calendar Header -->
           <div class="flex items-center justify-between mb-4">
-            <button class="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg" @click="prevMonth">
+            <button class="p-1 hover:bg-white/60 dark:hover:bg-white/[0.08] rounded-lg transition-colors" @click="prevMonth">
               <ChevronLeft class="h-5 w-5 text-slate-600 dark:text-slate-400" />
             </button>
             <h3 class="font-semibold text-slate-900 dark:text-slate-100">
               {{ monthYear }}
             </h3>
-            <button class="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg" @click="nextMonth">
+            <button class="p-1 hover:bg-white/60 dark:hover:bg-white/[0.08] rounded-lg transition-colors" @click="nextMonth">
               <ChevronRight class="h-5 w-5 text-slate-600 dark:text-slate-400" />
             </button>
           </div>
@@ -73,8 +73,8 @@
               :key="i"
               :class="[
                 'min-h-[80px] p-1.5 rounded-lg text-sm transition-colors',
-                day.isCurrentMonth ? 'bg-white dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-600',
-                day.isToday ? 'ring-2 ring-slate-400' : '',
+                day.isCurrentMonth ? 'bg-white/50 dark:bg-white/[0.04]' : 'bg-transparent text-slate-400 dark:text-slate-600',
+                day.isToday ? 'ring-2 ring-primary-400/60 dark:ring-primary-400/50' : '',
               ]"
             >
               <div :class="['text-xs mb-1', day.isToday ? 'font-bold text-primary-600' : 'text-slate-500']">
@@ -108,7 +108,7 @@
             <div
               v-for="(event, i) in upcomingEvents"
               :key="i"
-              class="flex items-start gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl p-2 -mx-2 transition-colors"
+              class="flex items-start gap-3 cursor-pointer hover:bg-white/50 dark:hover:bg-white/[0.06] rounded-xl p-2 -mx-2 transition-colors"
               @click="selectedEvent = event; showDetail = true"
             >
               <div :class="['h-2 w-2 rounded-full mt-1.5 shrink-0', eventDotColor(event.type)]" />
@@ -467,10 +467,10 @@ const handleDelete = async (eventId: string) => {
 // ── Style helpers ──────────────────────────────────────────────────────
 const eventColor = (type: string) => {
   const colors: Record<string, string> = {
-    MEETING: 'bg-primary-100 text-primary-700',
-    TRAINING: 'bg-purple-100 text-purple-700',
-    DEADLINE: 'bg-red-100 text-red-700',
-    INTERNAL: 'bg-emerald-100 text-emerald-700',
+    MEETING: 'bg-primary-100 text-primary-700 dark:bg-primary-500/[0.15] dark:text-primary-300',
+    TRAINING: 'bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-400',
+    DEADLINE: 'bg-rose-100 text-rose-700 dark:bg-rose-500/[0.15] dark:text-rose-400',
+    INTERNAL: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/[0.15] dark:text-emerald-400',
   }
   return colors[type] ?? 'bg-slate-100 text-slate-700'
 }
@@ -478,8 +478,8 @@ const eventColor = (type: string) => {
 const eventDotColor = (type: string) => {
   const colors: Record<string, string> = {
     MEETING: 'bg-primary-500',
-    TRAINING: 'bg-purple-500',
-    DEADLINE: 'bg-red-500',
+    TRAINING: 'bg-slate-500',
+    DEADLINE: 'bg-rose-500',
     INTERNAL: 'bg-emerald-500',
   }
   return colors[type] ?? 'bg-slate-500'

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-8">
     <!-- Header Banner -->
-    <div class="rounded-3xl p-6 md:p-7 border border-primary-200/40 dark:border-primary-500/20 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.15),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.18),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+    <div class="glass rounded-2xl p-6 md:p-7">
       <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Workspace Command Center</h1>
       <p class="text-sm md:text-base text-slate-600 dark:text-slate-300 mt-1.5">
         Welcome back,
@@ -42,7 +42,7 @@
           >
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2 min-w-0">
-                <div class="h-7 w-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0 border border-slate-200 dark:border-slate-600">
+                <div class="h-7 w-7 rounded-lg bg-white/50 dark:bg-white/[0.07] flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 shrink-0 border border-white/70 dark:border-white/[0.10]">
                   {{ team.name.slice(0, 2).toUpperCase() }}
                 </div>
                 <span class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{{ team.name }}</span>
@@ -56,7 +56,7 @@
             </div>
             <div class="h-2 rounded-full bg-white/30 dark:bg-white/[0.08] overflow-hidden">
               <div
-                class="h-full rounded-full bg-sky-400/80 dark:bg-sky-500/60 transition-all duration-700"
+                class="h-full rounded-full bg-primary-400/70 dark:bg-primary-500/55 transition-all duration-700"
                 :style="{ width: `${maxTaskLoad > 0 ? Math.max(4, ((team._count?.tasks ?? 0) / maxTaskLoad) * 100) : 4}%` }"
               />
             </div>
@@ -76,8 +76,8 @@
               Review teams with task load above {{ highLoadThreshold }}
             </p>
           </div>
-          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-sky-400 border border-white/60 dark:border-white/[0.08]">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-sky-500 dark:text-sky-400">Collaboration</p>
+          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-primary-400 border border-white/60 dark:border-white/[0.08]">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-primary-500 dark:text-primary-400">Collaboration</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
               {{ pendingInvites.length }} pending invite{{ pendingInvites.length === 1 ? '' : 's' }} waiting response
             </p>
@@ -158,7 +158,7 @@
           <UiCardContent class="pt-4">
             <div class="flex flex-col gap-3">
               <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600">
+                <div class="h-10 w-10 rounded-xl bg-white/50 dark:bg-white/[0.07] flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 border border-white/70 dark:border-white/[0.10]">
                   {{ invite.team.name.slice(0, 2).toUpperCase() }}
                 </div>
                 <div>
@@ -179,7 +179,7 @@
     <!-- Create Team Modal -->
     <UiModal v-model="showCreateTeam" title="Create New Team">
       <form class="space-y-4" @submit.prevent="handleCreateTeam">
-        <div v-if="createError" class="rounded-md bg-red-100 border border-red-300 px-4 py-3 text-sm text-red-700">{{ createError }}</div>
+        <div v-if="createError" class="rounded-xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 px-3.5 py-2.5 text-sm text-rose-700 dark:text-rose-400">{{ createError }}</div>
         <div class="space-y-1.5">
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Team Name</label>
           <UiInput v-model="newTeamName" placeholder="e.g. Engineering Team" required />
@@ -238,10 +238,10 @@ const workloadTeams = computed(() =>
 )
 
 const stats = computed(() => [
-  { label: 'My Team', value: String(teams.value.length), icon: Users, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-sky-500 dark:text-sky-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-sky-400/60 dark:bg-sky-500/50' },
-  { label: 'My Project', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-emerald-500 dark:text-emerald-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-emerald-400/60 dark:bg-emerald-500/50' },
-  { label: 'Active Task', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-amber-500 dark:text-amber-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-amber-400/60 dark:bg-amber-500/50' },
-  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100 dark:bg-slate-700/60', iconColor: 'text-violet-500 dark:text-violet-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-violet-400/60 dark:bg-violet-500/50' },
+  { label: 'My Team', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-500/[0.10]', iconColor: 'text-primary-500 dark:text-primary-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/40' },
+  { label: 'My Project', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
+  { label: 'Active Task', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
+  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
 ])
 
 onMounted(async () => {

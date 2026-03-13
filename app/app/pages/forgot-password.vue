@@ -18,7 +18,7 @@
               placeholder="you@company.com"
             />
           </div>
-          <div v-if="error" class="rounded-md bg-red-100 border border-red-300 px-4 py-3 text-sm text-red-700">
+          <div v-if="error" class="rounded-xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 px-3.5 py-2.5 text-sm text-rose-700 dark:text-rose-400">
             {{ error }}
           </div>
           <UiButton class="w-full" size="lg" :loading="authStore.isLoading">
@@ -27,7 +27,7 @@
         </form>
 
         <div v-else class="text-center space-y-4">
-          <div class="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
+          <div class="h-12 w-12 bg-emerald-50/80 dark:bg-emerald-500/[0.12] border border-emerald-200/60 dark:border-emerald-500/20 rounded-full flex items-center justify-center mx-auto">
             <svg class="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
@@ -39,7 +39,7 @@
         </div>
 
         <div class="mt-6 text-center text-sm text-slate-500">
-          <NuxtLink to="/login" class="text-slate-600 hover:text-slate-700 font-medium">
+          <NuxtLink to="/login" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">
             Back to Sign in
           </NuxtLink>
         </div>

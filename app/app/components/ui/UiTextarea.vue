@@ -1,7 +1,7 @@
 <template>
   <textarea
     :class="[
-      'w-full rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 px-4 py-2.5 text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600',
+      'w-full rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm px-4 py-2.5 text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500',
       'focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400/50 dark:focus:border-primary-500/40',
       'disabled:opacity-60 disabled:cursor-not-allowed resize-none',
     ]"

@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-5">
-    <div class="flex items-center justify-between rounded-3xl border border-slate-300 dark:border-slate-700 p-5 md:p-6 bg-white/35 dark:bg-white/[0.04]">
+    <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Projects</h2>
         <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola project tim, PIC, progress, dan risiko deadline dari satu tampilan.</p>
@@ -20,11 +20,11 @@
               <p class="text-sm text-slate-500">Total Projects</p>
               <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ projects.length }}</p>
             </div>
-            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+            <div class="h-9 w-9 rounded-lg bg-white/50 dark:bg-white/[0.06] border border-white/70 dark:border-white/[0.09] text-slate-600 dark:text-slate-400 flex items-center justify-center">
               <FolderKanban class="h-4 w-4" />
             </div>
           </div>
-          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
+          <div class="h-0.5 rounded-full bg-slate-200/80 dark:bg-white/[0.08] mt-3"></div>
         </UiCardContent>
       </UiCard>
       <UiCard>
@@ -34,11 +34,11 @@
               <p class="text-sm text-slate-500">In Progress</p>
               <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ inProgressCount }}</p>
             </div>
-            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+            <div class="h-9 w-9 rounded-lg bg-white/50 dark:bg-white/[0.06] border border-white/70 dark:border-white/[0.09] text-slate-600 dark:text-slate-400 flex items-center justify-center">
               <Activity class="h-4 w-4" />
             </div>
           </div>
-          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
+          <div class="h-0.5 rounded-full bg-slate-200/80 dark:bg-white/[0.08] mt-3"></div>
         </UiCardContent>
       </UiCard>
       <UiCard>
@@ -48,11 +48,11 @@
               <p class="text-sm text-slate-500">Completed</p>
               <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ completedCount }}</p>
             </div>
-            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+            <div class="h-9 w-9 rounded-lg bg-white/50 dark:bg-white/[0.06] border border-white/70 dark:border-white/[0.09] text-slate-600 dark:text-slate-400 flex items-center justify-center">
               <CheckCircle2 class="h-4 w-4" />
             </div>
           </div>
-          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
+          <div class="h-0.5 rounded-full bg-slate-200/80 dark:bg-white/[0.08] mt-3"></div>
         </UiCardContent>
       </UiCard>
       <UiCard>
@@ -62,44 +62,20 @@
               <p class="text-sm text-slate-500">Average Progress</p>
               <p class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ avgProgress }}%</p>
             </div>
-            <div class="h-9 w-9 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+            <div class="h-9 w-9 rounded-lg bg-white/50 dark:bg-white/[0.06] border border-white/70 dark:border-white/[0.09] text-slate-600 dark:text-slate-400 flex items-center justify-center">
               <Gauge class="h-4 w-4" />
             </div>
           </div>
-          <div class="h-0.5 rounded-full bg-slate-500 dark:bg-slate-500 mt-3"></div>
-        </UiCardContent>
-      </UiCard>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <UiCard class="border-amber-200/60 dark:border-amber-500/20">
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300">Due Soon</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ dueSoonCount }}</p>
-          <p class="text-xs text-slate-500 mt-1">Projects with due date in next 7 days</p>
-        </UiCardContent>
-      </UiCard>
-      <UiCard class="border-rose-200/60 dark:border-rose-500/20">
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-rose-700 dark:text-rose-300">At Risk</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ atRiskCount }}</p>
-          <p class="text-xs text-slate-500 mt-1">Deadline near with progress under 50%</p>
-        </UiCardContent>
-      </UiCard>
-      <UiCard class="border-teal-200/60 dark:border-teal-500/20">
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-teal-700 dark:text-teal-300">Unassigned PIC</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ unassignedPicCount }}</p>
-          <p class="text-xs text-slate-500 mt-1">Projects that need ownership assignment</p>
+          <div class="h-0.5 rounded-full bg-slate-200/80 dark:bg-white/[0.08] mt-3"></div>
         </UiCardContent>
       </UiCard>
     </div>
 
     <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-      <div v-for="i in 6" :key="i" class="rounded-xl bg-slate-100 dark:bg-slate-800 h-44 animate-pulse" />
+      <div v-for="i in 6" :key="i" class="rounded-xl bg-white/30 dark:bg-white/[0.04] h-44 animate-pulse" />
     </div>
 
-    <div v-else-if="projects.length === 0" class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center">
+    <div v-else-if="projects.length === 0" class="rounded-2xl border border-dashed border-white/60 dark:border-white/[0.09] p-8 text-center">
       <p class="text-slate-600 dark:text-slate-300 font-medium">Belum ada project</p>
       <p class="text-sm text-slate-500 mt-1">Buat project terlebih dahulu, lalu tambahkan task di dalamnya.</p>
     </div>
@@ -127,7 +103,7 @@
                 <span>Progress</span>
                 <span>{{ project.progress }}%</span>
               </div>
-              <div class="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div class="h-2 w-full rounded-full bg-white/40 dark:bg-white/[0.08] overflow-hidden">
                 <div
                   class="h-full bg-emerald-500 transition-all"
                   :style="{ width: `${Math.min(100, Number(project.progress || 0))}%` }"

@@ -1,22 +1,22 @@
 <template>
   <div class="space-y-6">
-    <div class="rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+    <div class="glass rounded-2xl p-5 md:p-6">
       <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Settings</h2>
       <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage struktur tim, akses anggota, dan konfigurasi penting workspace.</p>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Members</p>
           <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ memberCount }}</p>
         </div>
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Managers</p>
           <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ managerCount }}</p>
         </div>
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Role</p>
           <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ isManager ? 'Manager' : 'Member' }}</p>
         </div>
-        <div class="rounded-xl px-3 py-2 bg-white/80 dark:bg-slate-900/40 border border-white/80 dark:border-slate-700/50">
+        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Active Tab</p>
           <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ activeTabLabel }}</p>
         </div>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Tabs -->
-    <div class="border-b border-slate-200 dark:border-slate-700/30">
+    <div class="border-b border-white/60 dark:border-white/[0.07]">
       <nav class="flex gap-6">
         <button
           v-for="tab in tabs"
@@ -107,7 +107,7 @@
         </UiButton>
       </div>
       <UiCard>
-        <UiCardContent class="pt-4 divide-y divide-slate-100 dark:divide-slate-700/20">
+        <UiCardContent class="pt-4 divide-y divide-white/60 dark:divide-white/[0.06]">
           <div
             v-for="member in membersList"
             :key="member.id"

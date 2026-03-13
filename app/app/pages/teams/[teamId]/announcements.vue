@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.16),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+    <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Announcements</h2>
         <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Satu feed resmi untuk update tim, keputusan penting, dan broadcast prioritas.</p>

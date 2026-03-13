@@ -1,9 +1,9 @@
 <template>
   <div class="space-y-6">
     <!-- Team Header -->
-    <div class="flex items-start justify-between rounded-3xl border border-primary-200/40 dark:border-primary-500/20 p-5 md:p-6 bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.20),transparent_45%),linear-gradient(135deg,#f9fcff_0%,#eff6fb_45%,#e8f2f8_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(61,137,187,0.18),transparent_42%),linear-gradient(135deg,#0a1422_0%,#0b192a_60%,#10263a_100%)]">
+    <div class="flex items-start justify-between glass rounded-2xl p-5 md:p-6">
       <div class="flex items-center gap-4">
-        <div class="h-14 w-14 rounded-2xl bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xl font-bold text-slate-700 dark:text-slate-200">
+        <div class="h-14 w-14 rounded-2xl bg-white/50 dark:bg-white/[0.08] border border-white/70 dark:border-white/[0.12] flex items-center justify-center text-xl font-bold text-slate-700 dark:text-slate-200">
           {{ teamName.slice(0, 2).toUpperCase() }}
         </div>
         <div>
@@ -32,6 +32,41 @@
       </UiCard>
     </div>
 
+    <!-- Project Health -->
+    <UiCard>
+      <UiCardHeader>
+        <UiCardTitle class="text-base">Project Health</UiCardTitle>
+      </UiCardHeader>
+      <UiCardContent class="pt-2">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="rounded-xl p-3.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
+            <div class="flex items-center justify-between mb-1.5">
+              <p class="text-xs font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">On Track</p>
+              <div class="h-2 w-2 rounded-full bg-emerald-500"></div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.onTrack }}</p>
+            <p class="text-xs text-slate-400 mt-0.5">Progress ≥ 60% or completed</p>
+          </div>
+          <div class="rounded-xl p-3.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
+            <div class="flex items-center justify-between mb-1.5">
+              <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Needs Attention</p>
+              <div class="h-2 w-2 rounded-full bg-amber-500"></div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.attention }}</p>
+            <p class="text-xs text-slate-400 mt-0.5">Progress &lt; 60% and active</p>
+          </div>
+          <div class="rounded-xl p-3.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
+            <div class="flex items-center justify-between mb-1.5">
+              <p class="text-xs font-semibold uppercase tracking-wider text-rose-500 dark:text-rose-400">Overdue</p>
+              <div class="h-2 w-2 rounded-full bg-rose-500"></div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.overdue }}</p>
+            <p class="text-xs text-slate-400 mt-0.5">Due date passed, not done</p>
+          </div>
+        </div>
+      </UiCardContent>
+    </UiCard>
+
     <!-- Task Overview + My Assignment + Upcoming Timeline -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Task Distribution Chart -->
@@ -54,7 +89,7 @@
               />
               <div
                 v-if="taskDist.inProgress > 0"
-                class="h-full bg-sky-400/80 dark:bg-sky-500/70 transition-all duration-500"
+                class="h-full bg-primary-400/80 dark:bg-primary-500/70 transition-all duration-500"
                 :style="{ width: `${taskDist.inProgressP}%` }"
               />
               <div
@@ -89,8 +124,8 @@
           <UiCardTitle class="text-base">My Assignment</UiCardTitle>
         </UiCardHeader>
         <UiCardContent class="pt-2 space-y-3">
-          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-sky-400">
-            <p class="text-xs font-semibold uppercase tracking-wider text-sky-500 dark:text-sky-400">Assigned To Me</p>
+          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-primary-400">
+            <p class="text-xs font-semibold uppercase tracking-wider text-primary-500 dark:text-primary-400">Assigned To Me</p>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myAssignedTaskCount }}</p>
             <p class="text-xs text-slate-400 mt-1">active tasks</p>
           </div>
@@ -122,7 +157,7 @@
             class="rounded-xl px-3 py-2.5 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-center justify-between gap-2"
           >
             <div class="min-w-0 flex items-center gap-2.5">
-              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-sky-500' : 'bg-amber-500']" />
+              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-primary-500' : 'bg-amber-500']" />
               <div class="min-w-0">
                 <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ item.title }}</p>
                 <p class="text-xs text-slate-500">{{ item.subtitle }}</p>
@@ -133,65 +168,6 @@
         </UiCardContent>
       </UiCard>
     </div>
-
-    <!-- Project Health -->
-    <UiCard>
-      <UiCardHeader>
-        <div class="flex items-center justify-between">
-          <UiCardTitle class="text-base">Project Health</UiCardTitle>
-          <span class="text-xs text-slate-400">{{ projects.length }} projects total</span>
-        </div>
-      </UiCardHeader>
-      <UiCardContent class="pt-2 space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-emerald-400">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">On Track</p>
-              <div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
-            </div>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.onTrack }}</p>
-            <p class="text-xs text-slate-400 mt-1">Progress ≥ 60% or completed</p>
-          </div>
-          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-amber-400">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Needs Attention</p>
-              <div class="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
-            </div>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.attention }}</p>
-            <p class="text-xs text-slate-400 mt-1">Progress &lt; 60% and active</p>
-          </div>
-          <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-rose-400">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-rose-500 dark:text-rose-400">Overdue</p>
-              <div class="h-1.5 w-1.5 rounded-full bg-rose-500"></div>
-            </div>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.overdue }}</p>
-            <p class="text-xs text-slate-400 mt-1">Due date passed, not done</p>
-          </div>
-        </div>
-        <!-- Health Visual Bar -->
-        <div v-if="projects.length > 0" class="space-y-1">
-          <div class="h-2 rounded-full flex overflow-hidden gap-0.5 bg-white/30 dark:bg-white/[0.08]">
-            <div
-              v-if="projectHealth.onTrack > 0"
-              class="h-full bg-emerald-400/80 dark:bg-emerald-500/70 rounded-l-full transition-all duration-500"
-              :style="{ width: `${(projectHealth.onTrack / projects.length) * 100}%` }"
-            />
-            <div
-              v-if="projectHealth.attention > 0"
-              class="h-full bg-amber-400/80 dark:bg-amber-500/70 transition-all duration-500"
-              :style="{ width: `${(projectHealth.attention / projects.length) * 100}%` }"
-            />
-            <div
-              v-if="projectHealth.overdue > 0"
-              class="h-full bg-rose-400/80 dark:bg-rose-500/70 rounded-r-full transition-all duration-500"
-              :style="{ width: `${(projectHealth.overdue / projects.length) * 100}%` }"
-            />
-          </div>
-        </div>
-      </UiCardContent>
-    </UiCard>
-
 
   </div>
 </template>
@@ -227,37 +203,37 @@ const quickStats = computed(() => [
     label: 'Members',
     value: team.value?._count?.members ?? '-',
     icon: Users,
-    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
-    iconColor: 'text-sky-500 dark:text-sky-400',
+    iconBg: 'bg-primary-50/80 dark:bg-primary-500/[0.10]',
+    iconColor: 'text-primary-500 dark:text-primary-400',
     labelColor: 'text-slate-500 dark:text-slate-400',
-    bar: 'bg-sky-400/60 dark:bg-sky-500/50',
+    bar: 'bg-primary-400/50 dark:bg-primary-500/40',
   },
   {
     label: 'Projects',
     value: team.value?._count?.projects ?? '-',
     icon: FolderKanban,
-    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
-    iconColor: 'text-violet-500 dark:text-violet-400',
+    iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]',
+    iconColor: 'text-slate-500 dark:text-slate-400',
     labelColor: 'text-slate-500 dark:text-slate-400',
-    bar: 'bg-violet-400/60 dark:bg-violet-500/50',
+    bar: 'bg-slate-300/80 dark:bg-slate-500/30',
   },
   {
     label: 'Active Tasks',
     value: activeTaskCount.value,
     icon: CheckSquare,
-    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
-    iconColor: 'text-amber-500 dark:text-amber-400',
+    iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]',
+    iconColor: 'text-slate-500 dark:text-slate-400',
     labelColor: 'text-slate-500 dark:text-slate-400',
-    bar: 'bg-amber-400/60 dark:bg-amber-500/50',
+    bar: 'bg-slate-300/80 dark:bg-slate-500/30',
   },
   {
     label: 'Announcements',
     value: team.value?._count?.announcements ?? '-',
     icon: Megaphone,
-    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
-    iconColor: 'text-emerald-500 dark:text-emerald-400',
+    iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]',
+    iconColor: 'text-slate-500 dark:text-slate-400',
     labelColor: 'text-slate-500 dark:text-slate-400',
-    bar: 'bg-emerald-400/60 dark:bg-emerald-500/50',
+    bar: 'bg-slate-300/80 dark:bg-slate-500/30',
   },
 ])
 
@@ -279,7 +255,7 @@ const taskDist = computed(() => {
 
 const taskStatuses = computed(() => [
   { label: 'Todo', count: todoCount.value, dot: 'bg-slate-400' },
-  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-sky-500' },
+  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-primary-500' },
   { label: 'Review', count: reviewCount.value, dot: 'bg-amber-500' },
   { label: 'Done', count: completedTaskCount.value, dot: 'bg-emerald-500' },
 ])
@@ -397,7 +373,7 @@ const formatTime = (date: string) => {
 const statusColor = (status: string) => {
   const colors: Record<string, string> = {
     TODO: 'bg-slate-400',
-    IN_PROGRESS: 'bg-sky-500',
+    IN_PROGRESS: 'bg-primary-500',
     REVIEW: 'bg-amber-500',
     DONE: 'bg-emerald-500',
   }

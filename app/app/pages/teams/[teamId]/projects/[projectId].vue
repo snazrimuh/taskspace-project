@@ -57,7 +57,7 @@
             <span>Progress</span>
             <span>{{ Number(project?.progress || 0).toFixed(2) }}%</span>
           </div>
-          <div class="h-2.5 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+          <div class="h-2.5 w-full rounded-full bg-white/40 dark:bg-white/[0.08] overflow-hidden">
             <div class="h-full bg-emerald-500 transition-all" :style="{ width: `${Math.min(100, Number(project?.progress || 0))}%` }" />
           </div>
         </div>
@@ -98,7 +98,7 @@
     </div>
 
     <div v-if="isLoading" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-      <div v-for="i in 4" :key="i" class="rounded-xl bg-slate-100 dark:bg-slate-800 h-64 animate-pulse" />
+      <div v-for="i in 4" :key="i" class="rounded-xl bg-white/30 dark:bg-white/[0.04] h-64 animate-pulse" />
     </div>
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-4 gap-4">
