@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage :keepalive="{ max: 5, exclude: ['teams-teamId-chat'] }" />
   </NuxtLayout>
 </template>
 

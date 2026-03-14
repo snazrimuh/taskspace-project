@@ -396,12 +396,12 @@ const chartOptions = computed(() => {
 })
 
 onMounted(async () => {
-  await teamStore.fetchTeams()
   isStatsLoading.value = true
   try {
-    const [invitesRes, statsRes] = await Promise.all([
-       api.get<{ success: boolean; data: Invite[] }>('/invites').catch(() => ({ data: [] })),
-       api.get<{ success: boolean; data: any[] }>('/users/me/stats/tasks').catch(() => ({ data: [] }))
+    const [, invitesRes, statsRes] = await Promise.all([
+      teamStore.fetchTeams(),
+      api.get<{ success: boolean; data: Invite[] }>('/invites').catch(() => ({ data: [] })),
+      api.get<{ success: boolean; data: any[] }>('/users/me/stats/tasks').catch(() => ({ data: [] }))
     ])
     pendingInvites.value = invitesRes.data || []
     taskStats.value = Array.isArray(statsRes?.data) ? statsRes.data : []
@@ -433,7 +433,7 @@ const handleAcceptInvite = async (invite: Invite) => {
   try {
     await api.post(`/invites/${invite.id}/accept`)
     pendingInvites.value = pendingInvites.value.filter((i) => i.id !== invite.id)
-    await teamStore.fetchTeams()
+    await teamStore.fetchTeams(true)
   } finally {
     acceptingId.value = null
   }

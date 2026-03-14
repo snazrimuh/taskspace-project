@@ -351,13 +351,17 @@ const fetchData = async () => {
 }
 
 onMounted(async () => {
-  await teamStore.fetchTeam(teamId.value)
-  await fetchData()
+  await Promise.all([
+    teamStore.fetchTeam(teamId.value),
+    fetchData(),
+  ])
 })
 
 watch(teamId, async () => {
-  await teamStore.fetchTeam(teamId.value)
-  await fetchData()
+  await Promise.all([
+    teamStore.fetchTeam(teamId.value, true),
+    fetchData(),
+  ])
 })
 
 // ── Helpers ────────────────────────────────────────────────────────────

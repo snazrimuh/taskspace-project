@@ -165,12 +165,10 @@ const initForm = () => {
 }
 
 onMounted(async () => {
-  if (!teamStore.currentTeam || teamStore.currentTeam.id !== teamId.value) {
-    await teamStore.fetchTeam(teamId.value)
-  }
-  if (!membersList.value.length) {
-    await teamStore.fetchMembers(teamId.value)
-  }
+  await Promise.all([
+    teamStore.fetchTeam(teamId.value),
+    teamStore.fetchMembers(teamId.value),
+  ])
   initForm()
 })
 
