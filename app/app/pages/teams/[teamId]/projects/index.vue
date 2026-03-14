@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Projects</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola project tim, PIC, progress, dan risiko deadline dari satu tampilan.</p>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage team projects, PICs, progress, and deadline risks from a single view.</p>
         <p class="text-xs text-slate-500 mt-1.5">{{ inProgressCount }} ongoing · {{ dueSoonCount }} due soon · {{ atRiskCount }} at risk</p>
       </div>
       <UiButton v-if="isManager" @click="showCreate = true">
@@ -76,8 +76,8 @@
     </div>
 
     <div v-else-if="projects.length === 0" class="rounded-2xl border border-dashed border-white/60 dark:border-white/[0.09] p-8 text-center">
-      <p class="text-slate-600 dark:text-slate-300 font-medium">Belum ada project</p>
-      <p class="text-sm text-slate-500 mt-1">Buat project terlebih dahulu, lalu tambahkan task di dalamnya.</p>
+      <p class="text-slate-600 dark:text-slate-300 font-medium">No projects yet</p>
+      <p class="text-sm text-slate-500 mt-1">Create a project first, then add tasks inside.</p>
     </div>
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

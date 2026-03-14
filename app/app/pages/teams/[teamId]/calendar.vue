@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Calendar</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Pantau event, deadline project, dan deadline tugas personal dalam satu timeline.</p>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Track events, project deadlines, and personal task deadlines in one timeline.</p>
       </div>
       <UiButton v-if="isManager" @click="showCreate = true">
         <Plus class="h-4 w-4 mr-2" />

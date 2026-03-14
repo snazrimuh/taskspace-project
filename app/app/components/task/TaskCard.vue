@@ -28,7 +28,13 @@
         <span>{{ formatDate(task.dueDate) }}</span>
       </div>
       <div v-else />
-      <UiAvatar v-if="task.assignee" :name="task.assignee" size="sm" class="!h-6 !w-6 !text-[10px]" />
+      <UiAvatar
+        v-if="task.assignee"
+        :name="task.assignee.name"
+        :src="task.assignee.avatar"
+        size="sm"
+        class="!h-6 !w-6 !text-[10px]"
+      />
     </div>
   </div>
 </template>
@@ -42,7 +48,7 @@ interface Props {
     title: string
     priority: string
     description?: string
-    assignee?: string
+    assignee?: { name: string; avatar?: string }
     dueDate?: string
   }
 }
@@ -62,19 +68,19 @@ const onDragEnd = () => { isDragging.value = false }
 
 const priorityDot = computed(() => {
   const map: Record<string, string> = {
-    LOW: 'bg-slate-400', MEDIUM: 'bg-primary-500', HIGH: 'bg-amber-500', URGENT: 'bg-rose-500',
+    LOW: 'bg-[#B8CFCE]', MEDIUM: 'bg-[#7F8CAA]', HIGH: 'bg-[#333446]', URGENT: 'bg-[#333446] ring-2 ring-[#7F8CAA]/30',
   }
-  return map[props.task.priority] ?? 'bg-slate-400'
+  return map[props.task.priority] ?? 'bg-[#EAEFEF]'
 })
 
 const priorityText = computed(() => {
   const map: Record<string, string> = {
-    LOW: 'text-slate-400',
-    MEDIUM: 'text-primary-600 dark:text-primary-400',
-    HIGH: 'text-amber-600 dark:text-amber-400',
-    URGENT: 'text-rose-600 dark:text-rose-400',
+    LOW: 'text-[#7F8CAA]',
+    MEDIUM: 'text-[#333446]',
+    HIGH: 'text-[#333446] font-bold',
+    URGENT: 'text-[#333446] font-black underline decoration-[#B8CFCE]',
   }
-  return map[props.task.priority] ?? 'text-slate-400'
+  return map[props.task.priority] ?? 'text-[#7F8CAA]'
 })
 
 const formatDate = (date: string) =>

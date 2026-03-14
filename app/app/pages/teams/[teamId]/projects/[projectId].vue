@@ -353,10 +353,10 @@ const board = ref<Record<string, Task[]>>({
 const members = computed(() => teamStore.currentTeamMembers as unknown as TeamMember[])
 
 const columns = [
-  { key: 'TODO', title: 'Todo', color: 'bg-slate-400' },
-  { key: 'IN_PROGRESS', title: 'In Progress', color: 'bg-primary-500' },
-  { key: 'REVIEW', title: 'Review', color: 'bg-amber-500' },
-  { key: 'DONE', title: 'Done', color: 'bg-emerald-500' },
+  { key: 'TODO', title: 'Todo', color: 'bg-[#EAEFEF] ring-1 ring-[#B8CFCE]' },
+  { key: 'IN_PROGRESS', title: 'In Progress', color: 'bg-[#B8CFCE]' },
+  { key: 'REVIEW', title: 'Review', color: 'bg-[#7F8CAA]' },
+  { key: 'DONE', title: 'Done', color: 'bg-[#333446]' },
 ]
 
 const fetchProject = async () => {
@@ -425,7 +425,7 @@ const daysLeft = computed(() => {
 
 const flatTask = (t: Task) => ({
   ...t,
-  assignee: t.assignee?.name,
+  assignee: t.assignee ? { name: t.assignee.name, avatar: t.assignee.avatar } : undefined,
 })
 
 const openTask = (task: Task) => {

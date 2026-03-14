@@ -6,7 +6,7 @@
       <p class="text-sm md:text-base text-slate-600 dark:text-slate-300 mt-1.5">
         Welcome back,
         <ClientOnly><span class="font-semibold text-primary-600 dark:text-primary-400">{{ authStore.user?.name ?? 'there' }}</span></ClientOnly>.
-        Pantau beban kerja tim, health project, dan prioritas harian dari satu tempat.
+        Monitor team workload, project health, and daily priorities from one place.
       </p>
 
       <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -109,8 +109,19 @@
         </UiCardHeader>
         <UiCardContent class="flex-1 w-full relative p-4">
           <ClientOnly>
-            <div class="absolute inset-0 p-4">
-              <Line :data="chartData" :options="chartOptions" />
+            <div v-if="isStatsLoading" class="absolute inset-0 p-4 flex flex-col gap-3 justify-end">
+              <div class="h-2 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-full w-3/4 self-end"></div>
+              <div class="flex items-end gap-2 h-40">
+                <div v-for="n in 7" :key="n" class="flex-1 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-t-md" :style="`height: ${20 + (n * 11) % 70}%`"></div>
+              </div>
+            </div>
+            <div v-else-if="taskStats.length === 0" class="absolute inset-0 p-4 flex flex-col items-center justify-center gap-2 text-slate-400">
+              <CheckSquare class="w-8 h-8 opacity-25" />
+              <p class="text-sm font-medium">No task activity in the last 7 days</p>
+              <p class="text-xs opacity-70">Tasks assigned to you will appear here</p>
+            </div>
+            <div v-else class="absolute inset-0 p-4">
+              <Line :data="chartData" :options="chartOptions" :key="`chart-${taskStats.length}-${isDark}`" />
             </div>
             <template #fallback>
               <div class="h-full w-full flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
@@ -242,15 +253,17 @@ const decliningId = ref<string | null>(null)
 
 // Task Stats for Chart
 const taskStats = ref<{ date: string; assigned: number; completed: number }[]>([])
+const isStatsLoading = ref(true)
+const { isDark } = useTheme()
 
 const teams = computed(() => teamStore.teams)
 const totalProjects = computed(() => teams.value.reduce((a, t) => a + (t._count?.projects ?? 0), 0))
 const managedTeams = computed(() => teams.value.filter((t) => t.role === 'ADMIN').length)
 
 const stats = computed(() => [
-  { label: 'My Team', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-500/[0.10]', iconColor: 'text-primary-500 dark:text-primary-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/40' },
-  { label: 'My Project', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
-  { label: 'Active Task', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
+  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-500/[0.10]', iconColor: 'text-primary-500 dark:text-primary-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/40' },
+  { label: 'My Projects', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
+  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
   { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
 ])
 
@@ -308,80 +321,83 @@ const chartData = computed(() => {
   }
 })
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      align: 'end' as const,
-      labels: {
-        usePointStyle: true,
-        pointStyle: 'circle',
-        boxWidth: 6,
-        padding: 20,
-        font: { size: 11, family: "'Inter', sans-serif", weight: 500 },
-        color: '#94a3b8' // slate-400
-      }
-    },
-    tooltip: {
-      mode: 'index' as const,
-      intersect: false,
-      backgroundColor: 'rgba(15, 23, 42, 0.95)', // slate-900 high opacity
-      titleColor: '#f8fafc',
-      bodyColor: '#cbd5e1',
-      borderColor: 'rgba(255,255,255,0.05)',
-      borderWidth: 1,
-      padding: 12,
-      cornerRadius: 12,
-      titleFont: { size: 13, weight: 600, family: "'Inter', sans-serif" },
-      bodyFont: { size: 12, family: "'Inter', sans-serif" },
-      displayColors: true,
-      boxPadding: 4,
-      callbacks: {
-        label: function(context: any) {
-          return ` ${context.dataset.label}: ${context.parsed.y}`
+const chartOptions = computed(() => {
+  const tickColor = isDark.value ? '#94a3b8' : '#64748b'
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        align: 'end' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+          boxWidth: 6,
+          padding: 20,
+          font: { size: 11, family: "'Inter', sans-serif", weight: 500 },
+          color: tickColor,
+        }
+      },
+      tooltip: {
+        mode: 'index' as const,
+        intersect: false,
+        backgroundColor: isDark.value ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)',
+        titleColor: isDark.value ? '#f8fafc' : '#0f172a',
+        bodyColor: isDark.value ? '#cbd5e1' : '#475569',
+        borderColor: isDark.value ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 12,
+        titleFont: { size: 13, weight: 600, family: "'Inter', sans-serif" },
+        bodyFont: { size: 12, family: "'Inter', sans-serif" },
+        displayColors: true,
+        boxPadding: 4,
+        callbacks: {
+          label: function(context: any) {
+            return ` ${context.dataset.label}: ${context.parsed.y}`
+          }
         }
       }
-    }
-  },
-  scales: {
-    x: {
-      grid: { display: false, drawBorder: false },
-      ticks: { 
-        font: { size: 10, family: "'Inter', sans-serif" },
-        color: '#94a3b8' // slate-400
-      },
-      border: { display: false }
     },
-    y: {
-      grid: { 
-        color: 'rgba(255, 255, 255, 0.03)', 
-        drawBorder: false,
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: {
+          font: { size: 10, family: "'Inter', sans-serif" },
+          color: tickColor,
+        },
+        border: { display: false }
       },
-      ticks: { 
-        stepSize: 1, 
-        font: { size: 10, family: "'Inter', sans-serif" },
-        color: '#94a3b8',
-        padding: 10
-      },
-      beginAtZero: true,
-      border: { display: false }
-    }
-  },
-  interaction: {
-    mode: 'index' as const,
-    intersect: false,
-  },
-  elements: {
-    line: {
-      borderJoinStyle: 'round' as const
+      y: {
+        grid: {
+          color: isDark.value ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)',
+        },
+        ticks: {
+          stepSize: 1,
+          font: { size: 10, family: "'Inter', sans-serif" },
+          color: tickColor,
+          padding: 10
+        },
+        beginAtZero: true,
+        border: { display: false }
+      }
+    },
+    interaction: {
+      mode: 'index' as const,
+      intersect: false,
+    },
+    elements: {
+      line: {
+        borderJoinStyle: 'round' as const
+      }
     }
   }
-}
+})
 
 onMounted(async () => {
   await teamStore.fetchTeams()
+  isStatsLoading.value = true
   try {
     const [invitesRes, statsRes] = await Promise.all([
        api.get<{ success: boolean; data: Invite[] }>('/invites').catch(() => ({ data: [] })),
@@ -389,7 +405,9 @@ onMounted(async () => {
     ])
     pendingInvites.value = invitesRes.data || []
     taskStats.value = Array.isArray(statsRes?.data) ? statsRes.data : []
-  } catch { /* invites optional */ }
+  } catch { /* invites optional */ } finally {
+    isStatsLoading.value = false
+  }
 })
 
 

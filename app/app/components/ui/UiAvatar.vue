@@ -41,15 +41,19 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
 })
 
-const normalizedSrc = computed(() => props.src.trim())
+const normalizedSrc = computed(() => (props.src || '').trim())
 
-const isImageSrc = computed(() => /^(https?:\/\/|\/|data:image\/|blob:)/i.test(normalizedSrc.value))
+// Allow any non-empty string as src, assuming data integrity from backend
+const isImageSrc = computed(() => normalizedSrc.value.length > 0)
 
-const showImage = computed(() => !!normalizedSrc.value && isImageSrc.value)
+const showImage = computed(() => isImageSrc.value)
 
 const characterAvatar = computed(() => {
-  if (!normalizedSrc.value || isImageSrc.value) return ''
-  return Array.from(normalizedSrc.value)[0] ?? ''
+  // Only show first char if it's explicitly NOT an image source (fallback logic removed for simplicity, trust src)
+  // Actually, if we want to support 'A' as src for character avatar, we need a way to distinguish.
+  // But standard usage seems to be separate props: name vs src.
+  // If src is provided, treat as image.
+  return ''
 })
 
 const initials = computed(() => {

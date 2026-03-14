@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Announcements</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Satu feed resmi untuk update tim, keputusan penting, dan broadcast prioritas.</p>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">One official feed for team updates, important decisions, and priority broadcasts.</p>
       </div>
       <UiButton v-if="isManager" @click="showCreate = true">
         <Plus class="h-4 w-4 mr-2" />
@@ -41,7 +41,7 @@
     <UiCard v-if="!isLoading && announcements.length === 0">
       <UiCardContent class="pt-8 pb-8 text-center">
         <p class="font-semibold text-slate-700 dark:text-slate-200">No announcements yet</p>
-        <p class="text-sm text-slate-500 mt-1">Mulai dengan update penting tim agar semua anggota sinkron.</p>
+        <p class="text-sm text-slate-500 mt-1">Start with important team updates to keep everyone in sync.</p>
       </UiCardContent>
     </UiCard>
 

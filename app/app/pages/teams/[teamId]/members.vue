@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
       <div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Members</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Kelola anggota tim, role, dan undangan aktif secara terpusat.</p>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage team members, roles, and active invitations centrally.</p>
       </div>
       <UiButton v-if="isManager" @click="showInvite = true">
         <UserPlus class="h-4 w-4 mr-2" />

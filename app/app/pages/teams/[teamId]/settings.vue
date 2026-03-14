@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <div class="glass rounded-2xl p-5 md:p-6">
       <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Settings</h2>
-      <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage struktur tim, akses anggota, dan konfigurasi penting workspace.</p>
+      <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage team structure, member access, and important workspace configurations.</p>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
         <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Members</p>

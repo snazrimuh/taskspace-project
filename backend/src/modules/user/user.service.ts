@@ -16,7 +16,7 @@ export class UserService {
   async getUserTaskStats(userId: string) {
     // Get stats for the last 7 days based on UTC Date
     const today = new Date();
-    const stats = [];
+    const stats: { date: string; assigned: number; completed: number }[] = [];
 
     // Fetch all relevant tasks first (performance optimization: fetch only what's needed)
     // We look back approx 8 days to be safe with timezones
