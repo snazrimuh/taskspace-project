@@ -5,12 +5,64 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { TaskStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateProfileDto, ChangePasswordDto } from './dto';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
+
+  async getUserTaskStats(userId: string) {
+    // Get stats for the last 7 days based on UTC Date
+    const today = new Date();
+    const stats = [];
+
+    // Fetch all relevant tasks first (performance optimization: fetch only what's needed)
+    // We look back approx 8 days to be safe with timezones
+    const lookbackDate = new Date(today);
+    lookbackDate.setDate(lookbackDate.getDate() - 8);
+
+    const tasks = await this.prisma.task.findMany({
+      where: {
+        assigneeId: userId,
+        OR: [
+          { createdAt: { gte: lookbackDate } },
+          { updatedAt: { gte: lookbackDate } },
+        ],
+      },
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateKey = d.toISOString().split('T')[0]; // YYYY-MM-DD in UTC
+
+      const assignedCount = tasks.filter((t) =>
+        t.createdAt.toISOString().startsWith(dateKey),
+      ).length;
+
+      const completedCount = tasks.filter(
+        (t) =>
+          t.status === TaskStatus.DONE &&
+          t.updatedAt.toISOString().startsWith(dateKey),
+      ).length;
+
+      stats.push({
+        date: dateKey,
+        assigned: assignedCount,
+        completed: completedCount,
+      });
+    }
+
+    return stats;
+  }
 
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({

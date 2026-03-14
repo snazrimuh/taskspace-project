@@ -53,9 +53,9 @@
               </div>
               <div
                 :class="[
-                  'rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
+                  'rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm',
                   isMe(msg)
-                    ? 'bg-primary-600 dark:bg-primary-600 text-white rounded-br-sm'
+                    ? 'bg-indigo-600 dark:bg-indigo-700 text-white rounded-br-sm'
                     : 'bg-white/60 dark:bg-white/[0.07] text-slate-800 dark:text-slate-200 rounded-bl-sm border border-white/70 dark:border-white/[0.08]',
                 ]"
               >

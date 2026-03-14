@@ -5,7 +5,7 @@ export interface Team {
   name: string
   description?: string
   avatar?: string
-  role?: 'MANAGER' | 'MEMBER'
+  role?: 'ADMIN' | 'MEMBER'
   _count?: { members: number; tasks: number; announcements: number; projects: number }
   members?: TeamMember[]
 }
@@ -14,7 +14,7 @@ export interface TeamMember {
   id: string
   userId: string
   teamId: string
-  role: 'MANAGER' | 'MEMBER'
+  role: 'ADMIN' | 'MEMBER'
   joinedAt: string
   user: { id: string; name: string; email: string; avatar?: string; bio?: string }
 }
@@ -28,7 +28,7 @@ export const useTeamStore = defineStore('team', {
   }),
 
   getters: {
-    isCurrentTeamManager: (state) => state.currentTeam?.role === 'MANAGER',
+    isCurrentTeamManager: (state) => state.currentTeam?.role === 'ADMIN',
     currentUserRoleInTeam: (state) => state.currentTeam?.role ?? 'MEMBER',
   },
 
@@ -37,8 +37,11 @@ export const useTeamStore = defineStore('team', {
       this.isLoading = true
       try {
         const api = useApi()
-        const res = await api.get<{ success: boolean; data: Team[] }>('/teams')
-        this.teams = res.data
+        const res = await api.get<{ success: boolean; data: any[] }>('/teams')
+        this.teams = res.data.map((t) => ({
+          ...t,
+          role: t.role === 'MANAGER' ? 'ADMIN' : t.role,
+        }))
       } finally {
         this.isLoading = false
       }
@@ -46,22 +49,26 @@ export const useTeamStore = defineStore('team', {
 
     async fetchTeam(teamId: string) {
       const api = useApi()
-      const res = await api.get<{ success: boolean; data: Team }>(`/teams/${teamId}`)
-      // Preserve the current user's role from the teams list (GET /teams includes role)
+      const res = await api.get<{ success: boolean; data: any }>(`/teams/${teamId}`)
+      // Preserve the current user's role from the teams list (GET /teams includes role) - normalize backend MANAGER -> ADMIN
       const existing = this.teams.find((t) => t.id === teamId)
-      this.currentTeam = { ...res.data, role: existing?.role ?? this.currentTeam?.role }
+      const role = existing?.role ?? (res.data.role === 'MANAGER' ? 'ADMIN' : res.data.role ?? 'MEMBER')
+      
+      this.currentTeam = { ...res.data, role }
       return this.currentTeam
     },
 
     async fetchMembers(teamId: string) {
       const api = useApi()
-      const res = await api.get<{ success: boolean; data: TeamMember[] }>(`/teams/${teamId}/members`)
-      this.currentTeamMembers = res.data
+      const res = await api.get<{ success: boolean; data: any[] }>(`/teams/${teamId}/members`)
+      // Normalize roles in the response
+      const members = res.data.map((m) => ({ ...m, role: m.role === 'MANAGER' ? 'ADMIN' : m.role })) as TeamMember[]
+      this.currentTeamMembers = members
 
       // Derive current user's role from their membership record
       const authStore = useAuthStore()
       if (authStore.user) {
-        const me = res.data.find((m) => m.userId === authStore.user!.id)
+        const me = members.find((m) => m.userId === authStore.user!.id)
         if (me) {
           if (this.currentTeam?.id === teamId) {
             this.currentTeam = { ...this.currentTeam, role: me.role }
@@ -72,23 +79,26 @@ export const useTeamStore = defineStore('team', {
           }
         }
       }
-      return res.data
+      return members
     },
 
     async createTeam(name: string, description?: string) {
       const api = useApi()
-      const res = await api.post<{ success: boolean; data: Team }>('/teams', { name, description })
-      this.teams.unshift(res.data)
-      return res.data
+      const res = await api.post<{ success: boolean; data: any }>('/teams', { name, description })
+      const newTeam = { ...res.data, role: res.data.role === 'MANAGER' ? 'ADMIN' : res.data.role }
+      this.teams.unshift(newTeam)
+      return newTeam
     },
 
     async updateTeam(teamId: string, data: { name?: string; description?: string }) {
       const api = useApi()
-      const res = await api.patch<{ success: boolean; data: Team }>(`/teams/${teamId}`, data)
+      const res = await api.patch<{ success: boolean; data: any }>(`/teams/${teamId}`, data)
+      const updatedData = { ...res.data, role: res.data.role === 'MANAGER' ? 'ADMIN' : res.data.role }
+      
       const idx = this.teams.findIndex((t) => t.id === teamId)
-      if (idx !== -1) this.teams[idx] = { ...this.teams[idx], ...res.data }
-      if (this.currentTeam?.id === teamId) this.currentTeam = { ...this.currentTeam, ...res.data }
-      return res.data
+      if (idx !== -1) this.teams[idx] = { ...this.teams[idx], ...updatedData }
+      if (this.currentTeam?.id === teamId) this.currentTeam = { ...this.currentTeam, ...updatedData }
+      return updatedData
     },
 
     async deleteTeam(teamId: string) {
@@ -103,7 +113,7 @@ export const useTeamStore = defineStore('team', {
       this.teams = this.teams.filter((t) => t.id !== teamId)
     },
 
-    async updateMemberRole(teamId: string, userId: string, role: 'MANAGER' | 'MEMBER') {
+    async updateMemberRole(teamId: string, userId: string, role: 'ADMIN' | 'MEMBER') {
       const api = useApi()
       await api.patch(`/teams/${teamId}/members/${userId}`, { role })
       const m = this.currentTeamMembers.find((m) => m.userId === userId)
@@ -116,7 +126,7 @@ export const useTeamStore = defineStore('team', {
       this.currentTeamMembers = this.currentTeamMembers.filter((m) => m.userId !== userId)
     },
 
-    async sendInvite(teamId: string, email: string, role: 'MANAGER' | 'MEMBER') {
+    async sendInvite(teamId: string, email: string, role: 'ADMIN' | 'MEMBER') {
       const api = useApi()
       return api.post(`/teams/${teamId}/invites`, { email, role })
     },

@@ -120,7 +120,7 @@
                 <div class="text-xs text-slate-500">{{ member.user.email }}</div>
               </div>
             </div>
-            <UiBadge :variant="member.role === 'MANAGER' ? 'default' : 'secondary'">{{ member.role === 'MANAGER' ? 'Manager' : 'Member' }}</UiBadge>
+            <UiBadge :variant="member.role === 'ADMIN' ? 'default' : 'secondary'">{{ member.role === 'ADMIN' ? 'Admin' : 'Member' }}</UiBadge>
           </div>
         </UiCardContent>
       </UiCard>
@@ -154,7 +154,7 @@ const isDangerous = ref(false)
 // ── Members ────────────────────────────────────────────────────────────
 const membersList = computed(() => teamStore.currentTeamMembers)
 const memberCount = computed(() => membersList.value.length)
-const managerCount = computed(() => membersList.value.filter((m) => m.role === 'MANAGER').length)
+const managerCount = computed(() => membersList.value.filter((m) => m.role === 'ADMIN').length)
 const activeTabLabel = computed(() => (activeTab.value === 'general' ? 'General' : 'Members'))
 
 // ── Init ───────────────────────────────────────────────────────────────

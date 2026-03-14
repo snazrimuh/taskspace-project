@@ -9,58 +9,113 @@
         Pantau beban kerja tim, health project, dan prioritas harian dari satu tempat.
       </p>
 
-      <div class="rounded-2xl mt-5 backdrop-blur-md bg-white/40 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.1] overflow-hidden">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-x divide-white/40 dark:divide-white/[0.08]">
-          <div
-            v-for="(stat, idx) in stats"
-            :key="`header-${stat.label}`"
-            class="px-6 py-5"
-          >
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          v-for="(stat, idx) in stats"
+          :key="`header-${stat.label}`"
+          class="rounded-xl bg-white/40 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.1] p-4 flex items-center justify-between transition-transform hover:-translate-y-1 duration-300"
+        >
+          <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ stat.label }}</p>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">{{ stat.value }}</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ stat.value }}</p>
+          </div>
+          <div :class="`p-2.5 rounded-lg ${stat.iconBg}`">
+             <component :is="stat.icon" :class="`w-5 h-5 ${stat.iconColor}`" />
           </div>
         </div>
       </div>
     </div>
 
+    <!-- My Teams -->
+    <UiCard class="overflow-hidden">
+      <UiCardHeader class="border-b border-slate-100 dark:border-slate-800/60 pb-4">
+        <div class="flex items-center justify-between w-full">
+          <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">My Teams</h2>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400">{{ teams.length }} active teams</span>
+            <UiButton size="sm" @click="showCreateTeam = true">
+              <Plus class="h-3.5 w-3.5 mr-1" />
+              New Team
+            </UiButton>
+          </div>
+        </div>
+      </UiCardHeader>
+        
+        <div v-if="teamStore.isLoading" class="p-6 space-y-4">
+           <div v-for="n in 3" :key="n" class="h-16 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+        </div>
+
+        <div v-else-if="teams.length === 0" class="p-12 text-center text-slate-400 text-sm">
+          No teams yet. Create your first team to get started!
+        </div>
+
+        <div v-else class="divide-y divide-slate-100 dark:divide-slate-800/60">
+          <NuxtLink
+            v-for="team in teams"
+            :key="team.id"
+            :to="`/teams/${team.id}`"
+            class="block group hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors p-4 sm:px-6"
+          >
+            <div class="flex items-center gap-4">
+              <!-- Team Icon -->
+              <div class="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 border border-slate-200 dark:border-white/[0.05]">
+                {{ team.name.slice(0, 2).toUpperCase() }}
+              </div>
+              
+              <!-- Team Info -->
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm">{{ team.name }}</h3>
+                   <UiBadge :variant="team.role === 'ADMIN' ? 'info' : 'secondary'" class="text[10px] px-1.5 py-0">
+                    {{ team.role === 'ADMIN' ? 'Admin' : 'Member' }}
+                  </UiBadge>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-slate-400">
+                  <span class="flex items-center gap-1"><Users class="w-3 h-3" /> {{ team._count?.members ?? 0 }} members</span>
+                  <span class="hidden sm:flex items-center gap-1"><Target class="w-3 h-3" /> {{ team._count?.projects ?? 0 }} projects</span>
+                </div>
+              </div>
+
+               <!-- Team Stats (Right side) -->
+              <div class="hidden sm:flex items-center gap-6 text-xs text-slate-500 shrink-0">
+                 <div class="text-right">
+                    <p class="font-medium text-slate-900 dark:text-slate-100">{{ team._count?.tasks ?? 0 }}</p>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wide">Tasks</p>
+                 </div>
+                 <div class="text-right">
+                    <p class="font-medium text-slate-900 dark:text-slate-100">{{ team._count?.announcements ?? 0 }}</p>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wide">Updates</p>
+                 </div>
+              </div>
+              
+              <!-- Chevron -->
+              <div class="text-slate-300 group-hover:text-primary-400 transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </UiCard>
+
     <!-- Workload Chart + Focus Today -->
     <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
-      <!-- Team Workload Bar Chart -->
-      <UiCard class="xl:col-span-3 overflow-hidden">
+      <!-- Personal Task Activity Chart -->
+      <UiCard class="xl:col-span-3 overflow-hidden flex flex-col h-full min-h-[400px]">
         <UiCardHeader>
           <div class="flex items-center justify-between">
-            <UiCardTitle class="text-base">Team Workload</UiCardTitle>
-            <span class="text-xs text-slate-400">Tasks per team</span>
+            <UiCardTitle class="text-base">My Task Activity</UiCardTitle>
+            <span class="text-xs text-slate-400">Last 7 days</span>
           </div>
         </UiCardHeader>
-        <UiCardContent class="pt-2 space-y-3">
-          <div v-if="workloadTeams.length === 0" class="text-sm text-slate-400 text-center py-6">No teams yet.</div>
-          <div
-            v-for="team in workloadTeams"
-            :key="team.id"
-            class="space-y-1.5"
-          >
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="h-7 w-7 rounded-lg bg-white/50 dark:bg-white/[0.07] flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 shrink-0 border border-white/70 dark:border-white/[0.10]">
-                  {{ team.name.slice(0, 2).toUpperCase() }}
-                </div>
-                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{{ team.name }}</span>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="text-xs text-slate-500">{{ team._count?.tasks ?? 0 }} tasks</span>
-                <UiBadge :variant="team.role === 'MANAGER' ? 'info' : 'secondary'" class="text-[10px]">
-                  {{ team.role === 'MANAGER' ? 'Lead' : 'Member' }}
-                </UiBadge>
-              </div>
+        <UiCardContent class="flex-1 w-full relative p-4">
+          <ClientOnly>
+            <div class="absolute inset-0 p-4">
+              <Line :data="chartData" :options="chartOptions" />
             </div>
-            <div class="h-2 rounded-full bg-white/30 dark:bg-white/[0.08] overflow-hidden">
-              <div
-                class="h-full rounded-full bg-primary-400/70 dark:bg-primary-500/55 transition-all duration-700"
-                :style="{ width: `${maxTaskLoad > 0 ? Math.max(4, ((team._count?.tasks ?? 0) / maxTaskLoad) * 100) : 4}%` }"
-              />
-            </div>
-          </div>
+            <template #fallback>
+              <div class="h-full w-full flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
+            </template>
+          </ClientOnly>
         </UiCardContent>
       </UiCard>
 
@@ -90,64 +145,6 @@
           </div>
         </UiCardContent>
       </UiCard>
-    </div>
-
-    <!-- My Teams -->
-    <div>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">My Teams</h2>
-        <UiButton size="sm" @click="showCreateTeam = true">
-          <Plus class="h-3.5 w-3.5 mr-1" />
-          New Team
-        </UiButton>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <UiCard v-if="teamStore.isLoading" v-for="n in 3" :key="n" class="animate-pulse h-28" />
-
-        <div v-else-if="teams.length === 0" class="col-span-3 text-center py-12 text-slate-400 text-sm">
-          No teams yet. Create your first team!
-        </div>
-
-        <NuxtLink
-          v-else
-          v-for="team in teams"
-          :key="team.id"
-          :to="`/teams/${team.id}`"
-          class="block group"
-        >
-          <UiCard class="hover:border-slate-300 dark:hover:border-slate-600/50 transition-all cursor-pointer h-full">
-            <UiCardContent class="pt-4">
-              <div class="flex items-start gap-3">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
-                  {{ team.name.slice(0, 2).toUpperCase() }}
-                </div>
-                <div class="min-w-0 flex-1">
-                  <h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm">{{ team.name }}</h3>
-                  <p class="text-xs text-slate-400 mt-0.5">{{ team._count?.members ?? 0 }} members</p>
-                </div>
-                <UiBadge :variant="team.role === 'MANAGER' ? 'info' : 'secondary'">
-                  {{ team.role === 'MANAGER' ? 'Manager' : 'Member' }}
-                </UiBadge>
-              </div>
-              <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/20 flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
-                <span class="flex items-center gap-1">
-                  <CheckSquare class="h-3 w-3" />
-                  {{ team._count?.tasks ?? 0 }} tasks
-                </span>
-                <span class="flex items-center gap-1">
-                  <Megaphone class="h-3 w-3" />
-                  {{ team._count?.announcements ?? 0 }}
-                </span>
-                <span class="flex items-center gap-1">
-                  <Target class="h-3 w-3" />
-                  {{ team._count?.projects ?? 0 }} projects
-                </span>
-              </div>
-            </UiCardContent>
-          </UiCard>
-        </NuxtLink>
-      </div>
     </div>
 
     <!-- Pending Invitations -->
@@ -199,6 +196,29 @@
 
 <script setup lang="ts">
 import { Plus, Users, CheckSquare, Megaphone, Mail, Target } from 'lucide-vue-next'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js'
+import { Line } from 'vue-chartjs'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+)
 
 const authStore = useAuthStore()
 const teamStore = useTeamStore()
@@ -220,22 +240,12 @@ const pendingInvites = ref<Invite[]>([])
 const acceptingId = ref<string | null>(null)
 const decliningId = ref<string | null>(null)
 
+// Task Stats for Chart
+const taskStats = ref<{ date: string; assigned: number; completed: number }[]>([])
+
 const teams = computed(() => teamStore.teams)
 const totalProjects = computed(() => teams.value.reduce((a, t) => a + (t._count?.projects ?? 0), 0))
-const managedTeams = computed(() => teams.value.filter((t) => t.role === 'MANAGER').length)
-const avgTasksPerTeam = computed(() => {
-  if (!teams.value.length) return 0
-  const totalTasks = teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)
-  return Math.round((totalTasks / teams.value.length) * 10) / 10
-})
-
-const maxTaskLoad = computed(() => Math.max(...teams.value.map((t) => t._count?.tasks ?? 0), 1))
-const highLoadThreshold = computed(() => Math.max(8, Math.ceil(maxTaskLoad.value * 0.7)))
-const workloadTeams = computed(() =>
-  [...teams.value]
-    .sort((a, b) => (b._count?.tasks ?? 0) - (a._count?.tasks ?? 0))
-    .slice(0, 5),
-)
+const managedTeams = computed(() => teams.value.filter((t) => t.role === 'ADMIN').length)
 
 const stats = computed(() => [
   { label: 'My Team', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-500/[0.10]', iconColor: 'text-primary-500 dark:text-primary-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/40' },
@@ -244,13 +254,144 @@ const stats = computed(() => [
   { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
 ])
 
+const chartData = computed(() => {
+  // Sort stats by date to ensure correct order
+  const sortedStats = [...taskStats.value].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  
+  return {
+    labels: sortedStats.map(s => {
+      const d = new Date(s.date)
+      return d.toLocaleDateString('en-US', { weekday: 'short' })
+    }),
+    datasets: [
+      {
+        label: 'Assigned',
+        backgroundColor: (context: any) => {
+          const ctx = context.chart.ctx
+          const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+          gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)') // indigo-500
+          gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)')
+          return gradient
+        },
+        borderColor: '#6366f1', // indigo-500
+        pointBackgroundColor: '#6366f1',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        fill: true,
+        tension: 0.4,
+        data: sortedStats.map(s => s.assigned),
+        borderWidth: 2,
+      },
+      {
+        label: 'Completed',
+        backgroundColor: (context: any) => {
+          const ctx = context.chart.ctx
+          const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.4)') // emerald-500
+          gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)')
+          return gradient
+        },
+        borderColor: '#10b981', // emerald-500
+        pointBackgroundColor: '#10b981',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        fill: true,
+        tension: 0.4,
+        data: sortedStats.map(s => s.completed),
+        borderWidth: 2,
+      }
+    ]
+  }
+})
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+      align: 'end' as const,
+      labels: {
+        usePointStyle: true,
+        pointStyle: 'circle',
+        boxWidth: 6,
+        padding: 20,
+        font: { size: 11, family: "'Inter', sans-serif", weight: 500 },
+        color: '#94a3b8' // slate-400
+      }
+    },
+    tooltip: {
+      mode: 'index' as const,
+      intersect: false,
+      backgroundColor: 'rgba(15, 23, 42, 0.95)', // slate-900 high opacity
+      titleColor: '#f8fafc',
+      bodyColor: '#cbd5e1',
+      borderColor: 'rgba(255,255,255,0.05)',
+      borderWidth: 1,
+      padding: 12,
+      cornerRadius: 12,
+      titleFont: { size: 13, weight: 600, family: "'Inter', sans-serif" },
+      bodyFont: { size: 12, family: "'Inter', sans-serif" },
+      displayColors: true,
+      boxPadding: 4,
+      callbacks: {
+        label: function(context: any) {
+          return ` ${context.dataset.label}: ${context.parsed.y}`
+        }
+      }
+    }
+  },
+  scales: {
+    x: {
+      grid: { display: false, drawBorder: false },
+      ticks: { 
+        font: { size: 10, family: "'Inter', sans-serif" },
+        color: '#94a3b8' // slate-400
+      },
+      border: { display: false }
+    },
+    y: {
+      grid: { 
+        color: 'rgba(255, 255, 255, 0.03)', 
+        drawBorder: false,
+      },
+      ticks: { 
+        stepSize: 1, 
+        font: { size: 10, family: "'Inter', sans-serif" },
+        color: '#94a3b8',
+        padding: 10
+      },
+      beginAtZero: true,
+      border: { display: false }
+    }
+  },
+  interaction: {
+    mode: 'index' as const,
+    intersect: false,
+  },
+  elements: {
+    line: {
+      borderJoinStyle: 'round' as const
+    }
+  }
+}
+
 onMounted(async () => {
   await teamStore.fetchTeams()
   try {
-    const res = await api.get<{ success: boolean; data: Invite[] }>('/invites')
-    pendingInvites.value = res.data
+    const [invitesRes, statsRes] = await Promise.all([
+       api.get<{ success: boolean; data: Invite[] }>('/invites').catch(() => ({ data: [] })),
+       api.get<{ success: boolean; data: any[] }>('/users/me/stats/tasks').catch(() => ({ data: [] }))
+    ])
+    pendingInvites.value = invitesRes.data || []
+    taskStats.value = Array.isArray(statsRes?.data) ? statsRes.data : []
   } catch { /* invites optional */ }
 })
+
 
 const handleCreateTeam = async () => {
   if (!newTeamName.value.trim()) return

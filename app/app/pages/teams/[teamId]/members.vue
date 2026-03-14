@@ -62,8 +62,8 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <UiBadge :variant="member.role === 'MANAGER' ? 'default' : 'secondary'">
-              {{ member.role === 'MANAGER' ? 'Manager' : 'Member' }}
+            <UiBadge :variant="member.role === 'ADMIN' ? 'default' : 'secondary'">
+              {{ member.role === 'ADMIN' ? 'Admin' : 'Member' }}
             </UiBadge>
             <div v-if="isManager && member.userId !== currentUserId" class="relative">
               <button
@@ -80,7 +80,7 @@
                   class="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.07] transition-colors"
                   @click="handleRoleChange(member)"
                 >
-                  {{ member.role === 'MANAGER' ? 'Demote to Member' : 'Promote to Manager' }}
+                  {{ member.role === 'ADMIN' ? 'Demote to Member' : 'Promote to Admin' }}
                 </button>
                 <button
                   class="w-full text-left px-3 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-50/80 dark:hover:bg-rose-500/10 transition-colors"
@@ -163,7 +163,7 @@ const isManager = computed(() => teamStore.isCurrentTeamManager)
 const currentUserId = computed(() => authStore.user?.id)
 
 const members = computed(() => teamStore.currentTeamMembers)
-const managerCount = computed(() => members.value.filter((m) => m.role === 'MANAGER').length)
+const managerCount = computed(() => members.value.filter((m) => m.role === 'ADMIN').length)
 const contributorCount = computed(() => members.value.filter((m) => m.role !== 'MANAGER').length)
 
 // ── State ──────────────────────────────────────────────────────────────
@@ -212,7 +212,7 @@ const toggleMenu = (id: string) => {
 
 const handleRoleChange = async (member: any) => {
   openMenuId.value = null
-  const newRole = member.role === 'MANAGER' ? 'MEMBER' : 'MANAGER'
+  const newRole = member.role === 'ADMIN' ? 'MEMBER' : 'ADMIN'
   try {
     await teamStore.updateMemberRole(teamId.value, member.userId, newRole)
   } catch {

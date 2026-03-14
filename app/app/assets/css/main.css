@@ -23,10 +23,10 @@
   --color-surface-50:  #f8fafc;
   --color-surface-100: #f1f5f9;
   --color-surface-200: #e2e8f0;
-  --color-surface-800: #0f172a;
-  --color-surface-850: #0c1322;
-  --color-surface-900: #080f1a;
-  --color-surface-950: #050a12;
+  --color-surface-800: #0f1523;
+  --color-surface-850: #080c15;
+  --color-surface-900: #04070d;
+  --color-surface-950: #020305;
 }
 
 body {
@@ -46,8 +46,8 @@ body {
 
 .dark .app-bg {
   background:
-    radial-gradient(ellipse at 12% 20%, rgba(17, 31, 54, 0.28) 0%, transparent 55%),
-    #0a1322;
+    radial-gradient(ellipse at 15% 15%, rgba(30, 58, 138, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #04070d 0%, #020305 100%);
 }
 
 /* ── Glass utilities ────────────────────────────────── */

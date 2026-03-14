@@ -7,95 +7,87 @@
       </UiCardContent>
     </UiCard>
 
-    <div class="flex items-center justify-between gap-3">
-      <div>
-        <div class="text-xs text-slate-500">
-          <NuxtLink :to="`/teams/${teamId}/projects`" class="hover:text-slate-700">Projects</NuxtLink>
-          <span class="mx-1">/</span>
-          <span>{{ project?.name || 'Project' }}</span>
-        </div>
-        <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100 mt-1">{{ project?.name }}</h2>
-        <p class="text-sm text-slate-500 mt-1">{{ project?.description || 'No description' }}</p>
-      </div>
-      <UiButton v-if="isManager" @click="showCreate = true">
-        <Plus class="h-4 w-4 mr-2" />
-        New Task
-      </UiButton>
-    </div>
-
-    <UiCard>
-      <UiCardContent class="pt-4 space-y-4">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-          <div>
-            <p class="text-slate-500">Status</p>
-            <UiBadge class="mt-1" :variant="statusVariant(project?.status || '') as any">{{ statusLabel(project?.status || '') }}</UiBadge>
-          </div>
-          <div>
-            <p class="text-slate-500">PIC</p>
-            <div class="mt-1" v-if="isManager">
-              <UiSelect v-model="editProject.picId" @update:model-value="handleUpdateProjectMeta">
-                <option value="">Unassigned</option>
-                <option v-for="m in members" :key="m.userId" :value="m.userId">{{ m.user.name }}</option>
-              </UiSelect>
+    <UiCard class="mb-6">
+      <UiCardContent class="pt-6">
+        <div class="flex flex-col gap-6">
+          <!-- Top row with title and New Task button -->
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-slate-500 mb-2">
+                <NuxtLink :to="`/teams/${teamId}/projects`" class="hover:text-slate-700 dark:hover:text-slate-300">Projects</NuxtLink>
+                <span class="mx-1">/</span>
+                <span>{{ project?.name || 'Project' }}</span>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                 <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ project?.name }}</h2>
+                 <UiBadge :variant="statusVariant(project?.status || '') as any">{{ statusLabel(project?.status || '') }}</UiBadge>
+                 <button v-if="isManager" @click="showEditProject = true" class="text-slate-400 hover:text-primary-500 transition-colors">
+                    <Edit2 class="w-4 h-4" />
+                 </button>
+              </div>
             </div>
-            <div v-else class="font-medium text-slate-900 dark:text-slate-100 mt-1">{{ project?.pic?.name || 'Unassigned' }}</div>
+            
+            <UiButton v-if="isManager" @click="showCreate = true" class="shrink-0">
+              <Plus class="h-4 w-4 mr-2" />
+              New Task
+            </UiButton>
           </div>
-          <div>
-            <p class="text-slate-500">Start</p>
-            <UiInput v-if="isManager" v-model="editProject.startDate" type="date" class="mt-1" @change="handleUpdateProjectMeta" />
-            <div v-else class="font-medium text-slate-900 dark:text-slate-100 mt-1">{{ formatDate(project?.startDate) }}</div>
-          </div>
-          <div>
-            <p class="text-slate-500">Due</p>
-            <UiInput v-if="isManager" v-model="editProject.dueDate" type="date" class="mt-1" @change="handleUpdateProjectMeta" />
-            <div v-else class="font-medium text-slate-900 dark:text-slate-100 mt-1">{{ formatDate(project?.dueDate) }}</div>
-          </div>
-        </div>
 
-        <div>
-          <div class="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-            <span>Progress</span>
-            <span>{{ Number(project?.progress || 0).toFixed(2) }}%</span>
-          </div>
-          <div class="h-2.5 w-full rounded-full bg-white/40 dark:bg-white/[0.08] overflow-hidden">
-            <div class="h-full bg-emerald-500 transition-all" :style="{ width: `${Math.min(100, Number(project?.progress || 0))}%` }" />
+          <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-slate-500 mt-0 mb-4 max-w-2xl leading-relaxed">{{ project?.description || 'No description provided.' }}</p>
+
+              <div class="flex items-center gap-4 mb-5 text-xs text-slate-500 font-medium">
+                 <div class="flex items-center gap-1.5" title="Person In Charge">
+                    <User class="w-3.5 h-3.5" />
+                    <span>{{ project?.pic?.name || 'Unassigned' }}</span>
+                 </div>
+                 <div class="flex items-center gap-1.5" title="Timeline">
+                   <Calendar class="w-3.5 h-3.5" />
+                   <span>{{ formatDate(project?.startDate) }} - {{ formatDate(project?.dueDate) }}</span>
+                 </div>
+                 <div class="flex items-center gap-1.5" :class="{'text-rose-500': daysLeft === 'Overdue'}">
+                   <Clock class="w-3.5 h-3.5" />
+                   <span>{{ daysLeft === 'Overdue' ? 'Overdue' : `${daysLeft} days left` }}</span>
+                 </div>
+              </div>
+              
+              <!-- Completion Progress -->
+              <div class="max-w-md">
+                <div class="flex items-center justify-between text-xs text-slate-500 mb-1.5">
+                  <span class="font-medium">Completion Progress</span>
+                  <span class="font-bold text-slate-700 dark:text-slate-300">{{ Number(project?.progress || 0).toFixed(0) }}%</span>
+                </div>
+                <div class="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
+                  <div class="h-full bg-emerald-500 transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, Number(project?.progress || 0))}%` }" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats in Header -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0 lg:w-[480px]">
+               <div class="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.05] border border-slate-100 dark:border-white/[0.1] shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Total</p>
+                  <p class="text-xl font-bold text-slate-900 dark:text-slate-100">{{ totalTaskCount }}</p>
+               </div>
+               <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-0.5">Todo</p>
+                  <p class="text-xl font-bold text-indigo-700 dark:text-indigo-300">{{ todoCount }}</p>
+               </div>
+               <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-0.5">In Progress</p>
+                  <p class="text-xl font-bold text-amber-700 dark:text-amber-300">{{ progressCount }}</p>
+               </div>
+               <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-0.5">Done</p>
+                  <p class="text-xl font-bold text-emerald-700 dark:text-emerald-300">{{ doneCount }}</p>
+               </div>
+            </div>
           </div>
         </div>
       </UiCardContent>
     </UiCard>
-
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
-      <UiCard>
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-slate-500">Total Tasks</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ totalTaskCount }}</p>
-        </UiCardContent>
-      </UiCard>
-      <UiCard>
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-slate-500">Todo</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ todoCount }}</p>
-        </UiCardContent>
-      </UiCard>
-      <UiCard>
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-slate-500">In Progress</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ progressCount }}</p>
-        </UiCardContent>
-      </UiCard>
-      <UiCard>
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-slate-500">Done</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ doneCount }}</p>
-        </UiCardContent>
-      </UiCard>
-      <UiCard>
-        <UiCardContent class="pt-4">
-          <p class="text-xs uppercase tracking-wider text-slate-500">Days Left</p>
-          <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ daysLeft }}</p>
-        </UiCardContent>
-      </UiCard>
-    </div>
 
     <div v-if="isLoading" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <div v-for="i in 4" :key="i" class="rounded-xl bg-white/30 dark:bg-white/[0.04] h-64 animate-pulse" />
@@ -113,6 +105,40 @@
         @status-change="handleStatusChange"
       />
     </div>
+
+    <UiModal v-model="showEditProject" title="Edit Project Details">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Project Name</label>
+           <!-- Assuming name is not editable here based on user request "start, due, dan pic". If needed I can add project name too, but let's stick to request. -->
+           <div class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ project?.name }}</div>
+        </div>
+
+        <div>
+           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">PIC (Person In Charge)</label>
+           <UiSelect v-model="editProject.picId">
+              <option value="">Unassigned</option>
+              <option v-for="m in members" :key="m.userId" :value="m.userId">{{ m.user.name }}</option>
+           </UiSelect>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Start Date</label>
+            <UiInput v-model="editProject.startDate" type="date" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Due Date</label>
+            <UiInput v-model="editProject.dueDate" type="date" />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+           <UiButton variant="outline" @click="showEditProject = false">Cancel</UiButton>
+           <UiButton @click="handleUpdateProjectMeta">Save Changes</UiButton>
+        </div>
+      </div>
+    </UiModal>
 
     <UiModal v-model="showCreate" title="Create Task">
       <form class="space-y-4" @submit.prevent="handleCreate">
@@ -245,7 +271,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus } from 'lucide-vue-next'
+import { Plus, Edit2, User, Calendar, Clock } from 'lucide-vue-next'
 
 interface TaskUser { id: string; name: string; avatar?: string }
 interface TeamMember { userId: string; user: { name: string } }
@@ -292,6 +318,7 @@ const editError = ref('')
 const loadError = ref('')
 const showCreate = ref(false)
 const showDetail = ref(false)
+const showEditProject = ref(false)
 const selectedTask = ref<Task | null>(null)
 const project = ref<Project | null>(null)
 
@@ -457,8 +484,9 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
 
   try {
     await api.patch(`/teams/${teamId.value}/tasks/${taskId}/status`, { status: newStatus })
-    await fetchProject()
+    // No fetchProject() here to keep it realtime
   } catch {
+    // Only refresh on error to rollback
     await fetchProject()
   }
 }
@@ -527,6 +555,7 @@ const handleUpdateProjectMeta = async () => {
       },
     )
     project.value = { ...project.value, ...res.data }
+    showEditProject.value = false
   } catch {
     await fetchProject()
   }

@@ -21,6 +21,11 @@ export class UserController {
     return this.userService.getProfile(userId);
   }
 
+  @Get('me/stats/tasks')
+  getUserTaskStats(@CurrentUser('id') userId: string) {
+    return this.userService.getUserTaskStats(userId);
+  }
+
   @Patch('me')
   updateProfile(
     @CurrentUser('id') userId: string,
