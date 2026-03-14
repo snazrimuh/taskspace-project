@@ -105,7 +105,7 @@
               </div>
               <div class="h-2 w-full rounded-full bg-white/40 dark:bg-white/[0.08] overflow-hidden">
                 <div
-                  class="h-full bg-emerald-500 transition-all"
+                  class="h-full bg-emerald-500 dark:bg-emerald-400 transition-all"
                   :style="{ width: `${Math.min(100, Number(project.progress || 0))}%` }"
                 />
               </div>

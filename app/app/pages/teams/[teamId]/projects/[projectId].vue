@@ -60,7 +60,7 @@
                   <span class="font-bold text-slate-700 dark:text-slate-300">{{ Number(project?.progress || 0).toFixed(0) }}%</span>
                 </div>
                 <div class="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
-                  <div class="h-full bg-emerald-500 transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, Number(project?.progress || 0))}%` }" />
+                  <div class="h-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, Number(project?.progress || 0))}%` }" />
                 </div>
               </div>
             </div>
@@ -71,17 +71,17 @@
                   <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Total</p>
                   <p class="text-xl font-bold text-slate-900 dark:text-slate-100">{{ totalTaskCount }}</p>
                </div>
-               <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-0.5">Todo</p>
-                  <p class="text-xl font-bold text-indigo-700 dark:text-indigo-300">{{ todoCount }}</p>
+               <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-600/30 border border-indigo-100 dark:border-indigo-500/40 shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-indigo-600 dark:text-indigo-300 mb-0.5">Todo</p>
+                  <p class="text-xl font-bold text-indigo-700 dark:text-indigo-200">{{ todoCount }}</p>
                </div>
-               <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-0.5">In Progress</p>
-                  <p class="text-xl font-bold text-amber-700 dark:text-amber-300">{{ progressCount }}</p>
+               <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-600/30 border border-amber-100 dark:border-amber-500/40 shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-300 mb-0.5">In Progress</p>
+                  <p class="text-xl font-bold text-amber-700 dark:text-amber-200">{{ progressCount }}</p>
                </div>
-               <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-0.5">Done</p>
-                  <p class="text-xl font-bold text-emerald-700 dark:text-emerald-300">{{ doneCount }}</p>
+               <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-600/30 border border-emerald-100 dark:border-emerald-500/40 shadow-sm">
+                  <p class="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-300 mb-0.5">Done</p>
+                  <p class="text-xl font-bold text-emerald-700 dark:text-emerald-200">{{ doneCount }}</p>
                </div>
             </div>
           </div>

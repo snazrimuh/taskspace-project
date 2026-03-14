@@ -254,10 +254,10 @@ const taskDist = computed(() => {
 })
 
 const taskStatuses = computed(() => [
-  { label: 'Todo', count: todoCount.value, dot: 'bg-slate-400' },
-  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-primary-500' },
-  { label: 'Review', count: reviewCount.value, dot: 'bg-amber-500' },
-  { label: 'Done', count: completedTaskCount.value, dot: 'bg-emerald-500' },
+  { label: 'Todo', count: todoCount.value, dot: 'bg-slate-400 dark:bg-slate-500' },
+  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-primary-500 dark:bg-primary-400' },
+  { label: 'Review', count: reviewCount.value, dot: 'bg-amber-500 dark:bg-amber-400' },
+  { label: 'Done', count: completedTaskCount.value, dot: 'bg-emerald-500 dark:bg-emerald-400' },
 ])
 
 const myAssignedTaskCount = computed(() =>
@@ -376,12 +376,12 @@ const formatTime = (date: string) => {
 
 const statusColor = (status: string) => {
   const colors: Record<string, string> = {
-    TODO: 'bg-slate-400',
-    IN_PROGRESS: 'bg-primary-500',
-    REVIEW: 'bg-amber-500',
-    DONE: 'bg-emerald-500',
+    TODO: 'bg-slate-400 dark:bg-slate-500',
+    IN_PROGRESS: 'bg-primary-500 dark:bg-primary-400',
+    REVIEW: 'bg-amber-500 dark:bg-amber-400',
+    DONE: 'bg-emerald-500 dark:bg-emerald-400',
   }
-  return colors[status] ?? 'bg-slate-400'
+  return colors[status] ?? 'bg-slate-400 dark:bg-slate-500'
 }
 
 const priorityVariant = (priority: string) => {

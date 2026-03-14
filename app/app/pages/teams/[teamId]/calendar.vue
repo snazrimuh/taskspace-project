@@ -467,22 +467,22 @@ const handleDelete = async (eventId: string) => {
 // ── Style helpers ──────────────────────────────────────────────────────
 const eventColor = (type: string) => {
   const colors: Record<string, string> = {
-    MEETING: 'bg-primary-100 text-primary-700 dark:bg-primary-500/[0.15] dark:text-primary-300',
-    TRAINING: 'bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-400',
-    DEADLINE: 'bg-rose-100 text-rose-700 dark:bg-rose-500/[0.15] dark:text-rose-400',
-    INTERNAL: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/[0.15] dark:text-emerald-400',
+    MEETING: 'bg-primary-100 text-primary-700 dark:bg-primary-600/40 dark:text-primary-200',
+    TRAINING: 'bg-slate-100 text-slate-600 dark:bg-slate-700/50 dark:text-slate-300',
+    DEADLINE: 'bg-rose-100 text-rose-700 dark:bg-rose-600/40 dark:text-rose-200',
+    INTERNAL: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-600/40 dark:text-emerald-200',
   }
   return colors[type] ?? 'bg-slate-100 text-slate-700'
 }
 
 const eventDotColor = (type: string) => {
   const colors: Record<string, string> = {
-    MEETING: 'bg-primary-500',
-    TRAINING: 'bg-slate-500',
-    DEADLINE: 'bg-rose-500',
-    INTERNAL: 'bg-emerald-500',
+    MEETING: 'bg-primary-500 dark:bg-primary-400',
+    TRAINING: 'bg-slate-500 dark:bg-slate-400',
+    DEADLINE: 'bg-rose-500 dark:bg-rose-400',
+    INTERNAL: 'bg-emerald-500 dark:bg-emerald-400',
   }
-  return colors[type] ?? 'bg-slate-500'
+  return colors[type] ?? 'bg-slate-500 dark:bg-slate-400'
 }
 
 const eventBadgeVariant = (type: string) => {

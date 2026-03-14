@@ -261,10 +261,10 @@ const totalProjects = computed(() => teams.value.reduce((a, t) => a + (t._count?
 const managedTeams = computed(() => teams.value.filter((t) => t.role === 'ADMIN').length)
 
 const stats = computed(() => [
-  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-500/[0.10]', iconColor: 'text-primary-500 dark:text-primary-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/40' },
-  { label: 'My Projects', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
-  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
-  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100/80 dark:bg-white/[0.06]', iconColor: 'text-slate-500 dark:text-slate-400', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-500/30' },
+  { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-600/30', iconColor: 'text-primary-500 dark:text-primary-300', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/50' },
+  { label: 'My Projects', value: String(totalProjects.value), icon: Target, iconBg: 'bg-slate-100/80 dark:bg-slate-700/40', iconColor: 'text-slate-500 dark:text-slate-300', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-600/40' },
+  { label: 'Active Tasks', value: String(teams.value.reduce((a, t) => a + (t._count?.tasks ?? 0), 0)), icon: CheckSquare, iconBg: 'bg-slate-100/80 dark:bg-slate-700/40', iconColor: 'text-slate-500 dark:text-slate-300', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-600/40' },
+  { label: 'Pending Invites', value: String(pendingInvites.value.length), icon: Mail, iconBg: 'bg-slate-100/80 dark:bg-slate-700/40', iconColor: 'text-slate-500 dark:text-slate-300', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-slate-300/80 dark:bg-slate-600/40' },
 ])
 
 const chartData = computed(() => {
