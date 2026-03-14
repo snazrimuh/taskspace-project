@@ -14,11 +14,13 @@
     "@tailwindcss/vite": "^4.2.1",
     "@vueuse/core": "^14.2.1",
     "ably": "^2.19.0",
+    "chart.js": "^4.5.1",
     "lucide-vue-next": "^0.575.0",
     "nuxt": "^4.3.1",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.2.1",
     "vue": "^3.5.28",
+    "vue-chartjs": "^5.3.3",
     "vue-router": "^4.6.4"
   }
 }
