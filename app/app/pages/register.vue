@@ -1,88 +1,172 @@
 <template>
-  <div class="glass rounded-2xl shadow-[0_4px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_32px_rgba(0,0,0,0.30)] px-8 py-10">
-    <!-- Logo & brand -->
-    <div class="flex flex-col items-center mb-7">
-      <img src="/logo.png" alt="TaskSpace" class="h-14 w-14 rounded-2xl mb-4" />
-      <p class="text-[11px] font-semibold tracking-[0.18em] text-slate-400 dark:text-slate-500 uppercase mb-1">TaskSpace</p>
-      <h1 class="text-xl font-bold text-slate-900 dark:text-slate-100">Create Account</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Join your team on TaskSpace</p>
+  <div class="overflow-hidden rounded-[28px] border border-white/80 dark:border-white/[0.08] bg-white/90 dark:bg-[#0B1220]/88 shadow-[0_20px_70px_rgba(14,25,44,0.22)] dark:shadow-[0_22px_80px_rgba(2,6,23,0.55)] backdrop-blur-sm">
+    <div class="grid lg:grid-cols-[1.05fr_1fr]">
+      <section class="relative hidden lg:flex min-h-[620px] overflow-hidden border-r border-slate-200/70 dark:border-white/[0.06] bg-[linear-gradient(170deg,#EEF4FF_0%,#E6EEF9_40%,#DDE7F6_100%)] dark:bg-[linear-gradient(170deg,#111C2F_0%,#0D1729_45%,#0A1324_100%)]">
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="absolute -top-24 -left-14 h-64 w-64 rounded-full bg-[#7FA8F7]/28 blur-3xl dark:bg-[#3B82F6]/18" />
+          <div class="absolute -bottom-14 -right-16 h-56 w-56 rounded-full bg-[#9CC2FF]/28 blur-3xl dark:bg-[#60A5FA]/16" />
+        </div>
+
+        <div class="relative z-10 flex w-full flex-col p-9">
+          <div>
+            <h2 class="max-w-sm text-[30px] leading-[1.15] font-bold text-[#0D1B2A] dark:text-[#ECF3FF]">
+              Build your workspace and align your team from day one.
+            </h2>
+            <p class="mt-4 max-w-sm text-sm text-[#3E5D86] dark:text-[#9EB7D8]">
+              Create your account to manage projects, tasks, announcements, and team collaboration in one place.
+            </p>
+          </div>
+
+          <div class="mt-8 max-w-[560px]">
+            <div class="relative overflow-hidden rounded-[26px] border border-[#ADC8F1]/45 bg-white/78 p-3 dark:border-[#355988]/45 dark:bg-[#0F1B31]/82 shadow-[0_14px_28px_rgba(20,56,107,0.16)] dark:shadow-[0_14px_30px_rgba(2,8,20,0.38)]">
+              <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(80,130,214,0.16),transparent_45%),radial-gradient(circle_at_85%_78%,rgba(56,110,196,0.16),transparent_42%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(74,141,232,0.12),transparent_45%),radial-gradient(circle_at_85%_78%,rgba(41,90,163,0.2),transparent_42%)]" />
+
+              <div class="relative z-10 rounded-2xl bg-[#F4F8FF]/90 dark:bg-[#12243E]/88">
+                <div class="h-9 flex items-center gap-2 px-3 border-b border-[#C8DCF8]/45 dark:border-[#29476E]/45">
+                  <span class="h-2.5 w-2.5 rounded-full bg-[#7FA8F7]" />
+                  <span class="h-2.5 w-2.5 rounded-full bg-[#5C90DE]" />
+                  <span class="h-2.5 w-2.5 rounded-full bg-[#3E72C0]" />
+                  <p class="ml-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#4F6D99] dark:text-[#9EB7D8]">Team Workspace</p>
+                </div>
+
+                <div class="grid grid-cols-[78px_1fr_130px] min-h-[250px]">
+                  <div class="p-2.5 space-y-2">
+                    <div class="h-7 rounded-md bg-[#2C69C0]/90 dark:bg-[#2B5EA8]/85" />
+                    <div class="h-7 rounded-md bg-[#1F4F92]/90 dark:bg-[#1E4A86]/85" />
+                    <div class="h-7 rounded-md bg-[#367BDD]/90 dark:bg-[#326BC0]/85" />
+                    <div class="mt-4 h-7 rounded-md bg-[#204E8E]/90 dark:bg-[#1E467B]/85" />
+                  </div>
+
+                  <div class="p-3 space-y-2.5">
+                    <div class="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#4F6D99] dark:text-[#9EB7D8]">Project Flow</div>
+                    <div class="grid grid-cols-3 gap-2">
+                      <div class="space-y-1.5">
+                        <div class="h-7 rounded-md bg-[#2E6DC5] dark:bg-[#295AA3]" />
+                        <div class="h-7 rounded-md bg-[#367BDD] dark:bg-[#326BC0]" />
+                      </div>
+                      <div class="space-y-1.5">
+                        <div class="h-7 rounded-md bg-[#1F4F92] dark:bg-[#1E4A86]" />
+                        <div class="h-7 rounded-md bg-[#2D66B7] dark:bg-[#29589A]" />
+                      </div>
+                      <div class="space-y-1.5">
+                        <div class="h-7 rounded-md bg-[#214F90] dark:bg-[#1E467C]" />
+                        <div class="h-7 rounded-md bg-[#1B3F75] dark:bg-[#1A3963]" />
+                      </div>
+                    </div>
+
+                    <div class="rounded-xl bg-[#DCEBFF]/70 dark:bg-[#163154]/70 p-2.5 space-y-1.5">
+                      <div class="w-[78%] rounded-lg bg-[#2C69C0] px-2 py-1 text-[10px] font-medium text-white dark:bg-[#2B5EA8]">Team invited and roles assigned.</div>
+                      <div class="ml-auto w-[70%] rounded-lg bg-[#1F4F92] px-2 py-1 text-[10px] font-medium text-white dark:bg-[#1E4A86]">Project board ready for kickoff.</div>
+                    </div>
+                  </div>
+
+                  <div class="p-3 space-y-2">
+                    <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#4F6D99] dark:text-[#9EB7D8]">Schedule</p>
+                    <div class="space-y-1.5">
+                      <div class="h-2 rounded-full bg-[#C8DCF8] dark:bg-[#1D3559]" />
+                      <div class="h-2 rounded-full bg-[#2F75D4] dark:bg-[#4A8DE8]" />
+                      <div class="h-2 rounded-full bg-[#C8DCF8] dark:bg-[#1D3559]" />
+                      <div class="h-2 rounded-full bg-[#5B95E7] dark:bg-[#5F9CEA]" />
+                    </div>
+
+                    <p class="pt-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#4F6D99] dark:text-[#9EB7D8]">Team</p>
+                    <div class="flex items-center -space-x-1.5">
+                      <div class="h-6 w-6 rounded-full bg-[#2E6DC5]" />
+                      <div class="h-6 w-6 rounded-full bg-[#367BDD]" />
+                      <div class="h-6 w-6 rounded-full bg-[#1F4F92]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="p-7 sm:p-10 lg:p-12 bg-white/84 dark:bg-transparent">
+        <div class="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-[40px] leading-none font-bold tracking-tight text-[#111827] dark:text-[#F3F8FF]">{{ t('register.title') }}</h1>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ t('register.subtitle') }}</p>
+          </div>
+          <p class="hidden sm:block text-xs text-slate-500 dark:text-slate-400 mt-2">
+            Already a member?
+            <NuxtLink to="/login" class="font-semibold text-[#415A77] dark:text-[#E0E1DD] hover:text-[#1B263B] dark:hover:text-white transition-colors">Sign In</NuxtLink>
+          </p>
+        </div>
+
+        <form class="space-y-4" @submit.prevent="handleRegister">
+          <div v-if="error" class="rounded-xl border border-rose-200/70 bg-rose-50/90 px-3.5 py-2.5 text-sm text-rose-700 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-300">
+            {{ error }}
+          </div>
+
+          <div class="relative">
+            <UserRound class="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+            <input
+              v-model="name"
+              type="text"
+              :placeholder="t('register.name')"
+              required
+              class="h-12 w-full rounded-xl border border-slate-300/80 bg-slate-50/70 pl-10 pr-4 text-base font-semibold tracking-tight text-[#111827] placeholder:text-base placeholder:font-semibold placeholder:tracking-tight placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#415A77]/20 focus:border-[#415A77] transition dark:border-[#334155] dark:bg-[#121C2D] dark:text-[#E7F0FF] dark:placeholder:text-[#8FA6C7] dark:focus:border-[#778DA9]"
+            />
+          </div>
+
+          <div class="relative">
+            <Mail class="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+            <input
+              v-model="email"
+              type="email"
+              :placeholder="t('register.email')"
+              required
+              class="h-12 w-full rounded-xl border border-slate-300/80 bg-slate-50/70 pl-10 pr-4 text-base font-semibold tracking-tight text-[#111827] placeholder:text-base placeholder:font-semibold placeholder:tracking-tight placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#415A77]/20 focus:border-[#415A77] transition dark:border-[#334155] dark:bg-[#121C2D] dark:text-[#E7F0FF] dark:placeholder:text-[#8FA6C7] dark:focus:border-[#778DA9]"
+            />
+          </div>
+
+          <div class="relative">
+            <Lock class="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              :placeholder="t('register.password')"
+              required
+              class="h-12 w-full rounded-xl border border-slate-300/80 bg-slate-50/70 pl-10 pr-12 text-base font-semibold tracking-tight text-[#111827] placeholder:text-base placeholder:font-semibold placeholder:tracking-tight placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#415A77]/20 focus:border-[#415A77] transition dark:border-[#334155] dark:bg-[#121C2D] dark:text-[#E7F0FF] dark:placeholder:text-[#8FA6C7] dark:focus:border-[#778DA9]"
+            />
+            <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" @click="showPassword = !showPassword">
+              <EyeOff v-if="showPassword" class="h-4 w-4" />
+              <Eye v-else class="h-4 w-4" />
+            </button>
+          </div>
+
+          <div class="relative">
+            <Lock class="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+            <input
+              v-model="confirmPassword"
+              :type="showConfirm ? 'text' : 'password'"
+              :placeholder="t('register.confirm')"
+              required
+              class="h-12 w-full rounded-xl border border-slate-300/80 bg-slate-50/70 pl-10 pr-12 text-base font-semibold tracking-tight text-[#111827] placeholder:text-base placeholder:font-semibold placeholder:tracking-tight placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#415A77]/20 focus:border-[#415A77] transition dark:border-[#334155] dark:bg-[#121C2D] dark:text-[#E7F0FF] dark:placeholder:text-[#8FA6C7] dark:focus:border-[#778DA9]"
+            />
+            <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" @click="showConfirm = !showConfirm">
+              <EyeOff v-if="showConfirm" class="h-4 w-4" />
+              <Eye v-else class="h-4 w-4" />
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            :disabled="authStore.isLoading"
+            class="mt-1 h-12 w-full rounded-xl border border-[#2A4A74]/85 bg-[#1F3F68] text-base font-semibold text-white shadow-[0_8px_18px_rgba(10,22,36,0.35)] hover:bg-[#173453] hover:shadow-[0_10px_22px_rgba(10,22,36,0.42)] active:bg-[#10253A] transition disabled:opacity-60"
+          >
+            {{ authStore.isLoading ? 'Creating account...' : t('register.submit') }}
+          </button>
+
+          <p class="text-sm text-slate-500 dark:text-slate-400 sm:hidden">
+            Already have an account?
+            <NuxtLink to="/login" class="font-semibold text-[#415A77] dark:text-[#E0E1DD] hover:text-[#1B263B] dark:hover:text-white transition-colors">{{ t('register.signin') }}</NuxtLink>
+          </p>
+        </form>
+      </section>
     </div>
-
-    <form class="space-y-3.5" @submit.prevent="handleRegister">
-      <div v-if="error" class="rounded-xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 px-3.5 py-2.5 text-sm text-rose-700 dark:text-rose-400">
-        {{ error }}
-      </div>
-
-      <!-- Name -->
-      <div class="relative">
-        <UserRound class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
-        <input
-          v-model="name"
-          type="text"
-          placeholder="Full name"
-          required
-          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
-        />
-      </div>
-
-      <!-- Email -->
-      <div class="relative">
-        <Mail class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
-        <input
-          v-model="email"
-          type="email"
-          placeholder="Email address"
-          required
-          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
-        />
-      </div>
-
-      <!-- Password -->
-      <div class="relative">
-        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
-        <input
-          v-model="password"
-          :type="showPassword ? 'text' : 'password'"
-          placeholder="Password (min. 8 characters)"
-          required
-          class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
-        />
-        <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" @click="showPassword = !showPassword">
-          <EyeOff v-if="showPassword" class="h-4 w-4" />
-          <Eye v-else class="h-4 w-4" />
-        </button>
-      </div>
-
-      <!-- Confirm Password -->
-      <div class="relative">
-        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
-        <input
-          v-model="confirmPassword"
-          :type="showConfirm ? 'text' : 'password'"
-          placeholder="Confirm password"
-          required
-          class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-white/70 dark:border-white/[0.09] bg-white/40 dark:bg-white/[0.05] backdrop-blur-sm text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-400/50 dark:focus:border-primary-500/40 transition"
-        />
-        <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" @click="showConfirm = !showConfirm">
-          <EyeOff v-if="showConfirm" class="h-4 w-4" />
-          <Eye v-else class="h-4 w-4" />
-        </button>
-      </div>
-
-      <!-- Submit -->
-      <button
-        type="submit"
-        :disabled="authStore.isLoading"
-        class="w-full py-2.5 rounded-xl text-white font-semibold text-sm bg-primary-500/90 hover:bg-primary-600/90 border border-primary-400/40 shadow-[0_2px_8px_rgba(46,104,148,0.28)] hover:shadow-[0_4px_12px_rgba(46,104,148,0.38)] active:bg-primary-700/90 transition disabled:opacity-60 backdrop-blur-sm"
-      >
-        {{ authStore.isLoading ? 'Creating account...' : 'Create Account' }}
-      </button>
-    </form>
-
-    <p class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-      Already have an account?
-      <NuxtLink to="/login" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">Sign in</NuxtLink>
-    </p>
   </div>
 </template>
 
@@ -91,6 +175,7 @@ import { UserRound, Mail, Lock, Eye, EyeOff } from 'lucide-vue-next'
 
 definePageMeta({ layout: 'auth' })
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 
 const name = ref('')

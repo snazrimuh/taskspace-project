@@ -5,15 +5,15 @@
         <div class="flex justify-center mb-3">
           <img src="/logo.png" alt="TaskSpace" class="h-12 w-12" />
         </div>
-        <UiCardTitle class="text-xl text-center">Reset Password</UiCardTitle>
-        <p class="text-sm text-slate-500 text-center mt-1">Enter your new password below.</p>
+        <UiCardTitle class="text-xl text-center">{{ t('reset.title') }}</UiCardTitle>
+        <p class="text-sm text-slate-500 text-center mt-1">{{ t('reset.subtitle') }}</p>
       </UiCardHeader>
       <UiCardContent>
         <!-- Invalid / missing token state -->
         <div v-if="!token" class="text-center space-y-4">
-          <p class="text-sm text-red-600">Invalid or missing reset token.</p>
-          <NuxtLink to="/forgot-password" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
-            Request a new link
+          <p class="text-sm text-red-600">{{ t('reset.error.invalid') }}</p>
+          <NuxtLink to="/forgot-password" class="text-sm text-[#415A77] dark:text-[#E0E1DD] hover:text-[#1B263B] dark:hover:text-white font-medium">
+            {{ t('forgot.submit') }}
           </NuxtLink>
         </div>
 
@@ -24,9 +24,9 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <p class="text-sm text-slate-700 font-medium">Password reset successfully!</p>
-          <NuxtLink to="/login" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
-            Sign in with your new password
+          <p class="text-sm text-slate-700 font-medium">{{ t('reset.success') }}</p>
+          <NuxtLink to="/login" class="text-sm text-[#415A77] dark:text-[#E0E1DD] hover:text-[#1B263B] dark:hover:text-white font-medium">
+            {{ t('nav.signin') }}
           </NuxtLink>
         </div>
 
@@ -36,31 +36,31 @@
             {{ error }}
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">New Password</label>
+            <label class="block text-sm font-medium text-slate-700 mb-1">{{ t('reset.password') }}</label>
             <UiInput
               v-model="newPassword"
               type="password"
-              placeholder="Min. 8 characters"
+              :placeholder="t('reset.password')"
               required
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
+            <label class="block text-sm font-medium text-slate-700 mb-1">{{ t('reset.confirm') }}</label>
             <UiInput
               v-model="confirmPassword"
               type="password"
-              placeholder="Confirm new password"
+              :placeholder="t('reset.confirm')"
               required
             />
           </div>
-          <UiButton class="w-full" size="lg" :loading="isLoading">
-            Reset Password
+          <UiButton class="w-full !bg-[#1F3F68] !border-[#2A4A74]/85 hover:!bg-[#173453] active:!bg-[#10253A]" size="lg" :loading="isLoading">
+            {{ t('reset.submit') }}
           </UiButton>
         </form>
 
         <div v-if="!success" class="mt-6 text-center text-sm text-slate-500">
-          <NuxtLink to="/login" class="text-primary-600 hover:text-primary-700 font-medium">
-            Back to Sign in
+          <NuxtLink to="/login" class="text-[#415A77] dark:text-[#E0E1DD] hover:text-[#1B263B] dark:hover:text-white font-medium">
+            {{ t('reset.signin') }}
           </NuxtLink>
         </div>
       </UiCardContent>
@@ -71,6 +71,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const route = useRoute()
 
