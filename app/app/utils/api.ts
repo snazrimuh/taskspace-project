@@ -31,20 +31,30 @@ export function useApi() {
         headers: { ...authHeader(), ...((options?.headers as Record<string, string>) ?? {}) },
       })
     } catch (err: any) {
-      // If 401 and we have a refresh token, try to refresh and retry once
-      if (err?.status === 401 && authStore.refreshToken) {
-        try {
-          await authStore.refresh()
-          return await $fetch<T>(fetchUrl, {
-            method,
-            body: body ?? undefined,
-            ...options,
-            headers: {
-              Authorization: `Bearer ${authStore.accessToken}`,
-              ...((options?.headers as Record<string, string>) ?? {}),
-            },
-          })
-        } catch {
+      // Jika error 401 (Unauthorized)
+      if (err?.status === 401) {
+        // Coba refresh token jika ada
+        if (authStore.refreshToken) {
+          try {
+            await authStore.refresh()
+            // Jika berhasil refresh, ulangi request aslinya
+            return await $fetch<T>(fetchUrl, {
+              method,
+              body: body ?? undefined,
+              ...options,
+              headers: {
+                Authorization: `Bearer ${authStore.accessToken}`,
+                ...((options?.headers as Record<string, string>) ?? {}),
+              },
+            })
+          } catch {
+            // Jika refresh gagal (token refresh invalid/expired), force logout
+            authStore.clear()
+            await navigateTo('/login')
+            throw err
+          }
+        } else {
+          // Jika tidak ada refresh token sama sekali, langsung force logout
           authStore.clear()
           await navigateTo('/login')
         }

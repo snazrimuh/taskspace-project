@@ -44,7 +44,7 @@ export class AuthService {
     });
 
     // Generate tokens
-    const tokens = await this.generateTokens(user.id, user.email);
+    const tokens = await this.generateTokens(user.id, user.email, user.isSystemAdmin);
 
     // Save refresh token hash
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken);
@@ -73,7 +73,7 @@ export class AuthService {
     }
 
     // Generate tokens
-    const tokens = await this.generateTokens(user.id, user.email);
+    const tokens = await this.generateTokens(user.id, user.email, user.isSystemAdmin);
 
     // Save refresh token hash
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken);
@@ -105,7 +105,7 @@ export class AuthService {
     }
 
     // Generate new tokens (rotation)
-    const tokens = await this.generateTokens(user.id, user.email);
+    const tokens = await this.generateTokens(user.id, user.email, user.isSystemAdmin);
 
     // Update stored refresh token hash
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken);
@@ -180,8 +180,8 @@ export class AuthService {
 
   // ─── Private Helpers ───────────────────────────────
 
-  private async generateTokens(userId: string, email: string) {
-    const payload: Record<string, unknown> = { sub: userId, email };
+  private async generateTokens(userId: string, email: string, isSystemAdmin?: boolean) {
+    const payload: Record<string, unknown> = { sub: userId, email, isSystemAdmin };
 
     const accessExpiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '15m';
     const refreshExpiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '7d';

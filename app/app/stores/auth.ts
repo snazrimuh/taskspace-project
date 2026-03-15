@@ -29,6 +29,8 @@ interface TokenRefreshResponse {
 
 const STORAGE_KEY = 'taskspace_auth'
 
+let _refreshPromise: Promise<void> | null = null
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as AuthUser | null,
@@ -86,15 +88,25 @@ export const useAuthStore = defineStore('auth', {
 
     async refresh() {
       if (!this.refreshToken) throw new Error('No refresh token available')
-      const config = useRuntimeConfig()
-      const res = await $fetch<TokenRefreshResponse>(
-        `${config.public.apiBase}/auth/refresh`,
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${this.refreshToken}` },
-        },
-      )
-      this._setSession(res.data.accessToken, res.data.refreshToken, this.user!)
+      if (_refreshPromise) return _refreshPromise
+      
+      _refreshPromise = (async () => {
+        try {
+          const config = useRuntimeConfig()
+          const res = await $fetch<TokenRefreshResponse>(
+            `${config.public.apiBase}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${this.refreshToken}` },
+            },
+          )
+          this._setSession(res.data.accessToken, res.data.refreshToken, this.user!)
+        } finally {
+          _refreshPromise = null
+        }
+      })()
+      
+      return _refreshPromise
     },
 
     async forgotPassword(email: string) {

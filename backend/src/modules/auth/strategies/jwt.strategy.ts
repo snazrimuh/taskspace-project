@@ -7,6 +7,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export interface JwtPayload {
   sub: string;
   email: string;
+  isSystemAdmin?: boolean;
 }
 
 @Injectable()
@@ -23,23 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        avatar: true,
-        bio: true,
-        isSystemAdmin: true,
-        createdAt: true,
-      },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    return user;
+    // Stateless validation: skip DB lookup, rely purely on the verified token payload
+    return {
+      id: payload.sub,
+      email: payload.email,
+      isSystemAdmin: payload.isSystemAdmin || false,
+    };
   }
 }
