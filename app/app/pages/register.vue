@@ -15,7 +15,7 @@
 
       <!-- Name -->
       <div class="relative">
-        <UserRound class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <UserRound class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
         <input
           v-model="name"
           type="text"
@@ -27,7 +27,7 @@
 
       <!-- Email -->
       <div class="relative">
-        <Mail class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Mail class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
         <input
           v-model="email"
           type="email"
@@ -39,7 +39,7 @@
 
       <!-- Password -->
       <div class="relative">
-        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
         <input
           v-model="password"
           :type="showPassword ? 'text' : 'password'"
@@ -55,7 +55,7 @@
 
       <!-- Confirm Password -->
       <div class="relative">
-        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
         <input
           v-model="confirmPassword"
           :type="showConfirm ? 'text' : 'password'"
