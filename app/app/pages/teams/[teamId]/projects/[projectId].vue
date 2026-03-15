@@ -93,17 +93,162 @@
       <div v-for="i in 4" :key="i" class="rounded-xl bg-white/30 dark:bg-white/[0.04] h-64 animate-pulse" />
     </div>
 
-    <div v-else class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-      <TaskColumn
-        v-for="column in columns"
-        :key="column.key"
-        :title="column.title"
-        :status="column.key"
-        :tasks="getTasksByStatus(column.key).map(flatTask)"
-        :color="column.color"
-        @task-click="(t: { id: string }) => openTask(getTasksByStatus(column.key).find(x => x.id === t.id)!)"
-        @status-change="handleStatusChange"
-      />
+    <div v-else class="space-y-4">
+      <UiCard>
+        <UiCardContent class="pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="inline-flex items-center rounded-xl border border-white/60 dark:border-white/[0.10] bg-white/45 dark:bg-white/[0.04] p-1">
+            <button
+              :class="[
+                'px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors',
+                activeProjectView === 'KANBAN'
+                  ? 'bg-[#1F3F68] text-white'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/[0.08]',
+              ]"
+              @click="activeProjectView = 'KANBAN'"
+            >
+              Kanban
+            </button>
+            <button
+              :class="[
+                'px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors',
+                activeProjectView === 'TIMELINE'
+                  ? 'bg-[#1F3F68] text-white'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/[0.08]',
+              ]"
+              @click="activeProjectView = 'TIMELINE'"
+            >
+              Timeline
+            </button>
+          </div>
+
+        </UiCardContent>
+      </UiCard>
+
+      <div v-if="activeProjectView === 'KANBAN'" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <TaskColumn
+          v-for="column in columns"
+          :key="column.key"
+          :title="column.title"
+          :status="column.key"
+          :tasks="getTasksByStatus(column.key).map(flatTask)"
+          :color="column.color"
+          @task-click="(t: { id: string }) => openTask(getTasksByStatus(column.key).find(x => x.id === t.id)!)"
+          @status-change="handleStatusChange"
+        />
+      </div>
+
+      <UiCard v-else>
+        <UiCardContent class="pt-4 space-y-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Project Task Timeline (Gantt View)</h3>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-slate-500 dark:text-slate-400">
+                {{ isSingleMonthTimeline ? `1 bulan · mode ${timelineModeLabel}` : 'Weekly' }}
+              </span>
+              <div
+                v-if="isSingleMonthTimeline"
+                class="inline-flex items-center rounded-xl border border-white/60 dark:border-white/[0.10] bg-white/45 dark:bg-white/[0.04] p-1"
+              >
+                <button
+                  :class="[
+                    'px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-colors',
+                    timelineRange === 'DAILY'
+                      ? 'bg-[#16A34A] text-white'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/[0.08]',
+                  ]"
+                  @click="timelineRange = 'DAILY'"
+                >
+                  Harian
+                </button>
+                <button
+                  :class="[
+                    'px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-colors',
+                    timelineRange === 'WEEKLY'
+                      ? 'bg-[#16A34A] text-white'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/[0.08]',
+                  ]"
+                  @click="timelineRange = 'WEEKLY'"
+                >
+                  Mingguan
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="ganttRows.length === 0 || timelineColumns.length === 0" class="h-64 rounded-xl border border-dashed border-white/60 dark:border-white/[0.10] flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+            Belum ada task bertanggal untuk ditampilkan dalam timeline.
+          </div>
+
+          <div v-else class="rounded-2xl border border-white/60 dark:border-white/[0.08] bg-white/35 dark:bg-white/[0.03] p-3.5">
+            <div class="overflow-x-auto">
+              <div class="min-w-[980px] space-y-2">
+                <div v-if="monthHeaderSegments.length > 1" class="flex items-center gap-2">
+                  <div class="w-52" />
+                  <div class="flex-1 flex gap-0 border border-white/70 dark:border-white/[0.12]">
+                    <div
+                      v-for="segment in monthHeaderSegments"
+                      :key="segment.key"
+                      class="text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-r border-white/70 dark:border-white/[0.12] py-1"
+                      :style="{ width: `${(segment.count / timelineColumns.length) * 100}%` }"
+                    >
+                      {{ segment.label }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <div class="w-52 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Task</div>
+                  <div class="flex-1 grid gap-0 border border-white/70 dark:border-white/[0.12]" :style="{ gridTemplateColumns: `repeat(${timelineColumns.length}, minmax(54px, 1fr))` }">
+                    <div
+                      v-for="col in timelineColumns"
+                      :key="col.key"
+                      class="text-center text-[10px] font-semibold text-slate-500 dark:text-slate-400 border-r border-white/70 dark:border-white/[0.12] py-1"
+                      :title="col.tooltip"
+                    >
+                      {{ col.label }}
+                    </div>
+                  </div>
+                </div>
+
+                <div v-for="row in ganttRows" :key="row.task.id" class="flex items-center gap-2">
+                  <button
+                    class="w-52 text-left text-[11px] font-medium text-slate-800 dark:text-slate-100 truncate hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
+                    :title="row.task.title"
+                    @click="openTask(row.task)"
+                  >
+                    {{ row.task.title }}
+                  </button>
+
+                  <div class="flex-1 grid gap-0 border border-white/70 dark:border-white/[0.12]" :style="{ gridTemplateColumns: `repeat(${timelineColumns.length}, minmax(54px, 1fr))` }">
+                    <button
+                      v-for="(col, colIndex) in timelineColumns"
+                      :key="`${row.task.id}-${col.key}`"
+                      class="h-[30px] rounded-none border-b transition-colors"
+                      :class="
+                        colIndex >= row.startIndex && colIndex <= row.endIndex
+                          ? [
+                              row.task.status === 'TODO'
+                                ? 'bg-[#E0E1DD]/70 border-b-[#E0E1DD]/70'
+                                : row.task.status === 'IN_PROGRESS'
+                                  ? 'bg-[#778DA9]/25 border-b-[#778DA9]/25'
+                                  : row.task.status === 'REVIEW'
+                                    ? 'bg-[#415A77]/60 border-b-[#415A77]/60'
+                                    : 'bg-[#1B263B]/90 border-b-[#1B263B]/90',
+                              colIndex === row.endIndex ? 'border-r border-white/70 dark:border-white/[0.12]' : ''
+                            ]
+                          : 'bg-white/40 dark:bg-white/[0.04] border-r border-white/70 dark:border-white/[0.12] border-b-white/70 dark:border-b-white/[0.12]'
+                      "
+                      @click="openTask(row.task)"
+                      :title="`${row.task.title} (${row.startLabel} - ${row.endLabel})`"
+                    >
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </UiCardContent>
+      </UiCard>
     </div>
 
     <UiModal v-model="showEditProject" title="Edit Project Details">
@@ -282,6 +427,8 @@ interface Task {
   status: string
   priority: string
   dueDate?: string
+  createdAt?: string
+  updatedAt?: string
   assignee?: TaskUser
   createdBy: TaskUser
 }
@@ -321,6 +468,8 @@ const showDetail = ref(false)
 const showEditProject = ref(false)
 const selectedTask = ref<Task | null>(null)
 const project = ref<Project | null>(null)
+const activeProjectView = ref<'KANBAN' | 'TIMELINE'>('KANBAN')
+const timelineRange = ref<'DAILY' | 'WEEKLY'>('DAILY')
 
 const editProject = reactive({
   picId: '',
@@ -417,6 +566,190 @@ const completionProgress = computed(() => {
   if (totalTaskCount.value === 0) return Number(project.value?.progress || 0)
   return (doneCount.value / totalTaskCount.value) * 100
 })
+
+const allTasks = computed(() => Object.values(board.value).flat() as Task[])
+
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
+const endOfDay = (d: Date) => {
+  const x = startOfDay(d)
+  x.setHours(23, 59, 59, 999)
+  return x
+}
+const parseSafeDate = (value?: string) => {
+  if (!value) return null
+  const d = new Date(value)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+const timelineTaskDate = (task: Task) => parseSafeDate(task.dueDate || task.updatedAt || task.createdAt)
+
+const monthStart = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1)
+const monthEnd = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999)
+const weekInMonth = (date: Date) => Math.floor((date.getDate() - 1) / 7) + 1
+
+const timelineTaskEntries = computed(() =>
+  allTasks.value
+    .map((task) => {
+      const anchorDate = timelineTaskDate(task)
+      if (!anchorDate) return null
+
+      const rawStart = parseSafeDate(task.createdAt || task.updatedAt || task.dueDate) || anchorDate
+      const rawEnd = parseSafeDate(task.dueDate || task.updatedAt || task.createdAt) || anchorDate
+      const startDate = rawStart.getTime() <= rawEnd.getTime() ? rawStart : rawEnd
+      const endDate = rawStart.getTime() <= rawEnd.getTime() ? rawEnd : rawStart
+
+      return { task, anchorDate, startDate, endDate }
+    })
+    .filter((x): x is { task: Task; anchorDate: Date; startDate: Date; endDate: Date } => x !== null)
+    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+)
+
+const timelineDomain = computed(() => {
+  const firstEntry = timelineTaskEntries.value[0]
+  if (!firstEntry) return null
+  const min = timelineTaskEntries.value.reduce((acc, x) => x.startDate < acc ? x.startDate : acc, firstEntry.startDate)
+  const max = timelineTaskEntries.value.reduce((acc, x) => x.endDate > acc ? x.endDate : acc, firstEntry.endDate)
+  return {
+    start: startOfDay(min),
+    end: endOfDay(max),
+  }
+})
+
+const isSingleMonthTimeline = computed(() => {
+  const d = timelineDomain.value
+  if (!d) return false
+  return d.start.getFullYear() === d.end.getFullYear() && d.start.getMonth() === d.end.getMonth()
+})
+
+const timelineMode = computed<'DAILY' | 'WEEKLY'>(() => (isSingleMonthTimeline.value ? timelineRange.value : 'WEEKLY'))
+const timelineModeLabel = computed(() => (timelineMode.value === 'DAILY' ? 'harian' : 'mingguan'))
+
+const timelineColumns = computed(() => {
+  const domain = timelineDomain.value
+  if (!domain) return [] as Array<{ key: string; label: string; tooltip: string; monthKey: string; monthLabel: string; start: Date; end: Date }>
+
+  if (timelineMode.value === 'DAILY') {
+    const columns: Array<{ key: string; label: string; tooltip: string; monthKey: string; monthLabel: string; start: Date; end: Date }> = []
+    const cursor = new Date(domain.start)
+    while (cursor <= domain.end) {
+      const start = new Date(cursor)
+      const end = endOfDay(start)
+      const monthKey = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}`
+      columns.push({
+        key: `${monthKey}-${String(start.getDate()).padStart(2, '0')}`,
+        label: String(start.getDate()),
+        tooltip: start.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+        monthKey,
+        monthLabel: start.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }),
+        start,
+        end,
+      })
+      cursor.setDate(cursor.getDate() + 1)
+    }
+    return columns
+  }
+
+  const columns: Array<{ key: string; label: string; tooltip: string; monthKey: string; monthLabel: string; start: Date; end: Date }> = []
+  let current = new Date(domain.start)
+  const domainStart = domain.start
+  const domainEnd = domain.end
+  while (current <= domain.end) {
+    const y = current.getFullYear()
+    const m = current.getMonth()
+    const daysInMonth = new Date(y, m + 1, 0).getDate()
+    const weeksTotal = Math.ceil(daysInMonth / 7)
+    const monthKey = `${y}-${String(m + 1).padStart(2, '0')}`
+    const monthLabel = new Date(y, m, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+
+    for (let wk = 1; wk <= weeksTotal; wk += 1) {
+      const startDay = (wk - 1) * 7 + 1
+      const endDay = Math.min(daysInMonth, wk * 7)
+      const start = new Date(y, m, startDay)
+      const end = new Date(y, m, endDay, 23, 59, 59, 999)
+      if (end < domainStart || start > domainEnd) {
+        continue
+      }
+      columns.push({
+        key: `${monthKey}-w${wk}`,
+        label: `W${wk}`,
+        tooltip: `${monthLabel} - Week ${wk}`,
+        monthKey,
+        monthLabel,
+        start,
+        end,
+      })
+    }
+
+    current = new Date(y, m + 1, 1)
+  }
+
+  return columns
+})
+
+const monthHeaderSegments = computed(() => {
+  const cols = timelineColumns.value
+  if (!cols.length) return [] as Array<{ key: string; label: string; count: number }>
+  const segments: Array<{ key: string; label: string; count: number }> = []
+  for (const col of cols) {
+    const last = segments[segments.length - 1]
+    if (!last || last.key !== col.monthKey) {
+      segments.push({ key: col.monthKey, label: col.monthLabel, count: 1 })
+    } else {
+      last.count += 1
+    }
+  }
+  return segments
+})
+
+const rangeIntersect = (aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) => aStart <= bEnd && bStart <= aEnd
+
+const ganttRows = computed(() => {
+  const cols = timelineColumns.value
+  if (!cols.length) return [] as Array<{ task: Task; startIndex: number; endIndex: number; startLabel: string; endLabel: string }>
+
+  return timelineTaskEntries.value
+    .map((entry) => {
+      let startIndex = -1
+      let endIndex = -1
+      for (let i = 0; i < cols.length; i += 1) {
+        const col = cols[i]
+        if (!col) continue
+        if (rangeIntersect(entry.startDate, entry.endDate, col.start, col.end)) {
+          if (startIndex === -1) startIndex = i
+          endIndex = i
+        }
+      }
+      if (startIndex === -1 || endIndex === -1) return null
+      return {
+        task: entry.task,
+        startIndex,
+        endIndex,
+        startLabel: entry.startDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+        endLabel: entry.endDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+      }
+    })
+    .filter((x): x is { task: Task; startIndex: number; endIndex: number; startLabel: string; endLabel: string } => x !== null)
+})
+
+const ganttBarClass = (status: string) => {
+  const map: Record<string, string> = {
+    TODO: 'bg-[#E0E1DD]',
+    IN_PROGRESS: 'bg-[#778DA9]',
+    REVIEW: 'bg-[#415A77]',
+    DONE: 'bg-[#1B263B]',
+  }
+  return map[status] ?? 'bg-[#64748B]'
+}
+
+const ganttBarTextClass = (status: string) => {
+  const map: Record<string, string> = {
+    TODO: 'text-[#1B263B]',
+    IN_PROGRESS: 'text-[#0D1B2A]',
+    REVIEW: 'text-white',
+    DONE: 'text-white',
+  }
+  return map[status] ?? 'text-white'
+}
 
 const daysLeft = computed(() => {
   if (!project.value?.dueDate) return '-'
