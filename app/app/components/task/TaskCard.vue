@@ -68,19 +68,22 @@ const onDragEnd = () => { isDragging.value = false }
 
 const priorityDot = computed(() => {
   const map: Record<string, string> = {
-    LOW: 'bg-[#B8CFCE]', MEDIUM: 'bg-[#7F8CAA]', HIGH: 'bg-[#333446]', URGENT: 'bg-[#333446] ring-2 ring-[#7F8CAA]/30',
+    LOW: 'bg-[#E0E1DD]',
+    MEDIUM: 'bg-[#778DA9]',
+    HIGH: 'bg-[#415A77]',
+    URGENT: 'bg-[#B85C5C] ring-2 ring-[#B85C5C]/30',
   }
-  return map[props.task.priority] ?? 'bg-[#EAEFEF]'
+  return map[props.task.priority] ?? 'bg-[#E0E1DD]'
 })
 
 const priorityText = computed(() => {
   const map: Record<string, string> = {
-    LOW: 'text-[#7F8CAA]',
-    MEDIUM: 'text-[#333446]',
-    HIGH: 'text-[#333446] font-bold',
-    URGENT: 'text-[#333446] font-black underline decoration-[#B8CFCE]',
+    LOW: 'text-[#778DA9]',
+    MEDIUM: 'text-[#415A77]',
+    HIGH: 'text-[#1B263B] font-bold',
+    URGENT: 'text-[#6A2F2F] font-black underline decoration-[#B85C5C]/45',
   }
-  return map[props.task.priority] ?? 'text-[#7F8CAA]'
+  return map[props.task.priority] ?? 'text-[#778DA9]'
 })
 
 const formatDate = (date: string) =>

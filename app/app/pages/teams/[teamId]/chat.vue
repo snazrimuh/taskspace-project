@@ -3,7 +3,7 @@
     <!-- Compact Header -->
     <div class="glass-subtle rounded-2xl px-4 py-2.5 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-2">
-        <div class="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
+        <div class="h-2 w-2 rounded-full bg-[#778DA9] shrink-0" />
         <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">Team Chat</span>
         <span class="text-xs text-slate-400 dark:text-slate-500">· {{ teamStore.currentTeamMembers.length }} members</span>
       </div>
@@ -55,8 +55,8 @@
                 :class="[
                   'rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm',
                   isMe(msg)
-                    ? 'bg-indigo-600 dark:bg-indigo-700 text-white rounded-br-sm'
-                    : 'bg-white/60 dark:bg-white/[0.07] text-slate-800 dark:text-slate-200 rounded-bl-sm border border-white/70 dark:border-white/[0.08]',
+                    ? 'bg-[#1F3F68] text-white rounded-br-sm border border-[#2A4A74] shadow-[0_5px_14px_rgba(10,22,36,0.42)]'
+                    : 'bg-[rgba(224,225,221,0.7)] dark:bg-[#202C33] text-[#0D1B2A] dark:text-[#E9EDEF] rounded-bl-sm border border-white/70 dark:border-transparent',
                 ]"
               >
                 {{ msg.message }}
@@ -76,7 +76,7 @@
               <div class="text-xs text-slate-500 dark:text-slate-500 mb-1 ml-1">
                 {{ typingUsers.map((u) => u.name).join(', ') }}
               </div>
-              <div class="bg-white/60 dark:bg-white/[0.07] rounded-2xl rounded-bl-sm px-4 py-2 border border-white/70 dark:border-white/[0.08]">
+              <div class="bg-white/60 dark:bg-[#202C33] rounded-2xl rounded-bl-sm px-4 py-2 border border-white/70 dark:border-transparent">
                 <div class="flex items-center gap-1">
                   <span class="h-1.5 w-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style="animation-delay: 0ms" />
                   <span class="h-1.5 w-1.5 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce" style="animation-delay: 150ms" />

@@ -6,18 +6,53 @@
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  /* Primary color scale (navy) */
-  --color-primary-50:  #eef3fb;
-  --color-primary-100: #dbe6f6;
-  --color-primary-200: #b8cde9;
-  --color-primary-300: #90aed9;
-  --color-primary-400: #678bc2;
-  --color-primary-500: #4b6ea3;
-  --color-primary-600: #395783;
-  --color-primary-700: #2a4267;
-  --color-primary-800: #1c2f4d;
-  --color-primary-900: #111f36;
-  --color-primary-950: #0a1426;
+  /* TaskSpace core palette */
+  --color-primary-50:  #eef1f4;
+  --color-primary-100: #dde3eb;
+  --color-primary-200: #c4cedc;
+  --color-primary-300: #9caec3;
+  --color-primary-400: #778da9;
+  --color-primary-500: #415a77;
+  --color-primary-600: #31465f;
+  --color-primary-700: #1b263b;
+  --color-primary-800: #132133;
+  --color-primary-900: #0d1b2a;
+  --color-primary-950: #09121d;
+
+  /* Keep legacy indigo classes palette-aligned */
+  --color-indigo-50:  #eef1f4;
+  --color-indigo-100: #dde3eb;
+  --color-indigo-200: #c4cedc;
+  --color-indigo-300: #9caec3;
+  --color-indigo-400: #778da9;
+  --color-indigo-500: #415a77;
+  --color-indigo-600: #31465f;
+  --color-indigo-700: #1b263b;
+
+  /* Muted semantic colors */
+  --color-emerald-50:  #e7f2ee;
+  --color-emerald-100: #d5e9e1;
+  --color-emerald-200: #b8d8cd;
+  --color-emerald-400: #79ab9b;
+  --color-emerald-500: #4f8f7b;
+  --color-emerald-600: #3d7564;
+  --color-emerald-700: #1e4d43;
+
+  --color-amber-50:  #f7f2e3;
+  --color-amber-100: #f0e7cf;
+  --color-amber-200: #e1d1a5;
+  --color-amber-400: #cfb678;
+  --color-amber-500: #c2a75c;
+  --color-amber-600: #9d874a;
+  --color-amber-700: #5c4a1a;
+
+  --color-rose-50:  #f6eaea;
+  --color-rose-100: #edd7d7;
+  --color-rose-200: #ddb5b5;
+  --color-rose-400: #ca8585;
+  --color-rose-500: #b85c5c;
+  --color-rose-600: #934848;
+  --color-rose-700: #6a2f2f;
 
   /* Surface color scale */
   --color-surface-50:  #f8fafc;
@@ -27,6 +62,19 @@
   --color-surface-850: #080c15;
   --color-surface-900: #04070d;
   --color-surface-950: #020305;
+
+  /* Design palette – dark mode solid backgrounds */
+  --color-dp-bg:     #0E0D25;
+  --color-dp-base:   #19183B;
+  --color-dp-card:   #1E1D3E;
+  --color-dp-subtle: #1B1A38;
+  --color-dp-bar:    #161530;
+  --color-dp-teal:   #1C3441;
+  --color-dp-amber:  #213E4A;
+  --color-dp-green:  #1B3935;
+  --color-dp-slate:  #708993;
+  --color-dp-mint:   #A1C2BD;
+  --color-dp-light:  #E7F2EF;
 }
 
 body {

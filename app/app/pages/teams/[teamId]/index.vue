@@ -41,24 +41,24 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div class="rounded-xl p-3.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
             <div class="flex items-center justify-between mb-1.5">
-              <p class="text-xs font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">On Track</p>
-              <div class="h-2 w-2 rounded-full bg-emerald-500"></div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-[#15803D] dark:text-[#86EFAC]">On Track</p>
+              <div class="h-3 w-3 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
             </div>
             <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.onTrack }}</p>
             <p class="text-xs text-slate-400 mt-0.5">Progress ≥ 60% or completed</p>
           </div>
           <div class="rounded-xl p-3.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
             <div class="flex items-center justify-between mb-1.5">
-              <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Needs Attention</p>
-              <div class="h-2 w-2 rounded-full bg-amber-500"></div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-[#B45309] dark:text-[#FCD34D]">Needs Attention</p>
+              <div class="h-3 w-3 rounded-full bg-[#FBBF24] shadow-[0_0_8px_rgba(251,191,36,0.6)]"></div>
             </div>
             <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.attention }}</p>
             <p class="text-xs text-slate-400 mt-0.5">Progress &lt; 60% and active</p>
           </div>
           <div class="rounded-xl p-3.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
             <div class="flex items-center justify-between mb-1.5">
-              <p class="text-xs font-semibold uppercase tracking-wider text-rose-500 dark:text-rose-400">Overdue</p>
-              <div class="h-2 w-2 rounded-full bg-rose-500"></div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-[#DC2626] dark:text-[#FCA5A5]">Overdue</p>
+              <div class="h-3 w-3 rounded-full bg-[#EF4444] shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
             </div>
             <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ projectHealth.overdue }}</p>
             <p class="text-xs text-slate-400 mt-0.5">Due date passed, not done</p>
@@ -84,22 +84,22 @@
             <div class="h-3 rounded-full flex overflow-hidden gap-0.5 bg-white/30 dark:bg-white/[0.08]">
               <div
                 v-if="taskDist.todo > 0"
-                class="h-full bg-slate-400/80 dark:bg-slate-500/70 rounded-l-full transition-all duration-500"
+                class="h-full bg-[#E0E1DD] rounded-l-full transition-all duration-500"
                 :style="{ width: `${taskDist.todoP}%` }"
               />
               <div
                 v-if="taskDist.inProgress > 0"
-                class="h-full bg-primary-400/80 dark:bg-primary-500/70 transition-all duration-500"
+                class="h-full bg-[#778DA9] transition-all duration-500"
                 :style="{ width: `${taskDist.inProgressP}%` }"
               />
               <div
                 v-if="taskDist.review > 0"
-                class="h-full bg-amber-400/80 dark:bg-amber-500/70 transition-all duration-500"
+                class="h-full bg-[#415A77] transition-all duration-500"
                 :style="{ width: `${taskDist.reviewP}%` }"
               />
               <div
                 v-if="taskDist.done > 0"
-                class="h-full bg-emerald-400/80 dark:bg-emerald-500/70 rounded-r-full transition-all duration-500"
+                class="h-full bg-[#1B263B] rounded-r-full transition-all duration-500"
                 :style="{ width: `${taskDist.doneP}%` }"
               />
             </div>
@@ -130,7 +130,7 @@
             <p class="text-xs text-slate-400 mt-1">active tasks</p>
           </div>
           <div class="rounded-xl p-4 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] border-l-2 border-l-amber-400">
-            <p class="text-xs font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Due In 7 Days</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-[#415A77] dark:text-[#E0E1DD]">Due In 7 Days</p>
             <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1.5">{{ myDueSoonCount }}</p>
             <p class="text-xs text-slate-400 mt-1">tasks due soon</p>
           </div>
@@ -157,7 +157,7 @@
             class="rounded-xl px-3 py-2.5 border border-white/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] flex items-center justify-between gap-2"
           >
             <div class="min-w-0 flex items-center gap-2.5">
-              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-primary-500' : 'bg-amber-500']" />
+              <div :class="['h-2 w-2 rounded-full shrink-0', item.variant === 'info' ? 'bg-[#415A77]' : 'bg-[#C2A75C]']" />
               <div class="min-w-0">
                 <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ item.title }}</p>
                 <p class="text-xs text-slate-500">{{ item.subtitle }}</p>
@@ -254,10 +254,10 @@ const taskDist = computed(() => {
 })
 
 const taskStatuses = computed(() => [
-  { label: 'Todo', count: todoCount.value, dot: 'bg-slate-400 dark:bg-slate-500' },
-  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-primary-500 dark:bg-primary-400' },
-  { label: 'Review', count: reviewCount.value, dot: 'bg-amber-500 dark:bg-amber-400' },
-  { label: 'Done', count: completedTaskCount.value, dot: 'bg-emerald-500 dark:bg-emerald-400' },
+  { label: 'Todo', count: todoCount.value, dot: 'bg-[#E0E1DD]' },
+  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-[#778DA9]' },
+  { label: 'Review', count: reviewCount.value, dot: 'bg-[#415A77]' },
+  { label: 'Done', count: completedTaskCount.value, dot: 'bg-[#1B263B]' },
 ])
 
 const myAssignedTaskCount = computed(() =>
@@ -376,12 +376,12 @@ const formatTime = (date: string) => {
 
 const statusColor = (status: string) => {
   const colors: Record<string, string> = {
-    TODO: 'bg-slate-400 dark:bg-slate-500',
-    IN_PROGRESS: 'bg-primary-500 dark:bg-primary-400',
-    REVIEW: 'bg-amber-500 dark:bg-amber-400',
-    DONE: 'bg-emerald-500 dark:bg-emerald-400',
+    TODO: 'bg-[#E0E1DD]',
+    IN_PROGRESS: 'bg-[#778DA9]',
+    REVIEW: 'bg-[#415A77]',
+    DONE: 'bg-[#1B263B]',
   }
-  return colors[status] ?? 'bg-slate-400 dark:bg-slate-500'
+  return colors[status] ?? 'bg-[#E0E1DD]'
 }
 
 const priorityVariant = (priority: string) => {

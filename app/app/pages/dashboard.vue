@@ -136,8 +136,8 @@
           <UiCardTitle class="text-base">Focus Today</UiCardTitle>
         </UiCardHeader>
         <UiCardContent class="pt-2 space-y-3">
-          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-amber-400 border border-white/60 dark:border-white/[0.08]">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-amber-500 dark:text-amber-400">Top Priority</p>
+          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-[#778DA9] border border-white/60 dark:border-white/[0.08]">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-[#415A77] dark:text-[#E0E1DD]">Top Priority</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
               Review teams with task load above {{ highLoadThreshold }}
             </p>
@@ -148,8 +148,8 @@
               {{ pendingInvites.length }} pending invite{{ pendingInvites.length === 1 ? '' : 's' }} waiting response
             </p>
           </div>
-          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-emerald-400 border border-white/60 dark:border-white/[0.08]">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">Coverage</p>
+          <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-[#415A77] border border-white/60 dark:border-white/[0.08]">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-[#1B263B] dark:text-[#E0E1DD]">Coverage</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
               {{ teams.length - managedTeams }} team{{ teams.length - managedTeams === 1 ? '' : 's' }} where you contribute as member
             </p>
@@ -187,7 +187,7 @@
     <!-- Create Team Modal -->
     <UiModal v-model="showCreateTeam" title="Create New Team">
       <form class="space-y-4" @submit.prevent="handleCreateTeam">
-        <div v-if="createError" class="rounded-xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 px-3.5 py-2.5 text-sm text-rose-700 dark:text-rose-400">{{ createError }}</div>
+        <div v-if="createError" class="rounded-xl bg-[#F6EAEA]/90 dark:bg-[#6A2F2F]/18 border border-[#B85C5C]/35 px-3.5 py-2.5 text-sm text-[#6A2F2F] dark:text-[#F6EAEA]">{{ createError }}</div>
         <div class="space-y-1.5">
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Team Name</label>
           <UiInput v-model="newTeamName" placeholder="e.g. Engineering Team" required />
@@ -259,6 +259,7 @@ const { isDark } = useTheme()
 const teams = computed(() => teamStore.teams)
 const totalProjects = computed(() => teams.value.reduce((a, t) => a + (t._count?.projects ?? 0), 0))
 const managedTeams = computed(() => teams.value.filter((t) => t.role === 'ADMIN').length)
+const highLoadThreshold = 20
 
 const stats = computed(() => [
   { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-600/30', iconColor: 'text-primary-500 dark:text-primary-300', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/50' },
@@ -282,13 +283,13 @@ const chartData = computed(() => {
         backgroundColor: (context: any) => {
           const ctx = context.chart.ctx
           const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-          gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)') // indigo-500
-          gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)')
+          gradient.addColorStop(0, 'rgba(65, 90, 119, 0.35)')
+          gradient.addColorStop(1, 'rgba(65, 90, 119, 0.0)')
           return gradient
         },
-        borderColor: '#6366f1', // indigo-500
-        pointBackgroundColor: '#6366f1',
-        pointBorderColor: '#fff',
+        borderColor: '#415A77',
+        pointBackgroundColor: '#415A77',
+        pointBorderColor: '#E0E1DD',
         pointBorderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 6,
@@ -302,13 +303,13 @@ const chartData = computed(() => {
         backgroundColor: (context: any) => {
           const ctx = context.chart.ctx
           const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.4)') // emerald-500
-          gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)')
+          gradient.addColorStop(0, 'rgba(34, 197, 94, 0.40)')
+          gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)')
           return gradient
         },
-        borderColor: '#10b981', // emerald-500
-        pointBackgroundColor: '#10b981',
-        pointBorderColor: '#fff',
+        borderColor: '#22C55E',
+        pointBackgroundColor: '#22C55E',
+        pointBorderColor: '#E0E1DD',
         pointBorderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 6,
@@ -322,7 +323,7 @@ const chartData = computed(() => {
 })
 
 const chartOptions = computed(() => {
-  const tickColor = isDark.value ? '#94a3b8' : '#64748b'
+  const tickColor = isDark.value ? '#E0E1DD' : '#0D1B2A'
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -342,10 +343,10 @@ const chartOptions = computed(() => {
       tooltip: {
         mode: 'index' as const,
         intersect: false,
-        backgroundColor: isDark.value ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)',
-        titleColor: isDark.value ? '#f8fafc' : '#0f172a',
-        bodyColor: isDark.value ? '#cbd5e1' : '#475569',
-        borderColor: isDark.value ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+        backgroundColor: isDark.value ? 'rgba(13, 27, 42, 0.95)' : 'rgba(224, 225, 221, 0.95)',
+        titleColor: isDark.value ? '#E0E1DD' : '#0D1B2A',
+        bodyColor: isDark.value ? '#E0E1DD' : '#1B263B',
+        borderColor: 'rgba(224,225,221,0.4)',
         borderWidth: 1,
         padding: 12,
         cornerRadius: 12,
@@ -371,7 +372,7 @@ const chartOptions = computed(() => {
       },
       y: {
         grid: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(224,225,221,0.4)',
         },
         ticks: {
           stepSize: 1,

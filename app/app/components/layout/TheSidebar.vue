@@ -60,7 +60,7 @@
               :class="[
                 'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all',
                 currentTeamId === normalizeTeamId(team.id)
-                  ? 'bg-primary-500/[0.10] dark:bg-primary-500/[0.14] text-primary-700 dark:text-primary-300 font-medium'
+                  ? 'bg-gradient-to-r from-[#2A4A74]/30 to-[#1F3F68]/18 dark:from-[#2D4F7C]/45 dark:to-[#1F3F68]/30 text-[#1C3C62] dark:text-[#D8E7FF] font-semibold ring-1 ring-[#2A4A74]/25 dark:ring-[#5B84C4]/35 shadow-[0_6px_18px_rgba(13,27,42,0.20)]'
                   : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.07]',
               ]"
               @click="selectTeam(team.id)"
@@ -69,7 +69,7 @@
                 {{ team.name.slice(0, 2).toUpperCase() }}
               </div>
               <span class="truncate flex-1 text-left">{{ team.name }}</span>
-              <Check v-if="currentTeamId === normalizeTeamId(team.id)" class="h-3.5 w-3.5 text-primary-500 shrink-0" />
+              <Check v-if="currentTeamId === normalizeTeamId(team.id)" class="h-3.5 w-3.5 text-[#3B82F6] dark:text-[#93C5FD] shrink-0" />
             </button>
           </div>
           <div class="border-t border-white/60 dark:border-white/[0.07] p-1.5">
@@ -95,7 +95,7 @@
           :class="[
             'w-full flex items-center gap-2.5 rounded-xl pl-5 pr-3 py-2 text-[13px] transition-all',
             isActive(item.key)
-              ? 'bg-primary-500/[0.12] dark:bg-primary-500/[0.16] text-primary-700 dark:text-primary-300 font-medium'
+              ? 'bg-gradient-to-r from-[#2A4A74]/30 to-[#1F3F68]/18 dark:from-[#2D4F7C]/45 dark:to-[#1F3F68]/30 text-[#1C3C62] dark:text-[#D8E7FF] font-semibold ring-1 ring-[#2A4A74]/25 dark:ring-[#5B84C4]/35 shadow-[0_6px_18px_rgba(13,27,42,0.20)]'
               : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
           ]"
         >
@@ -125,7 +125,7 @@
             :class="[
               'w-full text-left rounded-xl px-3 py-2 text-[13px] transition-all flex items-center gap-2.5',
               currentTeamId === normalizeTeamId(team.id)
-                ? 'bg-primary-500/[0.12] dark:bg-primary-500/[0.16] text-primary-700 dark:text-primary-300 font-medium'
+                ? 'bg-gradient-to-r from-[#2A4A74]/30 to-[#1F3F68]/18 dark:from-[#2D4F7C]/45 dark:to-[#1F3F68]/30 text-[#1C3C62] dark:text-[#D8E7FF] font-semibold ring-1 ring-[#2A4A74]/25 dark:ring-[#5B84C4]/35 shadow-[0_6px_18px_rgba(13,27,42,0.20)]'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-white/40 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-slate-200',
             ]"
             @click="selectTeam(team.id)"

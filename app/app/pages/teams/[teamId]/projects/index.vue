@@ -101,11 +101,11 @@
             <div class="space-y-1.5">
               <div class="flex items-center justify-between text-xs text-slate-500">
                 <span>Progress</span>
-                <span>{{ project.progress }}%</span>
+                <span class="font-semibold text-emerald-700 dark:text-emerald-300">{{ project.progress }}%</span>
               </div>
               <div class="h-2 w-full rounded-full bg-white/40 dark:bg-white/[0.08] overflow-hidden">
                 <div
-                  class="h-full bg-emerald-500 dark:bg-emerald-400 transition-all"
+                  class="h-full bg-[linear-gradient(90deg,#16A34A_0%,#22C55E_100%)] transition-all"
                   :style="{ width: `${Math.min(100, Number(project.progress || 0))}%` }"
                 />
               </div>
@@ -276,10 +276,10 @@ const handleCreate = async () => {
 
 const statusVariant = (status: string) => {
   const map: Record<string, string> = {
-    NOT_STARTED: 'secondary',
-    IN_PROGRESS: 'info',
+    NOT_STARTED: 'todo',
+    IN_PROGRESS: 'progress',
     ON_HOLD: 'warning',
-    COMPLETED: 'success',
+    COMPLETED: 'done',
   }
   return map[status] ?? 'secondary'
 }

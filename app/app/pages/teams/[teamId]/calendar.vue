@@ -116,7 +116,9 @@
                 <div class="text-sm font-medium text-slate-900 dark:text-slate-200 truncate">{{ event.title }}</div>
                 <div class="text-xs text-slate-500">{{ formatEventDate(event.startDate, event.endDate) }}</div>
               </div>
-              <UiBadge :variant="eventBadgeVariant(event.type)" size="sm">{{ event.type }}</UiBadge>
+              <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide whitespace-nowrap', eventTypeBadgeClass(event.type)]">
+                {{ event.type }}
+              </span>
             </div>
           </UiCardContent>
         </UiCard>
@@ -204,7 +206,9 @@
     <!-- Event Detail Modal -->
     <UiModal v-model="showDetail" :title="selectedEvent?.title || ''">
       <div v-if="selectedEvent" class="space-y-3">
-        <UiBadge :variant="eventBadgeVariant(selectedEvent.type)">{{ selectedEvent.type }}</UiBadge>
+        <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide', eventTypeBadgeClass(selectedEvent.type)]">
+          {{ selectedEvent.type }}
+        </span>
         <div v-if="selectedEvent.description" class="text-sm text-slate-700 dark:text-slate-300">{{ selectedEvent.description }}</div>
         <div class="text-sm text-slate-500">{{ formatEventDate(selectedEvent.startDate, selectedEvent.endDate) }}</div>
         <div class="text-xs text-slate-400">Created by {{ selectedEvent.createdBy?.name }}</div>
@@ -467,31 +471,31 @@ const handleDelete = async (eventId: string) => {
 // ── Style helpers ──────────────────────────────────────────────────────
 const eventColor = (type: string) => {
   const colors: Record<string, string> = {
-    MEETING: 'bg-primary-100 text-primary-700 dark:bg-primary-600/40 dark:text-primary-200',
-    TRAINING: 'bg-slate-100 text-slate-600 dark:bg-slate-700/50 dark:text-slate-300',
-    DEADLINE: 'bg-rose-100 text-rose-700 dark:bg-rose-600/40 dark:text-rose-200',
-    INTERNAL: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-600/40 dark:text-emerald-200',
+    MEETING: 'bg-[#1F3F68] text-[#EAF2FF]',
+    TRAINING: 'bg-[#475569] text-[#F1F5F9]',
+    DEADLINE: 'bg-[#B42318] text-[#FFF1F0]',
+    INTERNAL: 'bg-[#15803D] text-[#ECFDF3]',
   }
-  return colors[type] ?? 'bg-slate-100 text-slate-700'
+  return colors[type] ?? 'bg-[#334155] text-[#F8FAFC]'
 }
 
 const eventDotColor = (type: string) => {
   const colors: Record<string, string> = {
-    MEETING: 'bg-primary-500 dark:bg-primary-400',
-    TRAINING: 'bg-slate-500 dark:bg-slate-400',
-    DEADLINE: 'bg-rose-500 dark:bg-rose-400',
-    INTERNAL: 'bg-emerald-500 dark:bg-emerald-400',
+    MEETING: 'bg-[#3B82F6]',
+    TRAINING: 'bg-[#94A3B8]',
+    DEADLINE: 'bg-[#F87171]',
+    INTERNAL: 'bg-[#22C55E]',
   }
-  return colors[type] ?? 'bg-slate-500 dark:bg-slate-400'
+  return colors[type] ?? 'bg-[#94A3B8]'
 }
 
-const eventBadgeVariant = (type: string) => {
-  const map: Record<string, any> = {
-    MEETING: 'info',
-    TRAINING: 'secondary',
-    DEADLINE: 'danger',
-    INTERNAL: 'success',
+const eventTypeBadgeClass = (type: string) => {
+  const map: Record<string, string> = {
+    MEETING: 'bg-[#1F3F68] text-[#EAF2FF]',
+    TRAINING: 'bg-[#64748B] text-[#F8FAFC]',
+    DEADLINE: 'bg-[#CD2B31] text-[#FFF5F5]',
+    INTERNAL: 'bg-[#15803D] text-[#ECFDF3]',
   }
-  return map[type] ?? 'secondary'
+  return map[type] ?? 'bg-[#334155] text-[#F8FAFC]'
 }
 </script>

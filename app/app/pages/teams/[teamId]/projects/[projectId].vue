@@ -2,7 +2,7 @@
   <div class="space-y-5">
     <UiCard v-if="loadError">
       <UiCardContent class="pt-4 flex items-center justify-between gap-3">
-        <p class="text-sm text-red-600 dark:text-red-400">{{ loadError }}</p>
+        <p class="text-sm text-[#6A2F2F] dark:text-[#F6EAEA]">{{ loadError }}</p>
         <UiButton variant="outline" @click="navigateTo(`/teams/${teamId}/projects`)">Back to Projects</UiButton>
       </UiCardContent>
     </UiCard>
@@ -47,7 +47,7 @@
                    <Calendar class="w-3.5 h-3.5" />
                    <span>{{ formatDate(project?.startDate) }} - {{ formatDate(project?.dueDate) }}</span>
                  </div>
-                 <div class="flex items-center gap-1.5" :class="{'text-rose-500': daysLeft === 'Overdue'}">
+                 <div class="flex items-center gap-1.5" :class="{'text-[#B85C5C]': daysLeft === 'Overdue'}">
                    <Clock class="w-3.5 h-3.5" />
                    <span>{{ daysLeft === 'Overdue' ? 'Overdue' : `${daysLeft} days left` }}</span>
                  </div>
@@ -57,10 +57,10 @@
               <div class="max-w-md">
                 <div class="flex items-center justify-between text-xs text-slate-500 mb-1.5">
                   <span class="font-medium">Completion Progress</span>
-                  <span class="font-bold text-slate-700 dark:text-slate-300">{{ Number(project?.progress || 0).toFixed(0) }}%</span>
+                  <span class="font-bold text-emerald-700 dark:text-emerald-300">{{ completionProgress.toFixed(0) }}%</span>
                 </div>
-                <div class="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
-                  <div class="h-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, Number(project?.progress || 0))}%` }" />
+                <div class="h-2 w-full rounded-full bg-[rgba(224,225,221,0.5)] overflow-hidden">
+                  <div class="h-full bg-[linear-gradient(90deg,#16A34A_0%,#22C55E_100%)] transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, completionProgress)}%` }" />
                 </div>
               </div>
             </div>
@@ -71,17 +71,17 @@
                   <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Total</p>
                   <p class="text-xl font-bold text-slate-900 dark:text-slate-100">{{ totalTaskCount }}</p>
                </div>
-               <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-600/30 border border-indigo-100 dark:border-indigo-500/40 shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-indigo-600 dark:text-indigo-300 mb-0.5">Todo</p>
-                  <p class="text-xl font-bold text-indigo-700 dark:text-indigo-200">{{ todoCount }}</p>
+              <div class="p-3 rounded-xl bg-[#E0E1DD]/70 dark:bg-[#E0E1DD]/18 border border-[#778DA9]/45 shadow-sm">
+                <p class="text-[10px] uppercase tracking-wider text-[#1B263B] dark:text-[#E0E1DD] mb-0.5">Todo</p>
+                <p class="text-xl font-bold text-[#1B263B] dark:text-[#E0E1DD]">{{ todoCount }}</p>
                </div>
-               <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-600/30 border border-amber-100 dark:border-amber-500/40 shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-300 mb-0.5">In Progress</p>
-                  <p class="text-xl font-bold text-amber-700 dark:text-amber-200">{{ progressCount }}</p>
+              <div class="p-3 rounded-xl bg-[#778DA9]/25 dark:bg-[#778DA9]/28 border border-[#415A77]/35 shadow-sm">
+                <p class="text-[10px] uppercase tracking-wider text-[#0D1B2A] dark:text-[#E0E1DD] mb-0.5">In Progress</p>
+                <p class="text-xl font-bold text-[#0D1B2A] dark:text-[#E0E1DD]">{{ progressCount }}</p>
                </div>
-               <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-600/30 border border-emerald-100 dark:border-emerald-500/40 shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-300 mb-0.5">Done</p>
-                  <p class="text-xl font-bold text-emerald-700 dark:text-emerald-200">{{ doneCount }}</p>
+              <div class="p-3 rounded-xl bg-[#1B263B]/90 dark:bg-[#1B263B]/80 border border-[#0D1B2A]/45 shadow-sm">
+                <p class="text-[10px] uppercase tracking-wider text-white/90 mb-0.5">Done</p>
+                <p class="text-xl font-bold text-white">{{ doneCount }}</p>
                </div>
             </div>
           </div>
@@ -172,7 +172,7 @@
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Due Date</label>
           <UiInput v-model="newTask.dueDate" type="date" />
         </div>
-        <p v-if="createError" class="text-sm text-red-600 dark:text-red-400">{{ createError }}</p>
+        <p v-if="createError" class="text-sm text-[#6A2F2F] dark:text-[#F6EAEA]">{{ createError }}</p>
         <div class="flex justify-end gap-2">
           <UiButton variant="outline" type="button" @click="showCreate = false">Cancel</UiButton>
           <UiButton type="submit" :disabled="isCreating">{{ isCreating ? 'Creating...' : 'Create Task' }}</UiButton>
@@ -260,7 +260,7 @@
         <div v-if="isManager" class="flex justify-between gap-2 pt-2 border-t border-white/60 dark:border-white/[0.08]">
           <UiButton variant="danger" type="button" @click="handleDeleteTask(selectedTask!.id)">Delete Task</UiButton>
           <div class="flex gap-2">
-            <p v-if="editError" class="text-sm text-red-600 dark:text-red-400 self-center">{{ editError }}</p>
+            <p v-if="editError" class="text-sm text-[#6A2F2F] dark:text-[#F6EAEA] self-center">{{ editError }}</p>
             <UiButton variant="outline" type="button" @click="showDetail = false">Cancel</UiButton>
             <UiButton :disabled="isSaving" @click="handleSaveTask">{{ isSaving ? 'Saving...' : 'Save Changes' }}</UiButton>
           </div>
@@ -353,10 +353,10 @@ const board = ref<Record<string, Task[]>>({
 const members = computed(() => teamStore.currentTeamMembers as unknown as TeamMember[])
 
 const columns = [
-  { key: 'TODO', title: 'Todo', color: 'bg-[#EAEFEF] ring-1 ring-[#B8CFCE]' },
-  { key: 'IN_PROGRESS', title: 'In Progress', color: 'bg-[#B8CFCE]' },
-  { key: 'REVIEW', title: 'Review', color: 'bg-[#7F8CAA]' },
-  { key: 'DONE', title: 'Done', color: 'bg-[#333446]' },
+  { key: 'TODO', title: 'Todo', color: 'bg-[#E0E1DD] ring-1 ring-[#778DA9]/45' },
+  { key: 'IN_PROGRESS', title: 'In Progress', color: 'bg-[#778DA9]' },
+  { key: 'REVIEW', title: 'Review', color: 'bg-[#415A77]' },
+  { key: 'DONE', title: 'Done', color: 'bg-[#1B263B]' },
 ]
 
 const fetchProject = async () => {
@@ -413,6 +413,10 @@ const todoCount = computed(() => board.value.TODO?.length ?? 0)
 const progressCount = computed(() => (board.value.IN_PROGRESS?.length ?? 0) + (board.value.REVIEW?.length ?? 0))
 const doneCount = computed(() => board.value.DONE?.length ?? 0)
 const totalTaskCount = computed(() => todoCount.value + progressCount.value + doneCount.value)
+const completionProgress = computed(() => {
+  if (totalTaskCount.value === 0) return Number(project.value?.progress || 0)
+  return (doneCount.value / totalTaskCount.value) * 100
+})
 
 const daysLeft = computed(() => {
   if (!project.value?.dueDate) return '-'
@@ -572,7 +576,7 @@ const priorityVariant = (p: string) => {
 }
 
 const taskStatusVariant = (s: string) => {
-  const map: Record<string, string> = { TODO: 'secondary', IN_PROGRESS: 'info', REVIEW: 'warning', DONE: 'success' }
+  const map: Record<string, string> = { TODO: 'todo', IN_PROGRESS: 'progress', REVIEW: 'review', DONE: 'done' }
   return map[s] ?? 'secondary'
 }
 
@@ -583,10 +587,10 @@ const taskStatusLabel = (s: string) => {
 
 const statusVariant = (s: string) => {
   const map: Record<string, string> = {
-    NOT_STARTED: 'secondary',
-    IN_PROGRESS: 'info',
+    NOT_STARTED: 'todo',
+    IN_PROGRESS: 'progress',
     ON_HOLD: 'warning',
-    COMPLETED: 'success',
+    COMPLETED: 'done',
   }
   return map[s] ?? 'secondary'
 }
