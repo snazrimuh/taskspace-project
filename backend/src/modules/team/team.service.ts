@@ -27,7 +27,14 @@ export class TeamService {
       include: {
         team: {
           include: {
-            _count: { select: { members: true } },
+            _count: {
+              select: {
+                members: true,
+                projects: { where: { deletedAt: null } },
+                tasks: { where: { deletedAt: null } },
+                announcements: { where: { deletedAt: null } },
+              },
+            },
           },
         },
       },
@@ -56,7 +63,14 @@ export class TeamService {
         },
       },
       include: {
-        _count: { select: { members: true } },
+        _count: {
+          select: {
+            members: true,
+            projects: { where: { deletedAt: null } },
+            tasks: { where: { deletedAt: null } },
+            announcements: { where: { deletedAt: null } },
+          },
+        },
       },
     });
 

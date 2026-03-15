@@ -139,19 +139,19 @@
           <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-[#778DA9] border border-white/60 dark:border-white/[0.08]">
             <p class="text-[10px] font-semibold uppercase tracking-wider text-[#415A77] dark:text-[#E0E1DD]">Top Priority</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
-              Review teams with task load above {{ highLoadThreshold }}
+              {{ focusTopPriorityText }}
             </p>
           </div>
           <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-primary-400 border border-white/60 dark:border-white/[0.08]">
             <p class="text-[10px] font-semibold uppercase tracking-wider text-primary-500 dark:text-primary-400">Collaboration</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
-              {{ pendingInvites.length }} pending invite{{ pendingInvites.length === 1 ? '' : 's' }} waiting response
+              {{ focusCollaborationText }}
             </p>
           </div>
           <div class="rounded-xl p-3.5 bg-white/40 dark:bg-white/[0.05] border-l-2 border-[#415A77] border border-white/60 dark:border-white/[0.08]">
             <p class="text-[10px] font-semibold uppercase tracking-wider text-[#1B263B] dark:text-[#E0E1DD]">Coverage</p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
-              {{ teams.length - managedTeams }} team{{ teams.length - managedTeams === 1 ? '' : 's' }} where you contribute as member
+              {{ focusCoverageText }}
             </p>
           </div>
         </UiCardContent>
@@ -259,7 +259,61 @@ const { isDark } = useTheme()
 const teams = computed(() => teamStore.teams)
 const totalProjects = computed(() => teams.value.reduce((a, t) => a + (t._count?.projects ?? 0), 0))
 const managedTeams = computed(() => teams.value.filter((t) => t.role === 'ADMIN').length)
-const highLoadThreshold = 20
+const teamTaskLoads = computed(() =>
+  teams.value.map((team) => ({
+    name: team.name,
+    tasks: team._count?.tasks ?? 0,
+  }))
+)
+const dynamicHighLoadThreshold = computed(() => {
+  const loads = teamTaskLoads.value.map((item) => item.tasks).filter((count) => count > 0)
+  if (!loads.length) return 0
+  const sorted = [...loads].sort((a, b) => a - b)
+  const q3Index = Math.floor((sorted.length - 1) * 0.75)
+  return Math.max(5, sorted[q3Index] ?? 0)
+})
+const overloadedTeams = computed(() =>
+  dynamicHighLoadThreshold.value === 0
+    ? []
+    : teamTaskLoads.value
+        .filter((item) => item.tasks > dynamicHighLoadThreshold.value)
+        .sort((a, b) => b.tasks - a.tasks)
+)
+const focusTopPriorityText = computed(() => {
+  if (!teams.value.length) {
+    return 'Create your first team to start tracking workload insights.'
+  }
+  if (dynamicHighLoadThreshold.value === 0) {
+    return 'No active tasks yet. Add tasks to generate workload priorities.'
+  }
+  if (!overloadedTeams.value.length) {
+    return `No team is above the current load threshold (${dynamicHighLoadThreshold.value} tasks).`
+  }
+  const topTeam = overloadedTeams.value[0]
+  const extraTeams = overloadedTeams.value.length - 1
+  if (!topTeam) {
+    return `Review teams with task load above ${dynamicHighLoadThreshold.value}.`
+  }
+  return extraTeams > 0
+    ? `${topTeam.name} leads with ${topTeam.tasks} tasks, plus ${extraTeams} more high-load team${extraTeams === 1 ? '' : 's'}.`
+    : `${topTeam.name} is above threshold with ${topTeam.tasks} tasks (${dynamicHighLoadThreshold.value}+ threshold).`
+})
+const focusCollaborationText = computed(() => {
+  if (!pendingInvites.value.length) {
+    return 'No pending invites right now. Collaboration queue is clear.'
+  }
+  return `${pendingInvites.value.length} pending invite${pendingInvites.value.length === 1 ? '' : 's'} waiting response.`
+})
+const focusCoverageText = computed(() => {
+  if (!teams.value.length) {
+    return 'Join or create a team to build your collaboration coverage.'
+  }
+  const memberTeams = teams.value.length - managedTeams.value
+  if (memberTeams <= 0) {
+    return `You are managing all ${teams.value.length} team${teams.value.length === 1 ? '' : 's'} currently.`
+  }
+  return `${memberTeams} team${memberTeams === 1 ? '' : 's'} where you contribute as member.`
+})
 
 const stats = computed(() => [
   { label: 'My Teams', value: String(teams.value.length), icon: Users, iconBg: 'bg-primary-50/80 dark:bg-primary-600/30', iconColor: 'text-primary-500 dark:text-primary-300', labelColor: 'text-slate-500 dark:text-slate-400', barColor: 'bg-primary-400/50 dark:bg-primary-500/50' },
