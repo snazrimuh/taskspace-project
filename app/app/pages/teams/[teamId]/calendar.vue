@@ -72,12 +72,18 @@
               v-for="(day, i) in calendarDays"
               :key="i"
               :class="[
-                'min-h-[80px] p-1.5 rounded-lg text-sm transition-colors',
-                day.isCurrentMonth ? 'bg-white/50 dark:bg-white/[0.04]' : 'bg-transparent text-slate-400 dark:text-slate-600',
-                day.isToday ? 'ring-2 ring-primary-400/60 dark:ring-primary-400/50' : '',
+                  'min-h-[80px] p-1.5 rounded-lg text-sm transition-colors',
+                  day.isToday
+                   ? '!bg-primary-200/95 dark:!bg-[#2D4F7C]/60 text-slate-900 dark:text-[#D8E7FF]'
+                   : day.isCurrentMonth
+                     ? 'bg-white/50 dark:bg-white/[0.04]'
+                     : 'bg-transparent text-slate-400 dark:text-slate-600',
+                 day.isToday
+                   ? 'ring-2 ring-primary-200/90 dark:ring-[#5B84C4]/50 shadow-[0_0_0_1px_rgba(191,219,254,0.55),0_0_26px_rgba(96,165,250,0.42)] dark:shadow-[0_0_0_1px_rgba(91,132,196,0.48),0_0_24px_rgba(45,79,124,0.36)]'
+                    : '',
               ]"
             >
-              <div :class="['text-xs mb-1', day.isToday ? 'font-bold text-primary-600' : 'text-slate-500']">
+                <div :class="['text-xs mb-1', day.isToday ? 'font-bold text-slate-900 dark:text-[#D8E7FF]' : 'text-slate-500']">
                 {{ day.day }}
               </div>
               <div class="space-y-0.5">

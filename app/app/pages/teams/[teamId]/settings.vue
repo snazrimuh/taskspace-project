@@ -120,7 +120,7 @@
                 <div class="text-xs text-slate-500">{{ member.user.email }}</div>
               </div>
             </div>
-            <UiBadge :variant="member.role === 'ADMIN' ? 'default' : 'secondary'">{{ member.role === 'ADMIN' ? 'Admin' : 'Member' }}</UiBadge>
+            <UiBadge :variant="member.role === 'ADMIN' ? 'default' : 'secondary'">{{ member.role === 'ADMIN' ? 'Manager' : 'Member' }}</UiBadge>
           </div>
         </UiCardContent>
       </UiCard>

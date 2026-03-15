@@ -67,7 +67,7 @@
                 <div class="flex items-center gap-2 mb-0.5">
                   <h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm">{{ team.name }}</h3>
                    <UiBadge :variant="team.role === 'ADMIN' ? 'info' : 'secondary'" class="text[10px] px-1.5 py-0">
-                    {{ team.role === 'ADMIN' ? 'Admin' : 'Member' }}
+                    {{ team.role === 'ADMIN' ? 'Manager' : 'Member' }}
                   </UiBadge>
                 </div>
                 <div class="flex items-center gap-3 text-xs text-slate-400">
