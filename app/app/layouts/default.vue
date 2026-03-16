@@ -40,6 +40,7 @@
 const route = useRoute()
 const teamStore = useTeamStore()
 const showMobileSidebar = ref(false)
+let teamSyncToken = 0
 
 onMounted(() => {
   teamStore.fetchTeams()
@@ -58,6 +59,19 @@ const currentTeamName = computed(() => {
 
 const isManager = computed(() => teamStore.isCurrentTeamManager)
 
+const syncActiveTeamContext = async (teamId: string) => {
+  const token = ++teamSyncToken
+
+  await teamStore.fetchTeams()
+  teamStore.setCurrentTeamFromList(teamId)
+
+  await teamStore.fetchTeam(teamId, true)
+  await teamStore.fetchMembers(teamId, true)
+
+  // Ignore late responses from older team switches.
+  if (token !== teamSyncToken) return
+}
+
 const pageTitle = computed(() => {
   const path = route.path
   if (path.includes('/announcements')) return 'Announcements'
@@ -75,6 +89,11 @@ const pageTitle = computed(() => {
 watch(() => route.path, () => {
   showMobileSidebar.value = false
 })
+
+watch(currentTeamId, async (teamId) => {
+  if (!teamId) return
+  await syncActiveTeamContext(teamId)
+}, { immediate: true })
 </script>
 
 <style scoped>
