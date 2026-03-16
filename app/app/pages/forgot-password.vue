@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-hidden rounded-[28px] border border-white/80 dark:border-white/[0.08] bg-white/90 dark:bg-[#0B1220]/88 shadow-[0_20px_70px_rgba(14,25,44,0.22)] dark:shadow-[0_22px_80px_rgba(2,6,23,0.55)] backdrop-blur-sm">
     <div class="grid lg:grid-cols-[1.05fr_1fr]">
-      <section class="relative hidden lg:flex min-h-[620px] overflow-hidden border-r border-slate-200/70 dark:border-white/[0.06] bg-[linear-gradient(170deg,#EDF5FF_0%,#E2EEFD_45%,#D9E7FB_100%)] dark:bg-[linear-gradient(170deg,#101B2E_0%,#0C1729_45%,#091323_100%)]">
+      <section class="relative hidden lg:flex min-h-[580px] overflow-hidden border-r border-slate-200/70 dark:border-white/[0.06] bg-[linear-gradient(170deg,#EDF5FF_0%,#E2EEFD_45%,#D9E7FB_100%)] dark:bg-[linear-gradient(170deg,#101B2E_0%,#0C1729_45%,#091323_100%)]">
         <div class="absolute inset-0 pointer-events-none">
           <div class="absolute -top-20 -left-14 h-64 w-64 rounded-full bg-[#7FA8F7]/30 blur-3xl dark:bg-[#3B82F6]/16" />
           <div class="absolute -bottom-16 -right-10 h-52 w-52 rounded-full bg-[#9CC2FF]/30 blur-3xl dark:bg-[#60A5FA]/14" />
@@ -30,9 +30,9 @@
         </div>
       </section>
 
-      <section class="p-7 sm:p-10 lg:p-12 bg-white/84 dark:bg-transparent">
-        <div class="mb-9">
-          <h1 class="text-[40px] leading-none font-bold tracking-tight text-[#111827] dark:text-[#F3F8FF]">{{ t('forgot.title') }}</h1>
+      <section class="p-6 sm:p-8 lg:p-10 bg-white/84 dark:bg-transparent">
+        <div class="mb-7">
+          <h1 class="text-[36px] leading-none font-bold tracking-tight text-[#111827] dark:text-[#F3F8FF]">{{ t('forgot.title') }}</h1>
           <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ t('forgot.subtitle') }}</p>
         </div>
 
