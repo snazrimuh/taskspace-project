@@ -34,39 +34,49 @@
           No messages yet. Start the conversation!
         </div>
 
-        <div
-          v-for="msg in chatStore.messages"
-          :key="msg.id"
-          :class="['flex', isMe(msg) ? 'justify-end' : 'justify-start']"
-        >
-          <div :class="['max-w-[70%] flex gap-2', isMe(msg) ? 'flex-row-reverse' : '']">
-            <UiAvatar
-              v-if="!isMe(msg)"
-              :name="msg.sender.name"
-              :src="msg.sender.avatar || ''"
-              size="sm"
-              class="shrink-0 mt-1"
-            />
-            <div>
-              <div v-if="!isMe(msg)" class="text-xs text-slate-500 dark:text-slate-500 mb-1 ml-1">
-                {{ msg.sender.name }}
-              </div>
-              <div
-                :class="[
-                  'rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm',
-                  isMe(msg)
-                    ? 'bg-[#1F3F68] text-white rounded-br-sm border border-[#2A4A74] shadow-[0_5px_14px_rgba(10,22,36,0.42)]'
-                    : 'bg-[rgba(224,225,221,0.7)] dark:bg-[#202C33] text-[#0D1B2A] dark:text-[#E9EDEF] rounded-bl-sm border border-white/70 dark:border-transparent',
-                ]"
-              >
-                {{ msg.message }}
-              </div>
-              <div :class="['text-[10px] text-slate-400 dark:text-slate-600 mt-0.5', isMe(msg) ? 'text-right mr-1' : 'ml-1']">
-                {{ formatTime(msg.createdAt) }}
+        <template v-for="item in chatItems" :key="item.key">
+          <div
+            v-if="item.type === 'separator'"
+            class="sticky top-2 z-10 flex justify-center py-1"
+          >
+            <span class="rounded-full border border-white/70 dark:border-white/[0.08] bg-white/90 dark:bg-[#111827]/90 px-3 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300 shadow-sm backdrop-blur-sm">
+              {{ item.label }}
+            </span>
+          </div>
+
+          <div
+            v-else
+            :class="['flex', isMe(item.message) ? 'justify-end' : 'justify-start']"
+          >
+            <div :class="['max-w-[70%] flex gap-2', isMe(item.message) ? 'flex-row-reverse' : '']">
+              <UiAvatar
+                v-if="!isMe(item.message)"
+                :name="item.message.sender.name"
+                :src="item.message.sender.avatar || ''"
+                size="sm"
+                class="shrink-0 mt-1"
+              />
+              <div>
+                <div v-if="!isMe(item.message)" class="text-xs text-slate-500 dark:text-slate-500 mb-1 ml-1">
+                  {{ item.message.sender.name }}
+                </div>
+                <div
+                  :class="[
+                    'rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm',
+                    isMe(item.message)
+                      ? 'bg-[#1F3F68] text-white rounded-br-sm border border-[#2A4A74] shadow-[0_5px_14px_rgba(10,22,36,0.42)]'
+                      : 'bg-[rgba(224,225,221,0.7)] dark:bg-[#202C33] text-[#0D1B2A] dark:text-[#E9EDEF] rounded-bl-sm border border-white/70 dark:border-transparent',
+                  ]"
+                >
+                  {{ item.message.message }}
+                </div>
+                <div :class="['text-[10px] text-slate-400 dark:text-slate-600 mt-0.5', isMe(item.message) ? 'text-right mr-1' : 'ml-1']">
+                  {{ formatTime(item.message.createdAt) }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
 
         <!-- Typing indicator -->
         <div v-if="typingUsers.length" class="flex justify-start">
@@ -121,6 +131,7 @@ const newMessage = ref('')
 const messagesContainer = ref<HTMLElement | null>(null)
 const sending = ref(false)
 let typingTimeout: ReturnType<typeof setTimeout> | null = null
+let activeChannelName: string | null = null
 
 const isMe = (msg: { senderId: string }) => msg.senderId === authStore.user?.id
 
@@ -128,6 +139,68 @@ const formatTime = (dateStr: string) => {
   const d = new Date(dateStr)
   return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
 }
+
+const isSameDay = (a: Date, b: Date) => {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
+const dateKeyFrom = (dateStr: string) => {
+  const d = new Date(dateStr)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+const formatDateLabel = (dateStr: string) => {
+  const currentDate = new Date(dateStr)
+  const today = new Date()
+
+  if (isSameDay(currentDate, today)) {
+    return 'Today'
+  }
+
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+  if (isSameDay(currentDate, yesterday)) {
+    return 'Yesterday'
+  }
+
+  return currentDate.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+type ChatRenderItem =
+  | { type: 'separator'; key: string; label: string }
+  | { type: 'message'; key: string; message: (typeof chatStore.messages)[number] }
+
+const chatItems = computed<ChatRenderItem[]>(() => {
+  const items: ChatRenderItem[] = []
+  let lastDateKey = ''
+
+  for (const msg of chatStore.messages) {
+    const currentDateKey = dateKeyFrom(msg.createdAt)
+    if (currentDateKey !== lastDateKey) {
+      items.push({
+        type: 'separator',
+        key: `sep-${currentDateKey}`,
+        label: formatDateLabel(msg.createdAt),
+      })
+      lastDateKey = currentDateKey
+    }
+
+    items.push({
+      type: 'message',
+      key: msg.id,
+      message: msg,
+    })
+  }
+
+  return items
+})
 
 /** Resolve typing user IDs to names */
 const typingUsers = computed(() => {
@@ -200,7 +273,42 @@ const emitTyping = () => {
 }
 
 /** Setup Ably subscriptions */
-const channelName = computed(() => `team:${teamId.value}:chat`)
+
+const initTeamChat = async (nextTeamId: string) => {
+  const nextChannel = `team:${nextTeamId}:chat`
+
+  if (activeChannelName && activeChannelName !== nextChannel) {
+    unsubscribe(activeChannelName)
+  }
+
+  chatStore.clearMessages()
+  await chatStore.fetchMessages(nextTeamId)
+  scrollToBottom()
+
+  if (!teamStore.currentTeamMembers.length || teamStore.currentTeam?.id !== nextTeamId) {
+    await teamStore.fetchMembers(nextTeamId)
+  }
+
+  try {
+    await subscribe(nextChannel, 'message', (msg) => {
+      if (msg.data?.teamId !== nextTeamId) {
+        return
+      }
+      chatStore.addMessage(msg.data)
+      scrollToBottom()
+    })
+
+    await subscribe(nextChannel, 'typing', (msg) => {
+      if (msg.data?.userId && chatStore.currentTeamId === nextTeamId && msg.data.userId !== authStore.user?.id) {
+        chatStore.setTypingUser(msg.data.userId)
+      }
+    })
+
+    activeChannelName = nextChannel
+  } catch (err) {
+    console.error('[Chat] Failed to subscribe to Ably:', err)
+  }
+}
 
 // Auto-scroll when new messages arrive
 watch(() => chatStore.messages.length, () => {
@@ -208,36 +316,20 @@ watch(() => chatStore.messages.length, () => {
 })
 
 onMounted(async () => {
-  // Fetch initial messages
-  await chatStore.fetchMessages(teamId.value)
-  scrollToBottom()
+  await initTeamChat(teamId.value)
+})
 
-  // Fetch members for name resolution
-  if (!teamStore.currentTeamMembers.length) {
-    teamStore.fetchMembers(teamId.value)
+watch(teamId, async (nextTeamId, prevTeamId) => {
+  if (!nextTeamId || nextTeamId === prevTeamId) {
+    return
   }
-
-  // Subscribe to real-time messages via Ably
-  try {
-    await subscribe(channelName.value, 'message', (msg) => {
-      if (msg.data) {
-        chatStore.addMessage(msg.data)
-        scrollToBottom()
-      }
-    })
-
-    await subscribe(channelName.value, 'typing', (msg) => {
-      if (msg.data?.userId && msg.data.userId !== authStore.user?.id) {
-        chatStore.setTypingUser(msg.data.userId)
-      }
-    })
-  } catch (err) {
-    console.error('[Chat] Failed to subscribe to Ably:', err)
-  }
+  await initTeamChat(nextTeamId)
 })
 
 onUnmounted(() => {
-  unsubscribe(channelName.value)
+  if (activeChannelName) {
+    unsubscribe(activeChannelName)
+  }
   chatStore.clearMessages()
 })
 </script>

@@ -66,6 +66,9 @@ export const useChatStore = defineStore('chat', {
     },
 
     addMessage(msg: ChatMessage) {
+      if (this.currentTeamId && msg.teamId !== this.currentTeamId) {
+        return
+      }
       // Avoid duplicates
       if (!this.messages.find((m) => m.id === msg.id)) {
         this.messages.push(msg)
