@@ -17,7 +17,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   const allowedOrigins = [
-    'https://task-space.rizan.app',
+    'https://taskspace.rizan.app',
     'https://unified-portal.rizan.app',
     'http://localhost:3000',
     'http://localhost:3001',
