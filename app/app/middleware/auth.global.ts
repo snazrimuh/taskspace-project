@@ -21,10 +21,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (!authStore.isLoggedIn) {
-    const currentUrl = import.meta.client
-      ? window.location.href
-      : `https://${host}${to.fullPath}`
-    const redirect = encodeURIComponent(currentUrl)
-    return navigateTo(`${runtime.public.hubUrl}/login?redirect=${redirect}`, { external: true })
+    return navigateTo(runtime.public.hubUrl, { external: true })
   }
 })

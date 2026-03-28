@@ -21,8 +21,6 @@ if (!authStore.isSessionChecked) {
 if (authStore.isLoggedIn) {
   navigateTo('/dashboard', { replace: true })
 } else {
-  const currentUrl = import.meta.client ? window.location.href : `https://${host}/`
-  const redirect = encodeURIComponent(currentUrl)
-  navigateTo(`${runtime.public.hubUrl}/login?redirect=${redirect}`, { external: true })
+  navigateTo(runtime.public.hubUrl, { external: true })
 }
 </script>

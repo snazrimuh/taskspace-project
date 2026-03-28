@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       (await import('@tailwindcss/vite')).default(),
-    ],
+    ] as any,
     define: {
       global: 'globalThis',
     },

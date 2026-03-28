@@ -41,9 +41,7 @@ export function useApi() {
           })
         } catch {
           authStore.clear()
-          const currentUrl = import.meta.client ? window.location.href : '/'
-          const redirect = encodeURIComponent(currentUrl)
-          await navigateTo(`${config.public.hubUrl}/login?redirect=${redirect}`, { external: true })
+          await navigateTo(config.public.hubUrl, { external: true })
           throw err
         }
       }

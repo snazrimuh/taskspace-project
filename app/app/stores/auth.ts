@@ -76,7 +76,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       accessToken.value = null
       refreshToken.value = null
-      window.location.href = `${runtime.public.hubUrl}/login`
+      window.location.href = `${runtime.public.hubUrl}`
     }
   }
 
