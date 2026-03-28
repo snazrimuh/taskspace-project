@@ -6,18 +6,18 @@
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  /* TaskSpace core palette */
-  --color-primary-50:  #eef1f4;
-  --color-primary-100: #dde3eb;
-  --color-primary-200: #c4cedc;
-  --color-primary-300: #9caec3;
-  --color-primary-400: #778da9;
-  --color-primary-500: #415a77;
-  --color-primary-600: #31465f;
-  --color-primary-700: #1b263b;
-  --color-primary-800: #132133;
-  --color-primary-900: #0d1b2a;
-  --color-primary-950: #09121d;
+  /* TaskSpace core palette (Blue) */
+  --color-primary-50:  #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
 
   /* Keep legacy indigo classes palette-aligned */
   --color-indigo-50:  #eef1f4;
