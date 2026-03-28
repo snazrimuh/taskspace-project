@@ -17,6 +17,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     configService: ConfigService,
     private readonly authService: AuthService,
   ) {
+    const accessSecret =
+      configService.get<string>('HUB_JWT_ACCESS_SECRET') ||
+      configService.get<string>('JWT_ACCESS_SECRET');
+
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: any) => {
@@ -28,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
+      secretOrKey: accessSecret,
     });
   }
 

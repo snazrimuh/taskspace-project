@@ -17,6 +17,9 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
   constructor(configService: ConfigService) {
     const fromRefreshCookie = (req: any) => req?.cookies?.refresh_token || null;
+    const refreshSecret =
+      configService.get<string>('HUB_JWT_REFRESH_SECRET') ||
+      configService.get<string>('JWT_REFRESH_SECRET');
 
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -25,7 +28,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
       ]),
       passReqToCallback: true,
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_REFRESH_SECRET'),
+      secretOrKey: refreshSecret,
     });
   }
 
