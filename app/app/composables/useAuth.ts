@@ -8,24 +8,23 @@ export const useAuth = () => {
   const isLoading = computed(() => authStore.isLoading)
 
   const login = async (email: string, password: string) => {
-    await authStore.login(email, password)
+    await authStore.login()
   }
 
   const register = async (name: string, email: string, password: string) => {
-    await authStore.register(name, email, password)
+    await authStore.register()
   }
 
   const logout = async () => {
     await authStore.logout()
-    await navigateTo('/login')
   }
 
   const forgotPassword = async (email: string) => {
-    await authStore.forgotPassword(email)
+    await authStore.forgotPassword()
   }
 
   const resetPassword = async (token: string, newPassword: string) => {
-    await authStore.resetPassword(token, newPassword)
+    await authStore.resetPassword()
   }
 
   return {

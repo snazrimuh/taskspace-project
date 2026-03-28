@@ -10,166 +10,118 @@ export interface AuthUser {
   createdAt?: string
 }
 
-interface AuthResponse {
-  success: boolean
-  data: {
-    accessToken: string
-    refreshToken: string
-    user: AuthUser
-  }
-}
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<AuthUser | null>(null)
+  const isLoading = ref(false)
+  const isSessionChecked = ref(false)
+  const runtime = useRuntimeConfig()
 
-interface TokenRefreshResponse {
-  success: boolean
-  data: {
-    accessToken: string
-    refreshToken: string
-  }
-}
+  const accessToken = useCookie('access_token')
+  const refreshToken = useCookie('refresh_token')
 
-const STORAGE_KEY = 'taskspace_auth'
+  const isLoggedIn = computed(() => !!user.value)
+  const currentUser = computed(() => user.value)
 
-let _refreshPromise: Promise<void> | null = null
+  const validateSession = async (): Promise<boolean> => {
+    if (!accessToken.value && import.meta.server) {
+      user.value = null
+      isSessionChecked.value = true
+      return false
+    }
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null as AuthUser | null,
-    accessToken: null as string | null,
-    refreshToken: null as string | null,
-    isLoading: false,
-  }),
-
-  getters: {
-    isLoggedIn: (state) => !!state.accessToken && !!state.user,
-    currentUser: (state) => state.user,
-  },
-
-  actions: {
-    async login(email: string, password: string) {
-      this.isLoading = true
-      try {
-        const config = useRuntimeConfig()
-        const res = await $fetch<AuthResponse>(
-          `${config.public.apiBase}/auth/login`,
-          { method: 'POST', body: { email, password } },
-        )
-        this._setSession(res.data.accessToken, res.data.refreshToken, res.data.user)
-      } finally {
-        this.isLoading = false
+    try {
+      const requestHeaders = import.meta.server ? useRequestHeaders(['cookie']) : undefined
+      const fetchOptions: {
+        credentials: 'include'
+        headers?: Record<string, string>
+      } = {
+        credentials: 'include',
       }
-    },
 
-    async register(name: string, email: string, password: string) {
-      this.isLoading = true
-      try {
-        const config = useRuntimeConfig()
-        const res = await $fetch<AuthResponse>(
-          `${config.public.apiBase}/auth/register`,
-          { method: 'POST', body: { name, email, password } },
-        )
-        this._setSession(res.data.accessToken, res.data.refreshToken, res.data.user)
-      } finally {
-        this.isLoading = false
+      if (import.meta.server && requestHeaders?.cookie) {
+        fetchOptions.headers = { cookie: requestHeaders.cookie }
       }
-    },
 
-    async logout() {
-      try {
-        if (this.accessToken) {
-          const config = useRuntimeConfig()
-          await $fetch(`${config.public.apiBase}/auth/logout`, {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${this.accessToken}` },
-          })
-        }
-      } catch { /* ignore errors during logout */ }
-      this.clear()
-    },
-
-    async refresh() {
-      if (!this.refreshToken) throw new Error('No refresh token available')
-      if (_refreshPromise) return _refreshPromise
-      
-      _refreshPromise = (async () => {
-        try {
-          const config = useRuntimeConfig()
-          const res = await $fetch<TokenRefreshResponse>(
-            `${config.public.apiBase}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: { Authorization: `Bearer ${this.refreshToken}` },
-            },
-          )
-          this._setSession(res.data.accessToken, res.data.refreshToken, this.user!)
-        } finally {
-          _refreshPromise = null
-        }
-      })()
-      
-      return _refreshPromise
-    },
-
-    async forgotPassword(email: string) {
-      const config = useRuntimeConfig()
-      return $fetch(`${config.public.apiBase}/auth/forgot-password`, {
-        method: 'POST',
-        body: { email },
-      })
-    },
-
-    async resetPassword(token: string, newPassword: string) {
-      const config = useRuntimeConfig()
-      return $fetch(`${config.public.apiBase}/auth/reset-password`, {
-        method: 'POST',
-        body: { token, newPassword },
-      })
-    },
-
-    updateProfile(updates: Partial<AuthUser>) {
-      if (this.user) {
-        this.user = { ...this.user, ...updates }
-        this._persist()
-      }
-    },
-
-    hydrate() {
-      if (!import.meta.client) return
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) return
-        const { user, accessToken, refreshToken } = JSON.parse(raw)
-        this.user = user ?? null
-        this.accessToken = accessToken ?? null
-        this.refreshToken = refreshToken ?? null
-      } catch { /* ignore parse errors */ }
-    },
-
-    clear() {
-      this.user = null
-      this.accessToken = null
-      this.refreshToken = null
-      if (import.meta.client) {
-        localStorage.removeItem(STORAGE_KEY)
-      }
-    },
-
-    _setSession(accessToken: string, refreshToken: string, user: AuthUser) {
-      this.accessToken = accessToken
-      this.refreshToken = refreshToken
-      this.user = user
-      this._persist()
-    },
-
-    _persist() {
-      if (!import.meta.client) return
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          user: this.user,
-          accessToken: this.accessToken,
-          refreshToken: this.refreshToken,
-        }),
+      const res = await $fetch<AuthUser | { success?: boolean; data?: AuthUser }>(
+        `${runtime.public.apiBase}/auth/me`,
+        fetchOptions,
       )
-    },
-  },
+
+      const userData = (res as any)?.data ?? res
+      if (userData && (userData as AuthUser).id) {
+        user.value = userData as AuthUser
+        return true
+      }
+
+      user.value = null
+      return false
+    } catch (error) {
+      console.error('Task-Space: Session validation failed:', error)
+      user.value = null
+      return false
+    } finally {
+      isSessionChecked.value = true
+    }
+  }
+
+  const logout = async () => {
+    try {
+      await $fetch(`${runtime.public.apiBase}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+    } catch (e) {
+      console.error('Logout error:', e)
+    } finally {
+      user.value = null
+      accessToken.value = null
+      refreshToken.value = null
+      window.location.href = `${runtime.public.hubUrl}/login`
+    }
+  }
+
+  const login = () => {
+    window.location.href = `${runtime.public.hubUrl}/login`
+  }
+
+  const register = () => {
+    window.location.href = `${runtime.public.hubUrl}/login?mode=register`
+  }
+
+  const forgotPassword = () => {
+    window.location.href = `${runtime.public.hubUrl}/login`
+  }
+
+  const resetPassword = () => {
+    window.location.href = `${runtime.public.hubUrl}/login`
+  }
+
+  const updateProfile = (updates: Partial<AuthUser>) => {
+    if (user.value) {
+      user.value = { ...user.value, ...updates }
+    }
+  }
+
+  const clear = () => {
+    user.value = null
+    isSessionChecked.value = true
+  }
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+    isLoading,
+    isSessionChecked,
+    isLoggedIn,
+    currentUser,
+    validateSession,
+    logout,
+    login,
+    register,
+    forgotPassword,
+    resetPassword,
+    updateProfile,
+    clear,
+  }
 })

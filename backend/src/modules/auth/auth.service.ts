@@ -1,25 +1,73 @@
 import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
   BadRequestException,
+  ConflictException,
+  Injectable,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
-import { RegisterDto, LoginDto } from './dto';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+
+export type HubRole = 'ADMIN' | 'USER' | string;
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return this.sanitizeUser(user);
+  }
+
+  async validateUserFromSSO(email: string, hubUserId: string, hubRole: HubRole) {
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    const isAdminFromHub = String(hubRole || '').toUpperCase() === 'ADMIN';
+
+    if (!user) {
+      this.logger.log(`Performing JIT Provisioning for email: ${email}`);
+
+      user = await this.prisma.user.create({
+        data: {
+          id: hubUserId,
+          email,
+          name: email.split('@')[0],
+          password: 'SSO_MANAGED_PASSWORD',
+          isSystemAdmin: isAdminFromHub,
+        },
+      });
+    } else {
+      this.logger.log(`SSO Login for existing user: ${email}`);
+
+      if (isAdminFromHub && !user.isSystemAdmin) {
+        user = await this.prisma.user.update({
+          where: { id: user.id },
+          data: { isSystemAdmin: true },
+        });
+      }
+    }
+
+    return this.sanitizeUser(user);
+  }
 
   async register(dto: RegisterDto) {
     // Check if user already exists
@@ -181,7 +229,12 @@ export class AuthService {
   // ─── Private Helpers ───────────────────────────────
 
   private async generateTokens(userId: string, email: string, isSystemAdmin?: boolean) {
-    const payload: Record<string, unknown> = { sub: userId, email, isSystemAdmin };
+    const payload: Record<string, unknown> = {
+      sub: userId,
+      email,
+      role: isSystemAdmin ? 'ADMIN' : 'USER',
+      isSystemAdmin,
+    };
 
     const accessExpiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '15m';
     const refreshExpiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '7d';

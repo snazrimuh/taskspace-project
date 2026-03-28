@@ -51,6 +51,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: 'http://localhost:3001/api/v1',
       socketUrl: 'http://localhost:3001',
+      hubUrl: 'https://unified-portal.rizan.app',
     },
   },
 })

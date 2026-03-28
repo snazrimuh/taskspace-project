@@ -1,8 +1,14 @@
-/**
- * Hydrates the auth store from localStorage on every client-side app init.
- * Prefix "01" ensures this runs before other plugins and route middleware.
- */
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin(async () => {
   const authStore = useAuthStore()
-  authStore.hydrate()
+
+  if (import.meta.client) {
+    try {
+      await Promise.race([
+        authStore.validateSession(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Auth Timeout')), 5000)),
+      ])
+    } catch (e) {
+      console.warn('Task-Space: Auth validation timed out or failed:', e)
+    }
+  }
 })

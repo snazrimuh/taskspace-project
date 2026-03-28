@@ -1,7 +1,10 @@
 import 'dotenv/config';
+import * as classValidator from 'class-validator';
+import * as classTransformer from 'class-transformer';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 import express, { Request, Response } from 'express';
 import { AppModule } from '../src/app.module';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
@@ -20,10 +23,25 @@ async function bootstrap() {
   );
 
   nestApp.setGlobalPrefix('api/v1');
+  nestApp.use(cookieParser());
+
+  const allowedOrigins = [
+    'https://task-space.rizan.app',
+    'https://unified-portal.rizan.app',
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ];
 
   nestApp.enableCors({
-    origin: process.env.FRONTEND_URL || '*',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.rizan.app')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
 
   nestApp.useGlobalPipes(
@@ -31,6 +49,8 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      validatorPackage: classValidator,
+      transformerPackage: classTransformer,
     }),
   );
 

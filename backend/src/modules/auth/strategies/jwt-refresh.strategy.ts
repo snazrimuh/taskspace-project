@@ -1,48 +1,45 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Request } from 'express';
-import { PrismaService } from '../../../prisma/prisma.service';
+
+interface JwtPayload {
+  sub: string;
+  email: string;
+  role?: 'ADMIN' | 'USER' | string;
+  isSystemAdmin?: boolean;
+}
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
   'jwt-refresh',
 ) {
-  constructor(
-    configService: ConfigService,
-    private prisma: PrismaService,
-  ) {
+  constructor(configService: ConfigService) {
+    const fromRefreshCookie = (req: any) => req?.cookies?.refresh_token || null;
+
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+        fromRefreshCookie,
+      ]),
+      passReqToCallback: true,
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_REFRESH_SECRET'),
-      passReqToCallback: true,
     });
   }
 
-  async validate(req: Request, payload: { sub: string; email: string }) {
-    const refreshToken = req.get('Authorization')?.replace('Bearer ', '');
+  async validate(req: any, payload: JwtPayload) {
+    const authHeader: string = req.get('authorization') || '';
+    const bearer = authHeader.replace('Bearer', '').trim();
+    const refreshToken = req?.cookies?.refresh_token || bearer;
 
-    if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token not found');
-    }
-
-    const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        refreshToken: true,
-      },
-    });
-
-    if (!user || !user.refreshToken) {
-      throw new UnauthorizedException('Access denied');
-    }
-
-    return { ...payload, id: payload.sub, refreshToken };
+    return {
+      id: payload.sub,
+      email: payload.email,
+      role: payload.role || 'USER',
+      isSystemAdmin: payload.isSystemAdmin || false,
+      refreshToken,
+    };
   }
 }
