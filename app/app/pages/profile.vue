@@ -238,8 +238,8 @@ const handlePasswordChange = async () => {
 const isRedirecting = ref(false)
 const runtime = useRuntimeConfig()
 
-const handleBackToPortal = async () => {
+const handleBackToPortal = () => {
   isRedirecting.value = true
-  await navigateTo(runtime.public.hubUrl, { external: true })
+  window.location.href = runtime.public.hubUrl ? `${runtime.public.hubUrl}/dashboard` : '/dashboard'
 }
 </script>
