@@ -23,7 +23,7 @@ const avatar = (name: string, style = 'avataaars') => {
 }
 
 async function main() {
-  console.log('--- Task-Space seeding started (SSO-aligned users) ---')
+  console.log('--- Task-Space seeding started (Heavy dataset for 15 users) ---')
 
   await prisma.notification.deleteMany()
   await prisma.chatMessage.deleteMany()
@@ -39,444 +39,200 @@ async function main() {
 
   const passwordHash = await bcrypt.hash('password123', 10)
 
-  // SSO identity must match Portal Hub, Asset-Space, and Worktime.
-  const [alex, marcus, sarah, david, linda] = await Promise.all([
-    prisma.user.create({
-      data: {
-        name: 'Alex Rivera',
-        email: 'alex@testmail.com',
-        password: passwordHash,
-        avatar: avatar('Alex Rivera', 'avataaars'),
-        bio: 'Group IT Director and system owner.',
-        isSystemAdmin: true,
-      },
-    }),
-    prisma.user.create({
-      data: {
-        name: 'Marcus Thorne',
-        email: 'marcus@testmail.com',
-        password: passwordHash,
-        avatar: avatar('Marcus Thorne', 'bottts'),
-        bio: 'Platform administrator and delivery lead.',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        name: 'Sarah Jenkins',
-        email: 'sarah@testmail.com',
-        password: passwordHash,
-        avatar: avatar('Sarah Jenkins', 'personas'),
-        bio: 'Operations manager for cross-team execution.',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        name: 'David Chen',
-        email: 'david@testmail.com',
-        password: passwordHash,
-        avatar: avatar('David Chen', 'lorelei'),
-        bio: 'Backend engineer focused on API reliability.',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        name: 'Linda Wu',
-        email: 'linda@testmail.com',
-        password: passwordHash,
-        avatar: avatar('Linda Wu', 'miniavs'),
-        bio: 'Product designer and UX collaborator.',
-      },
-    }),
+  // 15 Users synced with SSO
+  const users = await Promise.all([
+    prisma.user.create({ data: { name: 'Alex Rivera', email: 'alex@testmail.com', password: passwordHash, avatar: avatar('Alex Rivera'), bio: 'Group IT Director', isSystemAdmin: true } }),
+    prisma.user.create({ data: { name: 'Marcus Thorne', email: 'marcus@testmail.com', password: passwordHash, avatar: avatar('Marcus Thorne'), bio: 'Platform Admin' } }),
+    prisma.user.create({ data: { name: 'Sarah Jenkins', email: 'sarah@testmail.com', password: passwordHash, avatar: avatar('Sarah Jenkins'), bio: 'Ops Manager' } }),
+    prisma.user.create({ data: { name: 'David Chen', email: 'david@testmail.com', password: passwordHash, avatar: avatar('David Chen'), bio: 'Backend Lead' } }),
+    prisma.user.create({ data: { name: 'Linda Wu', email: 'linda@testmail.com', password: passwordHash, avatar: avatar('Linda Wu'), bio: 'Product Designer' } }),
+    prisma.user.create({ data: { name: 'Elena Rodriguez', email: 'elena@testmail.com', password: passwordHash, avatar: avatar('Elena Rodriguez'), bio: 'QA Automation Lead' } }),
+    prisma.user.create({ data: { name: 'Julian Vane', email: 'julian@testmail.com', password: passwordHash, avatar: avatar('Julian Vane'), bio: 'Infrastructure Engineer' } }),
+    prisma.user.create({ data: { name: 'Sophia Loren', email: 'sophia@testmail.com', password: passwordHash, avatar: avatar('Sophia Loren'), bio: 'Frontend Dev' } }),
+    prisma.user.create({ data: { name: 'Viktor Krum', email: 'viktor@testmail.com', password: passwordHash, avatar: avatar('Viktor Krum'), bio: 'Security Speciality' } }),
+    prisma.user.create({ data: { name: 'Nadia Petrova', email: 'nadia@testmail.com', password: passwordHash, avatar: avatar('Nadia Petrova'), bio: 'Systems Analyst' } }),
+    prisma.user.create({ data: { name: 'Omar Sy', email: 'omar@testmail.com', password: passwordHash, avatar: avatar('Omar Sy'), bio: 'Architetto Solutions' } }),
+    prisma.user.create({ data: { name: 'Xavier Woods', email: 'xavier@testmail.com', password: passwordHash, avatar: avatar('Xavier Woods'), bio: 'SecOps Lead' } }),
+    prisma.user.create({ data: { name: 'Yara Grey', email: 'yara@testmail.com', password: passwordHash, avatar: avatar('Yara Grey'), bio: 'Technical Writer' } }),
+    prisma.user.create({ data: { name: 'Zane Smith', email: 'zane@testmail.com', password: passwordHash, avatar: avatar('Zane Smith'), bio: 'Customer Engineer' } }),
+    prisma.user.create({ data: { name: 'Fiona Gallagher', email: 'fiona@testmail.com', password: passwordHash, avatar: avatar('Fiona Gallagher'), bio: 'Agile Coach' } }),
   ])
 
-  const [coreTeam, productTeam, mobileTeam] = await Promise.all([
-    prisma.team.create({
-      data: {
-        name: 'Core Engineering',
-        description: 'Backend platform, infra, and security initiatives.',
-        createdById: alex.id,
-      },
-    }),
-    prisma.team.create({
-      data: {
-        name: 'Product Experience',
-        description: 'Feature planning, UX, and delivery alignment.',
-        createdById: sarah.id,
-      },
-    }),
-    prisma.team.create({
-      data: {
-        name: 'Mobile Enablement',
-        description: 'Mobile app execution and release quality.',
-        createdById: marcus.id,
-      },
-    }),
-  ])
+  const [alex, marcus, sarah, david, linda, elena, julian, sophia, viktor, nadia, omar, xavier, yara, zane, fiona] = users
 
-  await prisma.teamMember.createMany({
-    data: [
-      { userId: alex.id, teamId: coreTeam.id, role: TeamRole.MANAGER },
-      { userId: marcus.id, teamId: coreTeam.id, role: TeamRole.MEMBER },
-      { userId: david.id, teamId: coreTeam.id, role: TeamRole.MEMBER },
-      { userId: sarah.id, teamId: productTeam.id, role: TeamRole.MANAGER },
-      { userId: linda.id, teamId: productTeam.id, role: TeamRole.MEMBER },
-      { userId: david.id, teamId: productTeam.id, role: TeamRole.MEMBER },
-      { userId: marcus.id, teamId: mobileTeam.id, role: TeamRole.MANAGER },
-      { userId: linda.id, teamId: mobileTeam.id, role: TeamRole.MEMBER },
-      { userId: sarah.id, teamId: mobileTeam.id, role: TeamRole.MEMBER },
-    ],
+  // Teams based on IT Divisions
+  const divisions = [
+    { name: 'Infrastructure & DevOps', desc: 'Managing servers, cloud, and CI/CD pipelines.', lead: julian },
+    { name: 'Software Development', desc: 'Core product engineering and API services.', lead: david },
+    { name: 'Cyber Security', desc: 'Threat detection, compliance, and hardening.', lead: xavier },
+    { name: 'Data & Analytics', desc: 'Data warehousing, BI, and machine learning.', lead: omar },
+    { name: 'QA & Testing', desc: 'Functional, automation, and performance testing.', lead: elena },
+    { name: 'Product & UX Design', desc: 'User experience research and interface design.', lead: linda },
+    { name: 'IT Support & Operations', desc: 'Internal helpdesk and system maintenance.', lead: sarah },
+  ]
+
+  const teams = await Promise.all(divisions.map(d => 
+    prisma.team.create({
+      data: { name: d.name, description: d.desc, createdById: d.lead.id }
+    })
+  ))
+
+  const [infraTeam, devTeam, secTeam, dataTeam, qaTeam, designTeam, opsTeam] = teams
+
+  // Team Assignments (Each user in 2-3 teams)
+  const membershipData = [
+    // Alex (Director) in all high-level teams
+    { userId: alex.id, teamId: infraTeam.id, role: TeamRole.MANAGER },
+    { userId: alex.id, teamId: secTeam.id, role: TeamRole.MANAGER },
+    { userId: alex.id, teamId: dataTeam.id, role: TeamRole.MEMBER },
+
+    // Julian (Lead Infra)
+    { userId: julian.id, teamId: infraTeam.id, role: TeamRole.MANAGER },
+    { userId: julian.id, teamId: secTeam.id, role: TeamRole.MEMBER },
+    { userId: julian.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+
+    // David (Lead Dev)
+    { userId: david.id, teamId: devTeam.id, role: TeamRole.MANAGER },
+    { userId: david.id, teamId: qaTeam.id, role: TeamRole.MEMBER },
+    { userId: david.id, teamId: designTeam.id, role: TeamRole.MEMBER },
+
+    // Marcus (Platform Admin)
+    { userId: marcus.id, teamId: infraTeam.id, role: TeamRole.MEMBER },
+    { userId: marcus.id, teamId: opsTeam.id, role: TeamRole.MANAGER },
+
+    // Sarah (Ops Manager)
+    { userId: sarah.id, teamId: opsTeam.id, role: TeamRole.MANAGER },
+    { userId: sarah.id, teamId: qaTeam.id, role: TeamRole.MEMBER },
+    { userId: sarah.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+
+    // Elena (QA Lead)
+    { userId: elena.id, teamId: qaTeam.id, role: TeamRole.MANAGER },
+    { userId: elena.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+    { userId: elena.id, teamId: designTeam.id, role: TeamRole.MEMBER },
+
+    // Sophia (Frontend)
+    { userId: sophia.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+    { userId: sophia.id, teamId: designTeam.id, role: TeamRole.MEMBER },
+
+    // Viktor (Security)
+    { userId: viktor.id, teamId: secTeam.id, role: TeamRole.MEMBER },
+    { userId: viktor.id, teamId: infraTeam.id, role: TeamRole.MEMBER },
+
+    // Xavier (Sec Lead)
+    { userId: xavier.id, teamId: secTeam.id, role: TeamRole.MANAGER },
+    { userId: xavier.id, teamId: opsTeam.id, role: TeamRole.MEMBER },
+
+    // Omar (Lead Data)
+    { userId: omar.id, teamId: dataTeam.id, role: TeamRole.MANAGER },
+    { userId: omar.id, teamId: infraTeam.id, role: TeamRole.MEMBER },
+
+    // Nadia (Analyst)
+    { userId: nadia.id, teamId: dataTeam.id, role: TeamRole.MEMBER },
+    { userId: nadia.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+
+    // Linda (Design Lead)
+    { userId: linda.id, teamId: designTeam.id, role: TeamRole.MANAGER },
+    { userId: linda.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+
+    // Yara (Writer)
+    { userId: yara.id, teamId: opsTeam.id, role: TeamRole.MEMBER },
+    { userId: yara.id, teamId: qaTeam.id, role: TeamRole.MEMBER },
+
+    // Zane (Customer)
+    { userId: zane.id, teamId: opsTeam.id, role: TeamRole.MEMBER },
+    { userId: zane.id, teamId: dataTeam.id, role: TeamRole.MEMBER },
+
+    // Fiona (Agile)
+    { userId: fiona.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+    { userId: fiona.id, teamId: qaTeam.id, role: TeamRole.MEMBER },
+    { userId: fiona.id, teamId: designTeam.id, role: TeamRole.MEMBER },
+  ]
+
+  await prisma.teamMember.createMany({ data: membershipData })
+
+  // Projects per Team (2-3 each)
+  const projectsData = [
+    // Infra Projects
+    { name: 'Kubernetes Migration', teamId: infraTeam.id, picId: julian.id, status: ProjectStatus.IN_PROGRESS, progress: 45 },
+    { name: 'Cloud Cost Optimization', teamId: infraTeam.id, picId: marcus.id, status: ProjectStatus.NOT_STARTED, progress: 0 },
+    
+    // Dev Projects
+    { name: 'v2 Core API Engine', teamId: devTeam.id, picId: david.id, status: ProjectStatus.IN_PROGRESS, progress: 78 },
+    { name: 'Microservices Refactor', teamId: devTeam.id, picId: sophia.id, status: ProjectStatus.ON_HOLD, progress: 20 },
+    { name: 'Internal Tooling SDK', teamId: devTeam.id, picId: fiona.id, status: ProjectStatus.IN_PROGRESS, progress: 35 },
+
+    // Security Projects
+    { name: 'Zero Trust Rollout', teamId: secTeam.id, picId: xavier.id, status: ProjectStatus.IN_PROGRESS, progress: 15 },
+    { name: 'Compliance Audit 2026', teamId: secTeam.id, picId: viktor.id, status: ProjectStatus.COMPLETED, progress: 100 },
+
+    // Data Projects
+    { name: 'Customer Data Lake', teamId: dataTeam.id, picId: omar.id, status: ProjectStatus.IN_PROGRESS, progress: 60 },
+    { name: 'Real-time Analytics Dashboard', teamId: dataTeam.id, picId: nadia.id, status: ProjectStatus.NOT_STARTED, progress: 0 },
+
+    // QA Projects
+    { name: 'E2E Testing Pipeline', teamId: qaTeam.id, picId: elena.id, status: ProjectStatus.IN_PROGRESS, progress: 90 },
+    { name: 'Performance Benchmarking', teamId: qaTeam.id, picId: julian.id, status: ProjectStatus.NOT_STARTED, progress: 0 },
+
+    // Design Projects
+    { name: 'Design System Redesign', teamId: designTeam.id, picId: linda.id, status: ProjectStatus.IN_PROGRESS, progress: 55 },
+    { name: 'Mobile App Wireframes', teamId: designTeam.id, picId: sophia.id, status: ProjectStatus.IN_PROGRESS, progress: 30 },
+
+    // Ops Projects
+    { name: 'Hardware Refresh Plan', teamId: opsTeam.id, picId: sarah.id, status: ProjectStatus.IN_PROGRESS, progress: 80 },
+    { name: 'Unified SSO Patching', teamId: opsTeam.id, picId: marcus.id, status: ProjectStatus.COMPLETED, progress: 100 },
+  ]
+
+  const projects = await Promise.all(projectsData.map(p => 
+    prisma.project.create({
+      data: { ...p, description: `High priority task for ${p.name}`, createdById: alex.id, startDate: daysFromNow(-30), dueDate: daysFromNow(60) }
+    })
+  ))
+
+  // Tasks (Dozens of tasks, assigned broadly)
+  const taskBatch: any[] = []
+  projects.forEach((proj, idx) => {
+    // 5-8 tasks per project
+    const numTasks = 5 + (idx % 4)
+    for (let i = 1; i <= numTasks; i++) {
+      const randomUser = users[Math.floor(Math.random() * users.length)]
+      taskBatch.push({
+        title: `${proj.name} Phase ${i}: ${['Implementation', 'Planning', 'Review', 'Testing', 'Documentation'][i % 5]}`,
+        description: `Detailed sub-task tracking for ${proj.name}. Requires cross-team sync.`,
+        status: [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.REVIEW, TaskStatus.DONE][(i + idx) % 4],
+        priority: [TaskPriority.LOW, TaskPriority.MEDIUM, TaskPriority.HIGH, TaskPriority.URGENT][i % 4],
+        teamId: proj.teamId,
+        projectId: proj.id,
+        createdById: alex.id,
+        assigneeId: randomUser.id,
+        dueDate: daysFromNow(10 + i * 2)
+      })
+    }
   })
 
-  await prisma.teamInvite.createMany({
-    data: [
-      {
-        teamId: coreTeam.id,
-        senderId: alex.id,
-        receiverId: linda.id,
-        role: TeamRole.MEMBER,
-        accepted: true,
-        respondedAt: daysFromNow(-18),
-      },
-      {
-        teamId: productTeam.id,
-        senderId: sarah.id,
-        receiverId: marcus.id,
-        role: TeamRole.MEMBER,
-        accepted: false,
-        respondedAt: daysFromNow(-5),
-      },
-      {
-        teamId: mobileTeam.id,
-        senderId: marcus.id,
-        receiverId: david.id,
-        role: TeamRole.MEMBER,
-        accepted: null,
-      },
-    ],
-  })
+  await prisma.task.createMany({ data: taskBatch })
 
-  const [coreProject, productProject, mobileProject, securityProject] = await Promise.all([
-    prisma.project.create({
-      data: {
-        name: 'Unified API Stabilization',
-        description: 'Hardening API performance and endpoint consistency across products.',
-        status: ProjectStatus.IN_PROGRESS,
-        progress: 62,
-        startDate: daysFromNow(-21),
-        dueDate: daysFromNow(20),
-        teamId: coreTeam.id,
-        picId: david.id,
-        createdById: alex.id,
-      },
-    }),
-    prisma.project.create({
-      data: {
-        name: 'Task Flow Redesign',
-        description: 'Improve task lifecycle clarity from backlog to done.',
-        status: ProjectStatus.IN_PROGRESS,
-        progress: 48,
-        startDate: daysFromNow(-14),
-        dueDate: daysFromNow(26),
-        teamId: productTeam.id,
-        picId: linda.id,
-        createdById: sarah.id,
-      },
-    }),
-    prisma.project.create({
-      data: {
-        name: 'Mobile Quality Sprint',
-        description: 'Crash reduction, notifications reliability, and release readiness.',
-        status: ProjectStatus.NOT_STARTED,
-        progress: 8,
-        startDate: daysFromNow(3),
-        dueDate: daysFromNow(33),
-        teamId: mobileTeam.id,
-        picId: marcus.id,
-        createdById: marcus.id,
-      },
-    }),
-    prisma.project.create({
-      data: {
-        name: 'Security and Compliance Track',
-        description: 'Session hardening and audit readiness for production workloads.',
-        status: ProjectStatus.ON_HOLD,
-        progress: 27,
-        startDate: daysFromNow(-9),
-        dueDate: daysFromNow(45),
-        teamId: coreTeam.id,
-        picId: marcus.id,
-        createdById: alex.id,
-      },
-    }),
-  ])
-
-  await prisma.task.createMany({
-    data: [
-      {
-        title: 'Add response time dashboard',
-        description: 'Expose P95 API latency with daily comparison trends.',
-        status: TaskStatus.DONE,
-        priority: TaskPriority.MEDIUM,
-        dueDate: daysFromNow(-2),
-        teamId: coreTeam.id,
-        projectId: coreProject.id,
-        createdById: alex.id,
-        assigneeId: david.id,
-      },
-      {
-        title: 'Refactor auth error handling',
-        description: 'Normalize 401 and 403 payloads for all auth paths.',
-        status: TaskStatus.IN_PROGRESS,
-        priority: TaskPriority.HIGH,
-        dueDate: daysFromNow(4),
-        teamId: coreTeam.id,
-        projectId: coreProject.id,
-        createdById: marcus.id,
-        assigneeId: david.id,
-      },
-      {
-        title: 'Document team task conventions',
-        description: 'Define standards for estimates, labels, and review flow.',
-        status: TaskStatus.REVIEW,
-        priority: TaskPriority.LOW,
-        dueDate: daysFromNow(2),
-        teamId: productTeam.id,
-        projectId: productProject.id,
-        createdById: sarah.id,
-        assigneeId: linda.id,
-      },
-      {
-        title: 'Prototype kanban filter states',
-        description: 'Show filtered lanes by assignee, priority, and status.',
-        status: TaskStatus.IN_PROGRESS,
-        priority: TaskPriority.MEDIUM,
-        dueDate: daysFromNow(6),
-        teamId: productTeam.id,
-        projectId: productProject.id,
-        createdById: linda.id,
-        assigneeId: sarah.id,
-      },
-      {
-        title: 'Prepare mobile regression checklist',
-        description: 'Checklist for login, sync, notifications, and offline mode.',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.HIGH,
-        dueDate: daysFromNow(9),
-        teamId: mobileTeam.id,
-        projectId: mobileProject.id,
-        createdById: marcus.id,
-        assigneeId: linda.id,
-      },
-      {
-        title: 'Implement CSP headers rollout',
-        description: 'Apply CSP in staging and track blocked script reports.',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.URGENT,
-        dueDate: daysFromNow(11),
-        teamId: coreTeam.id,
-        projectId: securityProject.id,
-        createdById: alex.id,
-        assigneeId: marcus.id,
-      },
-      {
-        title: 'Run access audit for admins',
-        description: 'Review elevated permissions and remove stale access.',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.HIGH,
-        dueDate: daysFromNow(8),
-        teamId: coreTeam.id,
-        projectId: securityProject.id,
-        createdById: alex.id,
-        assigneeId: sarah.id,
-      },
-      {
-        title: 'Finalize release notes draft',
-        description: 'Consolidate completed features and known limitations.',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.MEDIUM,
-        dueDate: daysFromNow(12),
-        teamId: mobileTeam.id,
-        projectId: mobileProject.id,
-        createdById: marcus.id,
-        assigneeId: null,
-      },
-    ],
-  })
-
+  // Events, Announcements, etc.
   await prisma.event.createMany({
-    data: [
-      {
-        title: 'Weekly Delivery Sync',
-        description: 'Cross-team sync for blockers and progress updates.',
-        type: EventType.MEETING,
-        startDate: daysFromNow(1),
-        endDate: daysFromNow(1),
-        teamId: coreTeam.id,
-        createdById: alex.id,
-      },
-      {
-        title: 'Task Flow Usability Review',
-        description: 'Review prototype feedback and next iteration decisions.',
-        type: EventType.TRAINING,
-        startDate: daysFromNow(4),
-        endDate: daysFromNow(4),
-        teamId: productTeam.id,
-        createdById: linda.id,
-      },
-      {
-        title: 'Mobile Sprint Deadline',
-        description: 'Cutoff for QA-ready builds in this sprint.',
-        type: EventType.DEADLINE,
-        startDate: daysFromNow(14),
-        endDate: daysFromNow(14),
-        teamId: mobileTeam.id,
-        createdById: marcus.id,
-      },
-      {
-        title: 'Internal Security Workshop',
-        description: 'Session on secure coding and incident escalation flow.',
-        type: EventType.INTERNAL,
-        startDate: daysFromNow(7),
-        endDate: daysFromNow(7),
-        teamId: coreTeam.id,
-        createdById: sarah.id,
-      },
-    ],
+    data: teams.map(t => ({
+      title: `${t.name} Weekly Sync`,
+      description: `Coordination meeting for ${t.name} division projects.`,
+      type: EventType.MEETING,
+      startDate: daysFromNow(2),
+      teamId: t.id,
+      createdById: alex.id
+    }))
   })
 
-  const [ann1, ann2, ann3, ann4] = await Promise.all([
-    prisma.announcement.create({
-      data: {
-        title: 'SSO rollout is now mandatory',
-        content: 'All app authentication now flows via Unified Portal. Local auth pages are retired.',
-        pinned: true,
-        authorId: alex.id,
-        teamId: coreTeam.id,
-      },
-    }),
-    prisma.announcement.create({
-      data: {
-        title: 'Task template refresh',
-        content: 'Please use new task templates for planning and acceptance criteria.',
-        pinned: false,
-        authorId: sarah.id,
-        teamId: productTeam.id,
-      },
-    }),
-    prisma.announcement.create({
-      data: {
-        title: 'Release branch policy update',
-        content: 'Hotfix branch naming and review rules are now documented in team handbook.',
-        pinned: false,
-        authorId: marcus.id,
-        teamId: mobileTeam.id,
-      },
-    }),
-    prisma.announcement.create({
-      data: {
-        title: 'Security checklist before deploy',
-        content: 'Run dependency audit and verify CORS/cookie settings before each production release.',
-        pinned: true,
-        authorId: marcus.id,
-        teamId: coreTeam.id,
-      },
-    }),
-  ])
-
-  await prisma.announcementRead.createMany({
-    data: [
-      { announcementId: ann1.id, userId: marcus.id },
-      { announcementId: ann1.id, userId: david.id },
-      { announcementId: ann2.id, userId: linda.id },
-      { announcementId: ann2.id, userId: david.id },
-      { announcementId: ann3.id, userId: sarah.id },
-      { announcementId: ann4.id, userId: alex.id },
-    ],
+  await prisma.announcement.createMany({
+    data: teams.map(t => ({
+      title: `Quarterly Goals for ${t.name}`,
+      content: `Please review the updated roadmap for the ${t.name} division in the shared drive.`,
+      authorId: alex.id,
+      teamId: t.id
+    }))
   })
 
-  await prisma.chatMessage.createMany({
-    data: [
-      {
-        message: 'SSO migration for Task-Space backend is completed and verified.',
-        senderId: alex.id,
-        teamId: coreTeam.id,
-        createdAt: daysFromNow(-1),
-      },
-      {
-        message: 'Please validate portal redirect from login and index routes.',
-        senderId: marcus.id,
-        teamId: coreTeam.id,
-        createdAt: daysFromNow(-1),
-      },
-      {
-        message: 'I have updated the task board labels to match the new flow.',
-        senderId: linda.id,
-        teamId: productTeam.id,
-        createdAt: daysFromNow(-2),
-      },
-      {
-        message: 'Release checklist draft is ready for review today.',
-        senderId: sarah.id,
-        teamId: mobileTeam.id,
-        createdAt: daysFromNow(-1),
-      },
-      {
-        message: 'I will monitor auth refresh endpoint after deployment.',
-        senderId: david.id,
-        teamId: coreTeam.id,
-        createdAt: daysFromNow(0),
-      },
-    ],
-  })
-
-  await prisma.notification.createMany({
-    data: [
-      {
-        userId: alex.id,
-        type: NotificationType.PROJECT_PROGRESS_UPDATED,
-        referenceType: 'project',
-        message: 'Unified API Stabilization progress updated to 62%.',
-      },
-      {
-        userId: marcus.id,
-        type: NotificationType.TASK_ASSIGNED,
-        referenceType: 'task',
-        message: 'You were assigned: Implement CSP headers rollout.',
-      },
-      {
-        userId: sarah.id,
-        type: NotificationType.ANNOUNCEMENT_CREATED,
-        referenceType: 'announcement',
-        message: 'A new announcement was posted in Product Experience.',
-      },
-      {
-        userId: david.id,
-        type: NotificationType.TASK_STATUS_UPDATED,
-        referenceType: 'task',
-        message: 'Task status changed to In Progress.',
-      },
-      {
-        userId: linda.id,
-        type: NotificationType.EVENT_CREATED,
-        referenceType: 'event',
-        message: 'Task Flow Usability Review event has been scheduled.',
-      },
-      {
-        userId: david.id,
-        type: NotificationType.TEAM_INVITE,
-        referenceType: 'invite',
-        message: 'You received an invite to Mobile Enablement.',
-      },
-    ],
-  })
-
-  console.log('--- Task-Space seeding completed ---')
-  console.log('Users seeded (password: password123):')
-  console.log('- alex@testmail.com (SYSTEM ADMIN)')
-  console.log('- marcus@testmail.com')
-  console.log('- sarah@testmail.com')
-  console.log('- david@testmail.com')
-  console.log('- linda@testmail.com')
+  console.log('--- Task-Space seeding completed successfully ---')
 }
 
 main()
