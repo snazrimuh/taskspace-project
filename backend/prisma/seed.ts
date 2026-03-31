@@ -232,6 +232,44 @@ async function main() {
     }))
   })
 
+  // ── Chat Messages ──────────────────────────────────────────────────────
+  const chatMessages: any[] = []
+  const chatContexts = [
+    "Anyone seen the latest PR?",
+    "Reviewing the logs now, looks stable.",
+    "Meeting starts in 10 minutes, room 402.",
+    "Can someone help with the Kubernetes logs?",
+    "Great work everyone on the v2 sprint release!",
+    "Happy Friday team! 🚀",
+    "Does anyone have the link to the design system Figma?",
+    "Cloud deployment successful! 🍾",
+    "Need feedback on the new API endpoints documentation.",
+    "Updating the technical docs for the next audit.",
+    "Just pushed a hotfix for the auth issue.",
+    "Welcome to the team! Glad to have you here.",
+    "Let's sync up after lunch regarding the cost optimization."
+  ]
+
+  for (const team of teams) {
+    // Get members of this team from local data
+    const teamMembers = membershipData.filter(m => m.teamId === team.id)
+    if (teamMembers.length > 0) {
+      // 8-12 messages per team
+      const numMsgs = 8 + (Math.floor(Math.random() * 5))
+      for (let i = 0; i < numMsgs; i++) {
+        const randomMember = teamMembers[Math.floor(Math.random() * teamMembers.length)]
+        chatMessages.push({
+          message: chatContexts[Math.floor(Math.random() * chatContexts.length)],
+          senderId: randomMember.userId,
+          teamId: team.id,
+          createdAt: new Date(Date.now() - (numMsgs - i) * 3600000) // Spread out over several hours
+        })
+      }
+    }
+  }
+
+  await prisma.chatMessage.createMany({ data: chatMessages })
+
   console.log('--- Task-Space seeding completed successfully ---')
 }
 

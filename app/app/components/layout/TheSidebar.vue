@@ -185,15 +185,6 @@
                 <span>{{ isRedirecting ? 'Opening Portal...' : 'Back to Portal' }}</span>
               </button>
             </div>
-            <div class="border-t border-white/60 dark:border-white/[0.07] p-1.5">
-              <button
-                class="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all font-medium"
-                @click="authStore.logout()"
-              >
-                <Settings class="h-4 w-4" />
-                <span>Logout</span>
-              </button>
-            </div>
           </div>
         </Transition>
       </ClientOnly>
