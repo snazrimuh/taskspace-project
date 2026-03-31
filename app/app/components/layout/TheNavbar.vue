@@ -17,6 +17,15 @@
 
     <!-- Right: Actions -->
     <div class="flex items-center gap-1">
+      <!-- Back to Portal -->
+      <button
+        class="p-2 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-white/40 dark:hover:bg-white/[0.06] rounded-xl transition-colors"
+        title="Buka Portal Hub"
+        @click="handleBackToPortal"
+      >
+        <ExternalLink class="h-4.5 w-4.5" />
+      </button>
+
       <!-- Dark Mode Toggle -->
       <button
         class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white/40 dark:hover:bg-white/[0.06] rounded-xl transition-colors"
@@ -51,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { Bell, Menu, Settings, Moon, Sun } from 'lucide-vue-next'
+import { Bell, Menu, Settings, Moon, Sun, ExternalLink } from 'lucide-vue-next'
 
 interface Props {
   teamName?: string
@@ -73,4 +82,9 @@ defineEmits<{
 
 const { isDark, toggleTheme } = useTheme()
 const unreadCount = ref(3)
+const runtime = useRuntimeConfig()
+
+const handleBackToPortal = () => {
+  window.location.href = runtime.public.hubUrl ? `${runtime.public.hubUrl}/dashboard` : '/dashboard'
+}
 </script>

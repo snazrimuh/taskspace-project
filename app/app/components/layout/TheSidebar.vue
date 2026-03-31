@@ -140,19 +140,62 @@
     </div>
 
     <!-- User Section -->
-    <div class="p-3 border-t border-white/50 dark:border-white/[0.06]">
+    <div class="p-3 border-t border-white/50 dark:border-white/[0.06] relative" data-user-dropdown>
       <ClientOnly>
-        <NuxtLink
-          to="/profile"
-          class="flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-white/40 dark:hover:bg-white/[0.06] transition-all group"
+        <button
+          class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-white/40 dark:hover:bg-white/[0.06] transition-all group"
+          :class="{ 'bg-white/40 dark:bg-white/[0.06]': showUserDropdown }"
+          @click="showUserDropdown = !showUserDropdown"
         >
           <UiAvatar :name="currentUser.name" :src="currentUser.avatar" size="sm" />
-          <div class="flex-1 min-w-0">
+          <div class="flex-1 min-w-0 text-left">
             <div class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ currentUser.name }}</div>
             <div class="text-[11px] text-slate-400 dark:text-slate-500 truncate">{{ currentUser.email }}</div>
           </div>
-          <Settings class="h-4 w-4 text-slate-400 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-        </NuxtLink>
+          <ChevronUp class="h-4 w-4 text-slate-400 dark:text-slate-600 transition-all shrink-0" :class="{ 'rotate-180': showUserDropdown }" />
+        </button>
+
+        <!-- User Dropdown -->
+        <Transition
+          enter-active-class="transition duration-100 ease-out"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition duration-75 ease-in"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+        >
+          <div
+            v-if="showUserDropdown"
+            class="absolute bottom-full left-3 right-3 mb-1 z-50 origin-bottom bg-white/90 dark:bg-surface-900/90 backdrop-blur-xl border border-white/70 dark:border-white/[0.10] rounded-xl shadow-xl overflow-hidden"
+          >
+            <div class="p-1.5 space-y-0.5">
+              <NuxtLink
+                to="/profile"
+                class="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.07] transition-all"
+                @click="showUserDropdown = false"
+              >
+                <User class="h-4 w-4" />
+                <span>Manage Profile</span>
+              </NuxtLink>
+              <button
+                class="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10 transition-all"
+                @click="handleBackToPortal"
+              >
+                <ExternalLink class="h-4 w-4" />
+                <span>{{ isRedirecting ? 'Opening Portal...' : 'Back to Portal' }}</span>
+              </button>
+            </div>
+            <div class="border-t border-white/60 dark:border-white/[0.07] p-1.5">
+              <button
+                class="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all font-medium"
+                @click="authStore.logout()"
+              >
+                <Settings class="h-4 w-4" />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </Transition>
       </ClientOnly>
     </div>
 
@@ -189,6 +232,9 @@ import {
   ChevronsUpDown,
   Check,
   Plus,
+  User,
+  ExternalLink,
+  ChevronUp,
 } from 'lucide-vue-next'
 
 const route = useRoute()
@@ -205,6 +251,9 @@ const newTeamName = ref('')
 const newTeamDesc = ref('')
 const createError = ref('')
 const isCreating = ref(false)
+const showUserDropdown = ref(false)
+const isRedirecting = ref(false)
+const runtime = useRuntimeConfig()
 
 onMounted(() => {
   if (!teamStore.teams.length) teamStore.fetchTeams()
@@ -212,15 +261,21 @@ onMounted(() => {
 
 // Close dropdown when clicking outside
 const handleClickOutside = (e: MouseEvent) => {
-  if (showTeamDropdown.value) {
-    const target = e.target as HTMLElement
-    if (!target.closest('[data-team-dropdown]')) {
-      showTeamDropdown.value = false
-    }
+  const target = e.target as HTMLElement
+  if (showTeamDropdown.value && !target.closest('[data-team-dropdown]')) {
+    showTeamDropdown.value = false
+  }
+  if (showUserDropdown.value && !target.closest('[data-user-dropdown]')) {
+    showUserDropdown.value = false
   }
 }
 onMounted(() => document.addEventListener('click', handleClickOutside))
 onUnmounted(() => document.removeEventListener('click', handleClickOutside))
+
+const handleBackToPortal = () => {
+  isRedirecting.value = true
+  window.location.href = runtime.public.hubUrl ? `${runtime.public.hubUrl}/dashboard` : '/dashboard'
+}
 
 const currentTeamId = ref('')
 

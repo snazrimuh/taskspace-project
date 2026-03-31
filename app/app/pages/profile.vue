@@ -99,18 +99,6 @@
         </UiCardContent>
       </UiCard>
 
-      <!-- Back to Portal Section -->
-      <UiCard class="lg:col-span-3 border-sky-200/60 dark:border-sky-500/15">
-        <UiCardHeader>
-          <UiCardTitle class="text-sky-600 dark:text-sky-400">Kembali ke Portal</UiCardTitle>
-        </UiCardHeader>
-        <UiCardContent>
-          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Kembali ke Portal Hub untuk berpindah aplikasi tanpa logout.</p>
-          <UiButton :disabled="isRedirecting" @click="handleBackToPortal">
-            {{ isRedirecting ? 'Membuka portal...' : 'Buka Portal Hub' }}
-          </UiButton>
-        </UiCardContent>
-      </UiCard>
     </div>
   </div>
 </template>
@@ -129,8 +117,8 @@ const saveSuccess = ref(false)
 const saveError = ref('')
 const avatarStyles = [
   'avataaars', 'bottts', 'personas', 'lorelei', 'pixel-art', 'thumbs',
-  'adventurer', 'bigears', 'croodles', 'fun-emoji', 'identicon', 'jdenticon',
-  'micah', 'miniavs', 'notionists', 'pixelartxy', 'rings', 'shapes'
+  'adventurer', 'croodles', 'fun-emoji', 'identicon',
+  'micah', 'miniavs', 'notionists', 'rings', 'shapes'
 ]
 
 const getAvatarUrl = (name: string, style: string) => {
@@ -161,7 +149,7 @@ const fetchProfile = async () => {
     form.avatar = res.data.avatar ?? ''
     // Parse avatar URL to detect style if DiceBear URL
     if (form.avatar?.includes('api.dicebear.com')) {
-      const match = form.avatar.match(/\/(avataaars|bottts|personas|lorelei|pixel-art|thumbs|adventurer|bigears|croodles|fun-emoji|identicon|jdenticon|micah|miniavs|notionists|pixelartxy|rings|shapes)\//)
+      const match = form.avatar.match(/\/(avataaars|bottts|personas|lorelei|pixel-art|thumbs|adventurer|croodles|fun-emoji|identicon|micah|miniavs|notionists|rings|shapes)\//)
       if (match?.[1]) form.avatarStyle = match[1]
     } else if (form.avatar && !form.avatar.startsWith('http')) {
       form.avatarUrl = form.avatar
@@ -232,14 +220,5 @@ const handlePasswordChange = async () => {
   } finally {
     isSavingPw.value = false
   }
-}
-
-// ── Back to portal ─────────────────────────────────────────────────────
-const isRedirecting = ref(false)
-const runtime = useRuntimeConfig()
-
-const handleBackToPortal = () => {
-  isRedirecting.value = true
-  window.location.href = runtime.public.hubUrl ? `${runtime.public.hubUrl}/dashboard` : '/dashboard'
 }
 </script>
