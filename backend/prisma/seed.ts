@@ -81,10 +81,14 @@ async function main() {
 
   // Team Assignments (Each user in 2-3 teams)
   const membershipData = [
-    // Alex (Director) in all high-level teams
+    // Alex (Director) in almost all teams for massive data visibility
     { userId: alex.id, teamId: infraTeam.id, role: TeamRole.MANAGER },
     { userId: alex.id, teamId: secTeam.id, role: TeamRole.MANAGER },
     { userId: alex.id, teamId: dataTeam.id, role: TeamRole.MEMBER },
+    { userId: alex.id, teamId: devTeam.id, role: TeamRole.MANAGER },
+    { userId: alex.id, teamId: qaTeam.id, role: TeamRole.MEMBER },
+    { userId: alex.id, teamId: designTeam.id, role: TeamRole.MEMBER },
+    { userId: alex.id, teamId: opsTeam.id, role: TeamRole.MANAGER },
 
     // Julian (Lead Infra)
     { userId: julian.id, teamId: infraTeam.id, role: TeamRole.MANAGER },
@@ -100,10 +104,13 @@ async function main() {
     { userId: marcus.id, teamId: infraTeam.id, role: TeamRole.MEMBER },
     { userId: marcus.id, teamId: opsTeam.id, role: TeamRole.MANAGER },
 
-    // Sarah (Ops Manager)
+    // Sarah (Ops Manager) in massive roles
     { userId: sarah.id, teamId: opsTeam.id, role: TeamRole.MANAGER },
     { userId: sarah.id, teamId: qaTeam.id, role: TeamRole.MEMBER },
     { userId: sarah.id, teamId: devTeam.id, role: TeamRole.MEMBER },
+    { userId: sarah.id, teamId: designTeam.id, role: TeamRole.MEMBER },
+    { userId: sarah.id, teamId: infraTeam.id, role: TeamRole.MEMBER },
+    { userId: sarah.id, teamId: dataTeam.id, role: TeamRole.MEMBER },
 
     // Elena (QA Lead)
     { userId: elena.id, teamId: qaTeam.id, role: TeamRole.MANAGER },
@@ -180,6 +187,14 @@ async function main() {
     // Ops Projects
     { name: 'Hardware Refresh Plan', teamId: opsTeam.id, picId: sarah.id, status: ProjectStatus.IN_PROGRESS, progress: 80 },
     { name: 'Unified SSO Patching', teamId: opsTeam.id, picId: marcus.id, status: ProjectStatus.COMPLETED, progress: 100 },
+    
+    // 🔥 Additional Projects for Alex & Sarah 🔥
+    { name: 'Global Tech Strategy 2027', teamId: infraTeam.id, picId: alex.id, status: ProjectStatus.NOT_STARTED, progress: 0 },
+    { name: 'Cross-functional IT Audit', teamId: secTeam.id, picId: alex.id, status: ProjectStatus.IN_PROGRESS, progress: 40 },
+    { name: 'Enterprise API Gateway', teamId: devTeam.id, picId: alex.id, status: ProjectStatus.ON_HOLD, progress: 15 },
+    { name: 'System Consolidation Phase 1', teamId: opsTeam.id, picId: sarah.id, status: ProjectStatus.IN_PROGRESS, progress: 25 },
+    { name: 'Vendor Contract Renewals', teamId: opsTeam.id, picId: sarah.id, status: ProjectStatus.COMPLETED, progress: 100 },
+    { name: 'Staff Training Q4', teamId: qaTeam.id, picId: sarah.id, status: ProjectStatus.IN_PROGRESS, progress: 60 },
   ]
 
   const projects = await Promise.all(projectsData.map(p => 
@@ -188,23 +203,27 @@ async function main() {
     })
   ))
 
-  // Tasks (Dozens of tasks, assigned broadly)
+  // Tasks (Hundreds of tasks, assigned broadly but heavy on Alex & Sarah)
   const taskBatch: any[] = []
   projects.forEach((proj, idx) => {
-    // 5-8 tasks per project
-    const numTasks = 5 + (idx % 4)
+    // 15-25 tasks per project
+    const numTasks = 15 + (idx % 10)
     for (let i = 1; i <= numTasks; i++) {
-      const randomUser = users[Math.floor(Math.random() * users.length)]
+      let assignee = users[Math.floor(Math.random() * users.length)]
+      // Bias assignment 40% Alex, 30% Sarah, 30% Random
+      if (Math.random() < 0.4) assignee = alex
+      else if (Math.random() < 0.5) assignee = sarah
+
       taskBatch.push({
-        title: `${proj.name} Phase ${i}: ${['Implementation', 'Planning', 'Review', 'Testing', 'Documentation'][i % 5]}`,
-        description: `Detailed sub-task tracking for ${proj.name}. Requires cross-team sync.`,
-        status: [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.REVIEW, TaskStatus.DONE][(i + idx) % 4],
-        priority: [TaskPriority.LOW, TaskPriority.MEDIUM, TaskPriority.HIGH, TaskPriority.URGENT][i % 4],
+        title: `${proj.name} - Action Item ${i}: ${['Implementation', 'Planning', 'Review', 'Testing', 'Documentation', 'Bug Fixing', 'Deployment'][i % 7]}`,
+        description: `Detailed sub-task tracking for ${proj.name}. Cross-team sync might be required. Item ${i}.`,
+        status: [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.REVIEW, TaskStatus.DONE][Math.floor(Math.random() * 4)],
+        priority: [TaskPriority.LOW, TaskPriority.MEDIUM, TaskPriority.HIGH, TaskPriority.URGENT][Math.floor(Math.random() * 4)],
         teamId: proj.teamId,
         projectId: proj.id,
-        createdById: alex.id,
-        assigneeId: randomUser.id,
-        dueDate: daysFromNow(10 + i * 2)
+        createdById: i % 2 === 0 ? alex.id : sarah.id,
+        assigneeId: assignee.id,
+        dueDate: daysFromNow((i % 15) - 5) // Spread due dates from past to future
       })
     }
   })
@@ -212,25 +231,55 @@ async function main() {
   await prisma.task.createMany({ data: taskBatch })
 
   // Events, Announcements, etc.
-  await prisma.event.createMany({
-    data: teams.map(t => ({
-      title: `${t.name} Weekly Sync`,
-      description: `Coordination meeting for ${t.name} division projects.`,
-      type: EventType.MEETING,
-      startDate: daysFromNow(2),
-      teamId: t.id,
-      createdById: alex.id
-    }))
-  })
+  const eventsBatch: any[] = []
+  const announcementsBatch: any[] = []
 
-  await prisma.announcement.createMany({
-    data: teams.map(t => ({
-      title: `Quarterly Goals for ${t.name}`,
-      content: `Please review the updated roadmap for the ${t.name} division in the shared drive.`,
-      authorId: alex.id,
-      teamId: t.id
-    }))
+  teams.forEach(t => {
+    // 4 Events per team
+    eventsBatch.push({ title: `${t.name} Weekly Sync`, description: `Coordination meeting.`, type: EventType.MEETING, startDate: daysFromNow(2), teamId: t.id, createdById: alex.id })
+    eventsBatch.push({ title: `${t.name} Retrospective`, description: `Monthly retro.`, type: EventType.INTERNAL, startDate: daysFromNow(-2), teamId: t.id, createdById: sarah.id })
+    eventsBatch.push({ title: `${t.name} Training Q3`, description: `Upskilling session.`, type: EventType.TRAINING, startDate: daysFromNow(10), teamId: t.id, createdById: sarah.id })
+    eventsBatch.push({ title: `${t.name} Milestone Deadline`, description: `Final submission.`, type: EventType.DEADLINE, startDate: daysFromNow(15), teamId: t.id, createdById: alex.id })
+
+    // 3 Announcements per team
+    announcementsBatch.push({ title: `Quarterly Goals for ${t.name}`, content: `Please review the updated roadmap in the shared drive.`, authorId: alex.id, teamId: t.id, pinned: true })
+    announcementsBatch.push({ title: `Welcome New Members!`, content: `Glad to have more people joining the ${t.name} division.`, authorId: sarah.id, teamId: t.id, pinned: false })
+    announcementsBatch.push({ title: `Urgent: Security Patch`, content: `Ensure all your systems are updated by EOD.`, authorId: alex.id, teamId: t.id, pinned: false })
   })
+  await prisma.event.createMany({ data: eventsBatch })
+  await prisma.announcement.createMany({ data: announcementsBatch })
+
+  // ── Notifications ─────────────────────────────────────────────────────────
+  const notifications: any[] = []
+  const notificationTypes = [
+    NotificationType.TASK_ASSIGNED, NotificationType.PROJECT_CREATED, 
+    NotificationType.ANNOUNCEMENT_CREATED, NotificationType.EVENT_CREATED,
+    NotificationType.TASK_STATUS_UPDATED, NotificationType.TEAM_INVITE
+  ]
+
+  // Add 40+ notifications for Alex
+  for (let i = 0; i < 45; i++) {
+    notifications.push({
+      userId: alex.id,
+      type: notificationTypes[i % notificationTypes.length],
+      message: `System notification ${i} regarding your recent activity.`,
+      isRead: i < 15,
+      createdAt: new Date(Date.now() - i * 86400000)
+    })
+  }
+
+  // Add 40+ notifications for Sarah
+  for (let i = 0; i < 45; i++) {
+    notifications.push({
+      userId: sarah.id,
+      type: notificationTypes[i % notificationTypes.length],
+      message: `Ops notification ${i}: Action required on pending operational task.`,
+      isRead: i < 10,
+      createdAt: new Date(Date.now() - i * 43200000)
+    })
+  }
+
+  await prisma.notification.createMany({ data: notifications })
 
   // ── Chat Messages ──────────────────────────────────────────────────────
   const chatMessages: any[] = []
@@ -254,10 +303,18 @@ async function main() {
     // Get members of this team from local data
     const teamMembers = membershipData.filter(m => m.teamId === team.id)
     if (teamMembers.length > 0) {
-      // 8-12 messages per team
-      const numMsgs = 8 + (Math.floor(Math.random() * 5))
+      // 30-45 messages per team (Heavy dataset)
+      const numMsgs = 30 + (Math.floor(Math.random() * 15))
       for (let i = 0; i < numMsgs; i++) {
-        const randomMember = teamMembers[Math.floor(Math.random() * teamMembers.length)]
+        let randomMember = teamMembers[Math.floor(Math.random() * teamMembers.length)]
+        
+        // Force Alex and Sarah to talk a lot if they are in the team
+        const alexInTeam = teamMembers.find(m => m.userId === alex.id)
+        const sarahInTeam = teamMembers.find(m => m.userId === sarah.id)
+        
+        if (Math.random() < 0.3 && alexInTeam) randomMember = alexInTeam
+        else if (Math.random() < 0.3 && sarahInTeam) randomMember = sarahInTeam
+
         chatMessages.push({
           message: chatContexts[Math.floor(Math.random() * chatContexts.length)],
           senderId: randomMember.userId,
