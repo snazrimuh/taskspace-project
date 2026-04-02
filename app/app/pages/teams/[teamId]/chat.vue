@@ -1,13 +1,20 @@
 <template>
   <div class="h-[calc(100vh-120px)] flex flex-col gap-2">
     <!-- Compact Header -->
-    <div class="glass-subtle rounded-2xl px-4 py-2.5 flex items-center justify-between shrink-0">
-      <div class="flex items-center gap-2">
-        <div class="h-2 w-2 rounded-full bg-[#778DA9] shrink-0" />
-        <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">Team Chat</span>
-        <span class="text-xs text-slate-400 dark:text-slate-500">· {{ teamStore.currentTeamMembers.length }} members</span>
+    <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(219,236,255,0.75)_0%,rgba(186,215,248,0.55)_40%,rgba(162,200,238,0.45)_100%)] dark:bg-[linear-gradient(135deg,#1B263B_0%,#111827_100%)] rounded-3xl px-5 py-3.5 flex items-center justify-between shrink-0 text-[#1C3C62] dark:text-white shadow-[0_8px_32px_rgba(42,74,116,0.12)] dark:shadow-xl border border-white/70 dark:border-white/5 backdrop-blur-xl ring-1 ring-[#7EB8E5]/15 dark:ring-0 mb-1">
+      <!-- Glass shimmer overlays (light mode only) -->
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:opacity-0 rounded-3xl pointer-events-none"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:opacity-0 rounded-t-3xl pointer-events-none"></div>
+      <div class="relative flex items-center gap-3">
+        <div class="p-2 bg-[#2A4A74]/15 dark:bg-white/10 rounded-xl border border-[#2A4A74]/20 dark:border-white/10">
+           <MessageSquare class="w-4 h-4 text-[#1C3C62] dark:text-white" />
+        </div>
+        <div class="flex items-baseline gap-2">
+           <span class="text-sm font-bold tracking-tight text-[#1C3C62] dark:text-white">Team Chat</span>
+           <span class="text-xs text-[#2A4A74]/60 dark:text-slate-400">· {{ teamStore.currentTeamMembers.length }} members</span>
+        </div>
       </div>
-      <span class="text-[11px] text-slate-400 dark:text-slate-500">{{ chatStore.messages.length }} messages</span>
+      <span class="text-[11px] text-[#2A4A74]/60 dark:text-slate-400">{{ chatStore.messages.length }} messages</span>
     </div>
 
     <UiCard class="flex-1 flex flex-col overflow-hidden">
@@ -116,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { Send } from 'lucide-vue-next'
+import { Send, MessageSquare } from 'lucide-vue-next'
 
 const route = useRoute()
 const teamId = computed(() => route.params.teamId as string)

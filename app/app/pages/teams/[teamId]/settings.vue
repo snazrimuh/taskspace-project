@@ -1,24 +1,41 @@
 <template>
   <div class="space-y-6">
-    <div class="glass rounded-2xl p-5 md:p-6">
-      <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Team Settings</h2>
-      <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage team structure, member access, and important workspace configurations.</p>
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Members</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ memberCount }}</p>
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(219,236,255,0.75)_0%,rgba(186,215,248,0.55)_40%,rgba(162,200,238,0.45)_100%)] dark:bg-[linear-gradient(135deg,#1B263B_0%,#111827_100%)] rounded-3xl p-6 md:p-8 text-[#1C3C62] dark:text-white mb-8 shadow-[0_8px_32px_rgba(42,74,116,0.12)] dark:shadow-xl border border-white/70 dark:border-white/5 backdrop-blur-xl ring-1 ring-[#7EB8E5]/20 dark:ring-0">
+      <!-- Glass shimmer overlays (light mode only) -->
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:opacity-0 rounded-3xl pointer-events-none"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:opacity-0 rounded-t-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="p-3.5 bg-[#2A4A74]/15 dark:bg-white/10 rounded-2xl border border-[#2A4A74]/20 dark:border-white/10">
+             <Settings2 class="w-8 h-8 text-[#1C3C62] dark:text-white" />
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Team Settings</h1>
+            <p class="text-[#2A4A74]/70 dark:text-slate-300 mt-1 flex items-center gap-2">
+              <span class="text-sm opacity-80">Manage team structure and configurations.</span>
+            </p>
+          </div>
         </div>
-        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Managers</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ managerCount }}</p>
+      </div>
+      
+      <!-- Quick View Stats Row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 border-t border-[#2A4A74]/15 dark:border-white/10 pt-6">
+        <div class="flex flex-col">
+          <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-semibold">Members</p>
+          <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ memberCount }}</p>
         </div>
-        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Role</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ isManager ? 'Manager' : 'Member' }}</p>
+        <div class="flex flex-col">
+          <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-semibold">Managers</p>
+          <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ managerCount }}</p>
         </div>
-        <div class="rounded-xl px-3 py-2 bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.07]">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">Active Tab</p>
-          <p class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ activeTabLabel }}</p>
+        <div class="flex flex-col">
+          <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-semibold">Your Role</p>
+          <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ isManager ? 'Manager' : 'Member' }}</p>
+        </div>
+        <div class="flex flex-col">
+          <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-semibold">Active Tab</p>
+          <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ activeTabLabel }}</p>
         </div>
       </div>
     </div>
@@ -129,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { UserPlus } from 'lucide-vue-next'
+import { UserPlus, Settings2 } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()

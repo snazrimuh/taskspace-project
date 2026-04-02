@@ -1,8 +1,23 @@
 <template>
   <div class="space-y-6">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
-      <p class="text-sm text-slate-500 mt-1">Manage your account settings.</p>
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(219,236,255,0.75)_0%,rgba(186,215,248,0.55)_40%,rgba(162,200,238,0.45)_100%)] dark:bg-[linear-gradient(135deg,#1B263B_0%,#111827_100%)] rounded-3xl p-6 md:p-8 text-[#1C3C62] dark:text-white mb-8 shadow-[0_8px_32px_rgba(42,74,116,0.12)] dark:shadow-xl border border-white/70 dark:border-white/5 backdrop-blur-xl ring-1 ring-[#7EB8E5]/20 dark:ring-0">
+      <!-- Glass shimmer overlays (light mode only) -->
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:opacity-0 rounded-3xl pointer-events-none"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:opacity-0 rounded-t-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="p-3.5 bg-[#2A4A74]/15 dark:bg-white/10 rounded-2xl border border-[#2A4A74]/20 dark:border-white/10">
+             <UserCog class="w-8 h-8 text-[#1C3C62] dark:text-white" />
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Profile Settings</h1>
+            <p class="text-[#2A4A74]/70 dark:text-slate-300 mt-1 flex items-center gap-2">
+              <span class="text-sm opacity-80">Manage your account settings and preferences.</span>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -30,31 +45,58 @@
           <UiCardTitle>Edit Profile</UiCardTitle>
         </UiCardHeader>
         <UiCardContent>
-          <form class="space-y-4" @submit.prevent="handleUpdate">
+          <form class="space-y-5" @submit.prevent="handleUpdate">
+            <!-- Avatar Picker -->
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Avatar Style</label>
-              <div class="mb-3">
-                <div class="grid grid-cols-4 gap-2">
-                  <button
-                    v-for="style in avatarStyles"
-                    :key="style"
-                    type="button"
-                    class="flex flex-col items-center gap-1 p-2 rounded-lg border transition-all hover:shadow-sm"
-                    :class="form.avatarStyle === style ? 'border-primary-400 bg-primary-50/70 dark:bg-primary-500/[0.10] dark:border-primary-400/60' : 'border-white/70 dark:border-white/[0.09] hover:border-primary-300/60 dark:hover:border-primary-500/30'"
-                    @click="form.avatarStyle = style; updateAvatarPreview()"
-                  >
-                    <img :src="getAvatarUrl(profile?.name || 'User', style)" :alt="style" class="h-8 w-8 rounded-full" />
-                    <span class="text-xs text-slate-600 dark:text-slate-400 capitalize">{{ style }}</span>
-                  </button>
+              <div class="flex items-center justify-between mb-4">
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Choose Avatar (Page {{ currentPage }} of {{ totalPages }})</label>
+                <div class="flex items-center gap-2">
+                   <UiButton 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    :disabled="currentPage === 1"
+                    @click="currentPage--"
+                    class="h-8 w-8 p-0"
+                   >
+                     <ChevronLeft class="w-4 h-4" />
+                   </UiButton>
+                   <UiButton 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    :disabled="currentPage === totalPages"
+                    @click="currentPage++"
+                    class="h-8 w-8 p-0"
+                   >
+                     <ChevronRight class="w-4 h-4" />
+                   </UiButton>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
-                <UiInput v-model="form.avatarUrl" placeholder="Or paste custom avatar URL" type="url" />
-                <UiButton type="button" variant="outline" @click="form.avatarUrl = ''">Clear</UiButton>
+              
+              <!-- 5x2 Grid (Compact, No labels) -->
+              <div class="grid grid-cols-5 gap-4 p-1">
+                <button
+                  v-for="avatar in paginatedAvatars"
+                  :key="avatar.id"
+                  type="button"
+                  class="flex flex-col items-center justify-center p-1.5 rounded-2xl border transition-all duration-300 group aspect-square"
+                  :class="selectedAvatarId === avatar.id
+                    ? 'border-primary-400 bg-primary-50/50 dark:bg-primary-500/[0.10] shadow-[0_0_20px_rgba(59,130,246,0.15)] ring-2 ring-primary-400/20'
+                    : 'border-white/60 dark:border-white/[0.05] hover:border-primary-300/60 dark:hover:border-primary-500/30 hover:bg-white/50 dark:hover:bg-white/[0.02] shadow-sm'"
+                  @click="selectAvatar(avatar)"
+                >
+                  <div class="relative w-full h-full flex items-center justify-center">
+                    <img :src="avatar.url" class="h-14 w-14 rounded-full bg-slate-100 dark:bg-slate-800 transition-transform group-hover:scale-110 shadow-sm" loading="lazy" />
+                    <div v-if="selectedAvatarId === avatar.id" class="absolute -right-0.5 -bottom-0.5 bg-primary-500 text-white rounded-full p-1 border-2 border-white dark:border-slate-900 shadow-sm z-10">
+                      <Check class="w-2.5 h-2.5" />
+                    </div>
+                  </div>
+                </button>
               </div>
-              <p class="text-xs text-slate-500 mt-1">Choose a style or paste a custom image URL. Avatar is auto-generated from your name.</p>
             </div>
-            <div>
+
+            <div class="pt-2">
               <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
               <UiInput v-model="form.name" />
             </div>
@@ -104,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+import { UserCog, ChevronLeft, ChevronRight, Check } from 'lucide-vue-next'
 const authStore = useAuthStore()
 const api = useApi()
 
@@ -111,25 +154,54 @@ const api = useApi()
 const profile = ref<any>(null)
 const isLoadingProfile = ref(false)
 
-const form = reactive({ name: '', bio: '', avatar: '', avatarStyle: 'avataaars', avatarUrl: '' })
+const form = reactive({ name: '', bio: '', avatar: '', avatarStyle: 'avataaars' })
 const isSaving = ref(false)
 const saveSuccess = ref(false)
 const saveError = ref('')
-const avatarStyles = [
-  'avataaars', 'bottts', 'personas', 'lorelei', 'pixel-art', 'thumbs',
-  'adventurer', 'croodles', 'fun-emoji', 'identicon',
-  'micah', 'miniavs', 'notionists', 'rings', 'shapes'
-]
 
-const getAvatarUrl = (name: string, style: string) => {
-  const seed = name.replace(/\s+/g, '').toLowerCase()
-  return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}&scale=80`
-}
+// Avatar URL builder
+const B = 'https://api.dicebear.com/9.x/avataaars/svg'
+const a = (p: string, bg = 'b6e3f4') => `${B}?${p}&style=circle&backgroundColor=${bg}`
 
-const updateAvatarPreview = () => {
-  if (!form.avatarUrl) {
-    form.avatar = getAvatarUrl(profile.value?.name || 'User', form.avatarStyle)
+// Constants for generation
+const tops = ['shortFlat', 'shortWaved', 'theCaesarAndSidePart', 'shortCurly', 'shortRound', 'sides', 'theCaesar', 'longButNotTooLong', 'straight01', 'bob', 'curvy', 'straight02', 'straightAndStrand', 'bun', 'hijab']
+const clothings = ['blazerAndShirt', 'blazerAndSweater', 'collarAndSweater', 'shirtCrewNeck', 'shirtVNeck']
+const clothesColors = ['262e33', '3c4f5c', '25557c', '929598', 'ffffff', 'e6e6e6', 'ff5c5c', '5199e4', 'a55728', 'd6b370']
+const skins = ['ffdbb4', 'edb98a', 'd08b5b', 'ae5d29', '614335']
+const bgs = ['b6e3f4', 'c0aede', 'd1d4f9', 'ffd5dc', 'ffdfbf']
+
+// Generate 100 curated variations
+const avatarOptions = Array.from({ length: 100 }, (_, i) => {
+  const top = tops[i % tops.length]
+  const clothing = clothings[Math.floor(i / 2) % clothings.length]
+  const color = clothesColors[Math.floor(i / 3) % clothesColors.length]
+  const skin = skins[Math.floor(i / 5) % skins.length]
+  const bg = bgs[Math.floor(i / 7) % bgs.length]
+  
+  // Professional params: normal expressions, varied professional colors
+  const params = `top=${top}&clothing=${clothing}&clothesColor=${color}&skinColor=${skin}&eyes=default&eyebrows=defaultNatural&mouth=smile&facialHairProbability=0&accessoriesProbability=${i % 4 === 0 ? 100 : 0}&accessories=prescription01`
+  
+  return {
+    id: `av-${i}`,
+    url: a(params, bg)
   }
+})
+
+// ── Pagination ────────────────────────────────────────────────────────
+const currentPage = ref(1)
+const pageSize = 10
+const totalPages = Math.ceil(avatarOptions.length / pageSize)
+
+const paginatedAvatars = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return avatarOptions.slice(start, start + pageSize)
+})
+
+const selectedAvatarId = ref('av-0')
+
+const selectAvatar = (avatar: typeof avatarOptions[0]) => {
+  selectedAvatarId.value = avatar.id
+  form.avatar = avatar.url
 }
 
 // ── Password state ─────────────────────────────────────────────────────
@@ -147,13 +219,14 @@ const fetchProfile = async () => {
     form.name = res.data.name ?? ''
     form.bio = res.data.bio ?? ''
     form.avatar = res.data.avatar ?? ''
-    // Parse avatar URL to detect style if DiceBear URL
-    if (form.avatar?.includes('api.dicebear.com')) {
-      const match = form.avatar.match(/\/(avataaars|bottts|personas|lorelei|pixel-art|thumbs|adventurer|croodles|fun-emoji|identicon|micah|miniavs|notionists|rings|shapes)\//)
-      if (match?.[1]) form.avatarStyle = match[1]
-    } else if (form.avatar && !form.avatar.startsWith('http')) {
-      form.avatarUrl = form.avatar
-      form.avatar = ''
+    
+    if (form.avatar) {
+      const match = avatarOptions.find(a => form.avatar === a.url)
+      if (match) {
+        selectedAvatarId.value = match.id
+        const index = avatarOptions.indexOf(match)
+        currentPage.value = Math.floor(index / pageSize) + 1
+      }
     }
   } finally {
     isLoadingProfile.value = false
@@ -167,13 +240,13 @@ const joinedAt = computed(() => {
   return new Date(profile.value.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 })
 
-// ── Update profile ─────────────────────────────────────────────────────
 const handleUpdate = async () => {
   saveError.value = ''
   saveSuccess.value = false
   isSaving.value = true
   try {
-    const finalAvatar = form.avatarUrl?.trim() || getAvatarUrl(form.name.trim(), form.avatarStyle)
+    const selectedAvatar = avatarOptions.find(a => a.id === selectedAvatarId.value)
+    const finalAvatar = form.avatar || selectedAvatar?.url || ''
     const res = await api.patch<{ success: boolean; data: any }>('/users/me', {
       name: form.name.trim(),
       bio: form.bio.trim() || undefined,
@@ -194,7 +267,6 @@ const handleUpdate = async () => {
   }
 }
 
-// ── Change password ────────────────────────────────────────────────────
 const handlePasswordChange = async () => {
   pwError.value = ''
   pwSuccess.value = false

@@ -1,15 +1,30 @@
 <template>
   <div class="space-y-5">
-    <div class="flex items-center justify-between glass rounded-2xl p-5 md:p-6">
-      <div>
-        <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Projects</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Manage team projects, PICs, progress, and deadline risks from a single view.</p>
-        <p class="text-xs text-slate-500 mt-1.5">{{ inProgressCount }} ongoing · {{ dueSoonCount }} due soon · {{ atRiskCount }} at risk</p>
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(219,236,255,0.75)_0%,rgba(186,215,248,0.55)_40%,rgba(162,200,238,0.45)_100%)] dark:bg-[linear-gradient(135deg,#1B263B_0%,#111827_100%)] rounded-3xl p-6 md:p-8 text-[#1C3C62] dark:text-white mb-8 shadow-[0_8px_32px_rgba(42,74,116,0.12)] dark:shadow-xl border border-white/70 dark:border-white/5 backdrop-blur-xl ring-1 ring-[#7EB8E5]/20 dark:ring-0">
+      <!-- Glass shimmer overlays (light mode only) -->
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:opacity-0 rounded-3xl pointer-events-none"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:opacity-0 rounded-t-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="p-3.5 bg-[#2A4A74]/15 dark:bg-white/10 rounded-2xl border border-[#2A4A74]/20 dark:border-white/10">
+             <FolderKanban class="w-8 h-8 text-[#1C3C62] dark:text-white" />
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Projects</h1>
+            <p class="text-[#2A4A74]/70 dark:text-slate-300 mt-1 flex items-center gap-2">
+              <span class="text-sm opacity-80">{{ inProgressCount }} ongoing · {{ dueSoonCount }} due soon · {{ atRiskCount }} at risk</span>
+            </p>
+          </div>
+        </div>
+        
+        <div v-if="isManager">
+           <UiButton class="bg-[#1C3C62] !text-white dark:bg-white/10 dark:!text-white dark:hover:bg-white/20 hover:bg-[#2A4A74] transition-all duration-300 shadow-lg px-6 py-2.5 rounded-xl font-bold border-none" @click="showCreate = true">
+              <Plus class="h-4 w-4 mr-2 !text-white" />
+              New Project
+           </UiButton>
+        </div>
       </div>
-      <UiButton v-if="isManager" @click="showCreate = true">
-        <Plus class="h-4 w-4 mr-2" />
-        New Project
-      </UiButton>
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">

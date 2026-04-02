@@ -7,87 +7,83 @@
       </UiCardContent>
     </UiCard>
 
-    <UiCard class="mb-6">
-      <UiCardContent class="pt-6">
-        <div class="flex flex-col gap-6">
-          <!-- Top row with title and New Task button -->
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1 min-w-0">
-              <div class="text-xs text-slate-500 mb-2">
-                <NuxtLink :to="`/teams/${teamId}/projects`" class="hover:text-slate-700 dark:hover:text-slate-300">Projects</NuxtLink>
-                <span class="mx-1">/</span>
-                <span>{{ project?.name || 'Project' }}</span>
-              </div>
-              
-              <div class="flex items-center gap-3">
-                 <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ project?.name }}</h2>
-                 <UiBadge :variant="statusVariant(project?.status || '') as any">{{ statusLabel(project?.status || '') }}</UiBadge>
-                 <button v-if="isManager" @click="showEditProject = true" class="text-slate-400 hover:text-primary-500 transition-colors">
-                    <Edit2 class="w-4 h-4" />
-                 </button>
-              </div>
-            </div>
-            
-            <UiButton v-if="isManager" @click="showCreate = true" class="shrink-0">
-              <Plus class="h-4 w-4 mr-2" />
-              New Task
-            </UiButton>
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(219,236,255,0.75)_0%,rgba(186,215,248,0.55)_40%,rgba(162,200,238,0.45)_100%)] dark:bg-[linear-gradient(135deg,#1B263B_0%,#111827_100%)] rounded-3xl p-6 md:p-8 text-[#1C3C62] dark:text-white mb-8 shadow-[0_8px_32px_rgba(42,74,116,0.12)] dark:shadow-xl border border-white/70 dark:border-white/5 backdrop-blur-xl ring-1 ring-[#7EB8E5]/20 dark:ring-0">
+      <!-- Glass shimmer overlays (light mode only) -->
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:opacity-0 rounded-3xl pointer-events-none"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:opacity-0 rounded-t-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="h-16 w-16 bg-[#2A4A74]/15 dark:bg-white/10 rounded-2xl border border-[#2A4A74]/20 dark:border-white/10 flex items-center justify-center text-2xl font-bold">
+             {{ (project?.name || 'PR').slice(0, 2).toUpperCase() }}
           </div>
-
-          <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-slate-500 mt-0 mb-4 max-w-2xl leading-relaxed">{{ project?.description || 'No description provided.' }}</p>
-
-              <div class="flex items-center gap-4 mb-5 text-xs text-slate-500 font-medium">
-                 <div class="flex items-center gap-1.5" title="Person In Charge">
-                    <User class="w-3.5 h-3.5" />
-                    <span>{{ project?.pic?.name || 'Unassigned' }}</span>
-                 </div>
-                 <div class="flex items-center gap-1.5" title="Timeline">
-                   <Calendar class="w-3.5 h-3.5" />
-                   <span>{{ formatDate(project?.startDate) }} - {{ formatDate(project?.dueDate) }}</span>
-                 </div>
-                 <div class="flex items-center gap-1.5" :class="{'text-[#B85C5C]': daysLeft === 'Overdue'}">
-                   <Clock class="w-3.5 h-3.5" />
-                   <span>{{ daysLeft === 'Overdue' ? 'Overdue' : `${daysLeft} days left` }}</span>
-                 </div>
-              </div>
-              
-              <!-- Completion Progress -->
-              <div class="max-w-md">
-                <div class="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-                  <span class="font-medium">Completion Progress</span>
-                  <span class="font-bold text-emerald-700 dark:text-emerald-300">{{ completionProgress.toFixed(0) }}%</span>
-                </div>
-                <div class="h-2 w-full rounded-full bg-[rgba(224,225,221,0.5)] overflow-hidden">
-                  <div class="h-full bg-[linear-gradient(90deg,#16A34A_0%,#22C55E_100%)] transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, completionProgress)}%` }" />
-                </div>
-              </div>
+          <div>
+            <div class="text-xs text-[#2A4A74]/60 dark:text-slate-300 mb-1 flex items-center gap-1 opacity-80">
+              <NuxtLink :to="`/teams/${teamId}/projects`" class="hover:text-[#1C3C62] dark:hover:text-white transition-colors">Projects</NuxtLink>
+              <span>/</span>
+              <span class="text-[#1C3C62] dark:text-white font-medium">{{ project?.name || 'Project' }}</span>
             </div>
-
-            <!-- Stats in Header -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0 lg:w-[480px]">
-               <div class="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.05] border border-slate-100 dark:border-white/[0.1] shadow-sm">
-                  <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Total</p>
-                  <p class="text-xl font-bold text-slate-900 dark:text-slate-100">{{ totalTaskCount }}</p>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight mb-1">{{ project?.name }}</h1>
+            <div class="flex items-center gap-4 text-xs text-[#2A4A74]/70 dark:text-slate-300">
+               <div class="flex items-center gap-1.5">
+                  <User class="w-3.5 h-3.5" />
+                  <span>{{ project?.pic?.name || 'Unassigned' }}</span>
                </div>
-              <div class="p-3 rounded-xl bg-[#E0E1DD]/70 dark:bg-[#E0E1DD]/18 border border-[#778DA9]/45 shadow-sm">
-                <p class="text-[10px] uppercase tracking-wider text-[#1B263B] dark:text-[#E0E1DD] mb-0.5">Todo</p>
-                <p class="text-xl font-bold text-[#1B263B] dark:text-[#E0E1DD]">{{ todoCount }}</p>
+               <div class="flex items-center gap-1.5" :class="{'text-red-500 dark:text-[#FF8080]': daysLeft === 'Overdue'}">
+                 <Clock class="w-3.5 h-3.5" />
+                 <span>{{ daysLeft === 'Overdue' ? 'Overdue' : `${daysLeft} days left` }}</span>
                </div>
-              <div class="p-3 rounded-xl bg-[#778DA9]/25 dark:bg-[#778DA9]/28 border border-[#415A77]/35 shadow-sm">
-                <p class="text-[10px] uppercase tracking-wider text-[#0D1B2A] dark:text-[#E0E1DD] mb-0.5">In Progress</p>
-                <p class="text-xl font-bold text-[#0D1B2A] dark:text-[#E0E1DD]">{{ progressCount }}</p>
-               </div>
-              <div class="p-3 rounded-xl bg-[#1B263B]/90 dark:bg-[#1B263B]/80 border border-[#0D1B2A]/45 shadow-sm">
-                <p class="text-[10px] uppercase tracking-wider text-white/90 mb-0.5">Done</p>
-                <p class="text-xl font-bold text-white">{{ doneCount }}</p>
-               </div>
+               <UiBadge :variant="statusVariant(project?.status || '') as any" class="bg-[#2A4A74]/10 dark:bg-white/10 text-[#1C3C62] dark:text-white border-[#2A4A74]/20 dark:border-white/20 px-2 py-0">
+                  {{ statusLabel(project?.status || '') }}
+               </UiBadge>
             </div>
           </div>
         </div>
-      </UiCardContent>
-    </UiCard>
+        
+        <div class="flex items-center gap-3">
+           <UiButton v-if="isManager" class="bg-[#2A4A74]/15 !text-[#1C3C62] dark:bg-white/10 dark:!text-white border-[#2A4A74]/20 dark:border-white/20 hover:bg-[#2A4A74]/25 dark:hover:bg-white/20 transition-all duration-300 px-4 py-2 rounded-xl font-bold border-none" @click="showEditProject = true">
+              <Edit2 class="h-4 w-4 mr-2 !text-[#1C3C62] dark:!text-white" />
+              Settings
+           </UiButton>
+           <UiButton class="bg-[#1C3C62] !text-white dark:bg-white/10 dark:!text-white dark:hover:bg-white/20 hover:bg-[#2A4A74] transition-all duration-300 shadow-lg px-6 py-2.5 rounded-xl font-bold border-none" @click="showCreate = true">
+              <Plus class="h-4 w-4 mr-2 !text-white" />
+              New Task
+           </UiButton>
+        </div>
+      </div>
+
+      <!-- Quick Progress & Stats Row -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mt-10 border-t border-[#2A4A74]/15 dark:border-white/10 pt-6">
+        <div class="max-w-md flex-1">
+          <div class="flex items-center justify-between text-xs text-[#2A4A74]/60 dark:text-slate-300 mb-2">
+            <span class="font-medium opacity-80">Execution Progress</span>
+            <span class="font-bold text-[#1C3C62] dark:text-white">{{ completionProgress.toFixed(0) }}%</span>
+          </div>
+          <div class="h-2 w-full rounded-full bg-[#2A4A74]/10 dark:bg-white/10 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500 ease-out" :style="{ width: `${Math.min(100, completionProgress)}%` }" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 shrink-0 lg:w-[480px]">
+           <div class="flex flex-col">
+              <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-bold mb-1">Total</p>
+              <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ totalTaskCount }}</p>
+           </div>
+           <div class="flex flex-col">
+              <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-bold mb-1">Todo</p>
+              <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ todoCount }}</p>
+           </div>
+           <div class="flex flex-col">
+              <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-bold mb-1">In Dev</p>
+              <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ progressCount }}</p>
+           </div>
+           <div class="flex flex-col">
+              <p class="text-[10px] uppercase tracking-widest text-[#2A4A74]/50 dark:text-slate-400 font-bold mb-1">Done</p>
+              <p class="text-xl font-bold text-[#1C3C62] dark:text-white">{{ doneCount }}</p>
+           </div>
+        </div>
+      </div>
+    </div>
 
     <div v-if="isLoading" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <div v-for="i in 4" :key="i" class="rounded-xl bg-white/30 dark:bg-white/[0.04] h-64 animate-pulse" />

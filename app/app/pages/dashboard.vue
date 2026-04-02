@@ -1,26 +1,48 @@
 <template>
   <div class="space-y-8">
     <!-- Header Banner -->
-    <div class="glass rounded-2xl p-6 md:p-7">
-      <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Workspace Command Center</h1>
-      <p class="text-sm md:text-base text-slate-600 dark:text-slate-300 mt-1.5">
-        Welcome back,
-        <ClientOnly><span class="font-semibold text-primary-600 dark:text-primary-400">{{ authStore.user?.name ?? 'there' }}</span></ClientOnly>.
-        Monitor team workload, project health, and daily priorities from one place.
-      </p>
-
-      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div
-          v-for="(stat, idx) in stats"
-          :key="`header-${stat.label}`"
-          class="rounded-xl bg-white/40 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.1] p-4 flex items-center justify-between transition-transform hover:-translate-y-1 duration-300"
-        >
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ stat.label }}</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{{ stat.value }}</p>
+    <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(219,236,255,0.75)_0%,rgba(186,215,248,0.55)_40%,rgba(162,200,238,0.45)_100%)] dark:bg-[linear-gradient(135deg,#1B263B_0%,#111827_100%)] rounded-3xl p-6 md:p-8 text-[#1C3C62] dark:text-white mb-8 shadow-[0_8px_32px_rgba(42,74,116,0.12)] dark:shadow-xl border border-white/70 dark:border-white/5 backdrop-blur-xl ring-1 ring-[#7EB8E5]/20 dark:ring-0">
+      <!-- Glass shimmer overlays (light mode only) -->
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:opacity-0 rounded-3xl pointer-events-none"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:opacity-0 rounded-t-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="p-3.5 bg-[#2A4A74]/15 dark:bg-white/10 rounded-2xl border border-[#2A4A74]/20 dark:border-white/10">
+             <LayoutDashboard class="w-8 h-8 text-[#1C3C62] dark:text-white" />
           </div>
-          <div :class="`p-2.5 rounded-lg ${stat.iconBg}`">
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Workspace Command Center</h1>
+            <p class="text-[#2A4A74]/70 dark:text-slate-300 mt-1 flex items-center gap-2">
+              Welcome back,
+              <ClientOnly><span class="font-semibold text-[#1C3C62] dark:text-white">{{ authStore.user?.name ?? 'there' }}</span></ClientOnly>
+              <span class="hidden md:inline text-[#2A4A74]/20 dark:text-white/20">•</span>
+              <span class="text-sm opacity-80">Monitor team workload and projects.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div
+        v-for="stat in stats"
+        :key="`header-${stat.label}`"
+        class="group relative bg-white/40 dark:bg-white/[0.03] backdrop-blur-md rounded-2xl p-5 border border-white/60 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(42,74,116,0.04)] hover:shadow-[0_8px_32px_rgba(42,74,116,0.08)] hover:bg-white/60 dark:hover:bg-white/[0.05] transition-all duration-300"
+      >
+        <div class="flex items-start justify-between">
+          <div :class="`p-2.5 rounded-xl ${stat.iconBg} bg-opacity-10 dark:bg-opacity-20`">
              <component :is="stat.icon" :class="`w-5 h-5 ${stat.iconColor}`" />
+          </div>
+           <div class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#2A4A74]/5 dark:bg-white/5 text-[#2A4A74]/50 dark:text-slate-400 border border-[#2A4A74]/10 dark:border-white/5 uppercase tracking-widest">
+             Status
+          </div>
+        </div>
+        <div class="mt-5">
+          <p class="text-[10px] font-bold text-[#2A4A74]/40 dark:text-slate-500 uppercase tracking-[0.14em] leading-tight">{{ stat.label }}</p>
+          <p class="text-3xl font-extrabold text-[#1C3C62] dark:text-white mt-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{{ stat.value }}</p>
+          <div class="flex items-center gap-1.5 mt-2 text-[10px] text-slate-400 font-medium">
+             <div class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div> <span class="opacity-70 uppercase tracking-tighter">Live Updates</span>
           </div>
         </div>
       </div>
@@ -101,7 +123,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
       <!-- Personal Task Activity Chart -->
       <UiCard class="xl:col-span-3 overflow-hidden flex flex-col h-full min-h-[400px]">
-        <UiCardHeader>
+        <UiCardHeader class="pb-2">
           <div class="flex items-center justify-between">
             <UiCardTitle class="text-base">My Task Activity</UiCardTitle>
             <span class="text-xs text-slate-400">Last 7 days</span>
@@ -206,7 +228,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Users, CheckSquare, Megaphone, Mail, Target } from 'lucide-vue-next'
+import { Plus, Users, CheckSquare, Megaphone, Mail, Target, LayoutDashboard } from 'lucide-vue-next'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -336,41 +358,41 @@ const chartData = computed(() => {
         label: 'Assigned',
         backgroundColor: (context: any) => {
           const ctx = context.chart.ctx
-          const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-          gradient.addColorStop(0, 'rgba(65, 90, 119, 0.35)')
-          gradient.addColorStop(1, 'rgba(65, 90, 119, 0.0)')
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+          gradient.addColorStop(0, 'rgba(28, 100, 242, 0.15)')
+          gradient.addColorStop(1, 'rgba(28, 100, 242, 0.01)')
           return gradient
         },
-        borderColor: '#415A77',
-        pointBackgroundColor: '#415A77',
-        pointBorderColor: '#E0E1DD',
+        borderColor: '#1c64f2',
+        pointBackgroundColor: '#ffffff',
+        pointBorderColor: '#1c64f2',
         pointBorderWidth: 2,
-        pointRadius: 0,
+        pointRadius: 4,
         pointHoverRadius: 6,
         fill: true,
         tension: 0.4,
         data: sortedStats.map(s => s.assigned),
-        borderWidth: 2,
+        borderWidth: 3,
       },
       {
         label: 'Completed',
         backgroundColor: (context: any) => {
           const ctx = context.chart.ctx
-          const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-          gradient.addColorStop(0, 'rgba(34, 197, 94, 0.40)')
-          gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)')
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.15)')
+          gradient.addColorStop(1, 'rgba(16, 185, 129, 0.01)')
           return gradient
         },
-        borderColor: '#22C55E',
-        pointBackgroundColor: '#22C55E',
-        pointBorderColor: '#E0E1DD',
+        borderColor: '#10b981',
+        pointBackgroundColor: '#ffffff',
+        pointBorderColor: '#10b981',
         pointBorderWidth: 2,
-        pointRadius: 0,
+        pointRadius: 4,
         pointHoverRadius: 6,
         fill: true,
         tension: 0.4,
         data: sortedStats.map(s => s.completed),
-        borderWidth: 2,
+        borderWidth: 3,
       }
     ]
   }
@@ -383,14 +405,15 @@ const chartOptions = computed(() => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const,
-        align: 'end' as const,
+        position: 'bottom' as const,
+        align: 'center' as const,
         labels: {
           usePointStyle: true,
-          pointStyle: 'circle',
-          boxWidth: 6,
-          padding: 20,
-          font: { size: 11, family: "'Inter', sans-serif", weight: 500 },
+          pointStyle: 'rectRounded',
+          boxWidth: 12,
+          boxHeight: 12,
+          padding: 30,
+          font: { size: 14, family: "'Inter', sans-serif", weight: 500 },
           color: tickColor,
         }
       },
@@ -426,7 +449,8 @@ const chartOptions = computed(() => {
       },
       y: {
         grid: {
-          color: 'rgba(224,225,221,0.4)',
+          color: isDark.value ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+          drawTicks: false,
         },
         ticks: {
           stepSize: 1,
