@@ -87,46 +87,56 @@
       <!-- Task Distribution Chart -->
       <UiCard>
         <UiCardHeader>
-          <UiCardTitle class="text-base">Task Overview</UiCardTitle>
+          <UiCardTitle class="text-base text-slate-900 dark:text-slate-100">Task Overview</UiCardTitle>
         </UiCardHeader>
-        <UiCardContent class="pt-2 space-y-4">
-          <!-- Stacked bar -->
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
-              <span>Distribution</span>
-              <span>{{ totalTaskCount }} total</span>
-            </div>
-            <div class="h-3 rounded-full flex overflow-hidden gap-0.5 bg-white/30 dark:bg-white/[0.08]">
-              <div
-                v-if="taskDist.todo > 0"
-                class="h-full bg-[#E0E1DD] rounded-l-full transition-all duration-500"
-                :style="{ width: `${taskDist.todoP}%` }"
+        <UiCardContent class="pt-2">
+          <div class="relative flex items-center justify-center py-6">
+            <svg class="w-48 h-48 -rotate-90 transform" viewBox="0 0 160 160">
+              <!-- Background circle -->
+              <circle
+                cx="80"
+                cy="80"
+                r="65"
+                fill="transparent"
+                stroke="currentColor"
+                stroke-width="14"
+                class="text-slate-100 dark:text-white/5"
               />
-              <div
-                v-if="taskDist.inProgress > 0"
-                class="h-full bg-[#778DA9] transition-all duration-500"
-                :style="{ width: `${taskDist.inProgressP}%` }"
+              <!-- Progress segments -->
+              <circle
+                v-for="seg in taskDonutSegments"
+                :key="seg.label"
+                cx="80"
+                cy="80"
+                r="65"
+                fill="transparent"
+                stroke-width="14"
+                stroke-linecap="round"
+                :stroke-dasharray="seg.dash"
+                :stroke-dashoffset="seg.offset"
+                :class="seg.color"
+                class="transition-all duration-1000 ease-out"
               />
-              <div
-                v-if="taskDist.review > 0"
-                class="h-full bg-[#415A77] transition-all duration-500"
-                :style="{ width: `${taskDist.reviewP}%` }"
-              />
-              <div
-                v-if="taskDist.done > 0"
-                class="h-full bg-[#1B263B] rounded-r-full transition-all duration-500"
-                :style="{ width: `${taskDist.doneP}%` }"
-              />
+            </svg>
+            
+            <!-- Central Label -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center -mt-1">
+              <span class="text-3xl font-extrabold text-slate-900 dark:text-white leading-none">
+                {{ Math.round(taskDist.doneP) }}%
+              </span>
+              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500 mt-2">
+                Project Ended
+              </span>
             </div>
           </div>
 
-          <!-- Legend + Count Breakdown -->
-          <div class="grid grid-cols-2 gap-3">
-            <div v-for="s in taskStatuses" :key="s.label" class="flex items-center gap-2.5 rounded-xl p-2.5 border border-white/60 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05]">
-              <div :class="['h-2.5 w-2.5 rounded-full shrink-0', s.dot]" />
-              <div class="min-w-0">
-                <p class="text-xs text-slate-500">{{ s.label }}</p>
-                <p class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">{{ s.count }}</p>
+          <!-- Subtle Breakdown -->
+          <div class="grid grid-cols-2 gap-2 mt-4">
+            <div v-for="s in taskStatuses" :key="s.label" class="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-transparent hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+              <div :class="['h-2 w-2 rounded-full shrink-0 shadow-sm', s.dot]" />
+              <div class="min-w-0 flex items-baseline justify-between w-full">
+                <span class="text-[10px] font-medium text-slate-500 truncate mr-2">{{ s.label }}</span>
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ s.count }}</span>
               </div>
             </div>
           </div>
@@ -269,11 +279,37 @@ const taskDist = computed(() => {
 })
 
 const taskStatuses = computed(() => [
-  { label: 'Todo', count: todoCount.value, dot: 'bg-[#E0E1DD]' },
-  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-[#778DA9]' },
-  { label: 'Review', count: reviewCount.value, dot: 'bg-[#415A77]' },
-  { label: 'Done', count: completedTaskCount.value, dot: 'bg-[#1B263B]' },
+  { label: 'Todo', count: todoCount.value, dot: 'bg-slate-300 dark:bg-slate-600' },
+  { label: 'In Progress', count: inProgressCount.value, dot: 'bg-[#93C5FD]' },
+  { label: 'Review', count: reviewCount.value, dot: 'bg-[#60A5FA]' },
+  { label: 'Done', count: completedTaskCount.value, dot: 'bg-[#3B82F6]' },
 ])
+
+const taskDonutSegments = computed(() => {
+  const total = totalTaskCount.value || 1
+  const circumference = 2 * Math.PI * 65 // ~408.4
+  let currentOffset = 0
+  
+  const items = [
+    { label: 'Done', count: completedTaskCount.value, color: 'stroke-[#3B82F6]' },
+    { label: 'Review', count: reviewCount.value, color: 'stroke-[#60A5FA]' },
+    { label: 'In Progress', count: inProgressCount.value, color: 'stroke-[#93C5FD]' },
+    { label: 'Todo', count: todoCount.value, color: 'stroke-slate-300 dark:stroke-slate-600' },
+  ].filter(i => i.count > 0)
+  
+  return items.map(item => {
+    const percentage = (item.count / total) * 100
+    const dash = (percentage / 100) * circumference
+    const offset = currentOffset
+    currentOffset += dash
+    
+    return {
+      ...item,
+      dash: `${dash} ${circumference}`,
+      offset: -offset
+    }
+  })
+})
 
 const myAssignedTaskCount = computed(() =>
   activeTasks.value.filter((t) => t.assignee?.id === authStore.currentUser?.id).length,
